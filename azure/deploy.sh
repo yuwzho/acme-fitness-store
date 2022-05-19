@@ -5,7 +5,7 @@ set -euo pipefail
 readonly PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 readonly APPS_ROOT="${PROJECT_ROOT}/apps"
 
-readonly REDIS_NAME="fitness-cache"
+readonly REDIS_NAME="fitness-cache-demo"
 readonly ORDER_SERVICE_POSTGRES_CONNECTION="order_service_db"
 readonly CART_SERVICE_REDIS_CONNECTION="cart_service_cache"
 readonly CATALOG_SERVICE_DB_CONNECTION="catalog_service_db"
@@ -13,7 +13,7 @@ readonly ACMEFIT_CATALOG_DB_NAME="acmefit_catalog"
 readonly ACMEFIT_ORDER_DB_NAME="acmefit_order"
 readonly ACMEFIT_POSTGRES_DB_PASSWORD="Acm3F!tness"
 readonly ACMEFIT_POSTGRES_DB_USER=dbadmin
-readonly ACMEFIT_POSTGRES_SERVER="acmefitnessdb"
+readonly ACMEFIT_POSTGRES_SERVER="acmefitnessdb-demo"
 readonly ORDER_DB_NAME="orders"
 readonly CART_SERVICE="cart-service"
 readonly IDENTITY_SERVICE="identity-service"
@@ -22,10 +22,33 @@ readonly PAYMENT_SERVICE="payment-service"
 readonly CATALOG_SERVICE="catalog-service"
 readonly FRONTEND_APP="frontend"
 readonly CUSTOM_BUILDER="no-bindings-builder"
+readonly CURRENT_USER=$(az account show --query user.name -o tsv)
+readonly CURRENT_USER_OBJECTID=$(az ad user show --id $CURRENT_USER --query objectId -o tsv)
+readonly CONFIG_REPO=https://github.com/felipmiguel/acme-fitness-store-config
+readonly CATALOG_APP_PSQL_USER=catalogapp
+readonly JDBC_CONNECTION_STRING_CATALOG="jdbc:postgresql://${ACMEFIT_POSTGRES_SERVER}.postgres.database.azure.com:5432/${ACMEFIT_CATALOG_DB_NAME}?sslmode=require&user=${CATALOG_APP_PSQL_USER}@${ACMEFIT_POSTGRES_SERVER}&authenticationPluginClassName=com.azure.jdbc.msi.extension.postgresql.AzurePostgresqlMSIAuthenticationPlugin"
 
-RESOURCE_GROUP=''
-SPRING_CLOUD_INSTANCE=''
-REGION=''
+RESOURCE_GROUP='rg-acme-fitness'
+SPRING_CLOUD_INSTANCE='asc-acme-fitness'
+REGION='eastus'
+
+function create_spring_cloud() {
+  az group create --name ${RESOURCE_GROUP} \
+    --location ${REGION}
+
+  az provider register --namespace Microsoft.SaaS
+  az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan tanzu-asc-ent-mtr
+
+  az spring-cloud create --name ${SPRING_CLOUD_INSTANCE} \
+    --resource-group ${RESOURCE_GROUP} \
+    --location ${REGION} \
+    --sku Enterprise \
+    --enable-application-configuration-service \
+    --enable-service-registry \
+    --enable-gateway \
+    --enable-api-portal
+
+}
 
 function configure_defaults() {
   echo "Configure azure defaults resource group: $RESOURCE_GROUP and spring-cloud $SPRING_CLOUD_INSTANCE"
@@ -33,17 +56,24 @@ function configure_defaults() {
 }
 
 function create_dependencies() {
-  echo "Creating Azure Cache for Redis Instance $REDIS_NAME in location eastus"
+  echo "Creating Azure Cache for Redis Instance $REDIS_NAME in location ${REGION}"
   az redis create --location $REGION --name $REDIS_NAME --resource-group $RESOURCE_GROUP --sku Basic --vm-size c0
 
   echo "Creating Azure Database for Postgres $ACMEFIT_POSTGRES_SERVER"
 
-  az postgres flexible-server create --name $ACMEFIT_POSTGRES_SERVER \
-    --resource-group $RESOURCE_GROUP \
-    --location $REGION \
-    --admin-user $ACMEFIT_POSTGRES_DB_USER \
+  az postgres server create --admin-user ${ACMEFIT_POSTGRES_DB_USER} \
     --admin-password $ACMEFIT_POSTGRES_DB_PASSWORD \
-    --yes
+    --name $ACMEFIT_POSTGRES_SERVER \
+    --resource-group $RESOURCE_GROUP \
+    --sku-name GP_Gen5_2 \
+    --version 11 \
+    --storage-size 5120
+
+  echo "Creating current logged in user as postgres AD Admin"
+  az postgres server ad-admin create -s $ACMEFIT_POSTGRES_SERVER \
+    -g $RESOURCE_GROUP \
+    -u $CURRENT_USER \
+    -i $CURRENT_USER_OBJECTID
 
   echo "Creating Postgres Database $ACMEFIT_CATALOG_DB_NAME"
   az postgres db create \
@@ -61,10 +91,21 @@ function create_builder() {
   az spring-cloud build-service builder create -n $CUSTOM_BUILDER --builder-file "$PROJECT_ROOT/azure/builder.json"
 }
 
+function configure_sso() {
+  az ad app create --display-name acme-fitness >ad.json
+  export APPLICATION_ID=$(cat ad.json | jq -r '.appId')
+
+  az ad app credential reset --id ${APPLICATION_ID} --append >sso.json
+  az ad sp create --id ${APPLICATION_ID}
+
+  source ./setup-sso-variables-ad.sh
+}
+
 function configure_gateway() {
   az spring-cloud gateway update --assign-endpoint true
   local gateway_url=$(az spring-cloud gateway show | jq -r '.properties.url')
 
+  source ./setup-sso-variables-ad.sh
   echo "Configuring Spring Cloud Gateway"
   az spring-cloud gateway update \
     --api-description "ACME Fitness API" \
@@ -79,8 +120,8 @@ function configure_gateway() {
 }
 
 function configure_acs() {
-  echo "Configuring Application Configuration Service to use repo: https://github.com/spring-cloud-services-samples/acme_fitness_demo"
-  az spring-cloud application-configuration-service git repo add --name acme-config --label Azure --patterns "default,catalog,identity,payment" --uri "https://github.com/spring-cloud-services-samples/acme_fitness_demo" --search-paths config
+  echo "Configuring Application Configuration Service to use repo: ${CONFIG_REPO}"
+  az spring-cloud application-configuration-service git repo add --name acme-config --label main --patterns "default,catalog,identity,payment" --uri "${CONFIG_REPO}" --search-paths config
 }
 
 function create_cart_service() {
@@ -126,23 +167,26 @@ function create_order_service() {
 }
 
 function create_catalog_service() {
-  echo "Creating catalog service"
-  az spring-cloud app create --name $CATALOG_SERVICE
+  echo "Creating catalog service with managed identity"
+  az spring-cloud app create \
+    --name $CATALOG_SERVICE \
+    --system-assigned true
   az spring-cloud application-configuration-service bind --app $CATALOG_SERVICE
   az spring-cloud service-registry bind --app $CATALOG_SERVICE
   az spring-cloud gateway route-config create --name $CATALOG_SERVICE --app-name $CATALOG_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/catalog-service.json"
 
-  az spring-cloud connection create postgres \
-    --resource-group $RESOURCE_GROUP \
-    --service $SPRING_CLOUD_INSTANCE \
-    --connection $CATALOG_SERVICE_DB_CONNECTION \
-    --app $CATALOG_SERVICE \
-    --deployment default \
-    --tg $RESOURCE_GROUP \
-    --server $ACMEFIT_POSTGRES_SERVER \
-    --database $ACMEFIT_CATALOG_DB_NAME \
-    --secret name=${ACMEFIT_POSTGRES_DB_USER} secret=${ACMEFIT_POSTGRES_DB_PASSWORD} \
-    --client-type springboot
+  # az spring-cloud connection create postgres \
+  #   --resource-group $RESOURCE_GROUP \
+  #   --service $SPRING_CLOUD_INSTANCE \
+  #   --connection $CATALOG_SERVICE_DB_CONNECTION \
+  #   --app $CATALOG_SERVICE \
+  #   --deployment default \
+  #   --tg $RESOURCE_GROUP \
+  #   --server $ACMEFIT_POSTGRES_SERVER \
+  #   --database $ACMEFIT_CATALOG_DB_NAME \
+  #   --secret name=${ACMEFIT_POSTGRES_DB_USER} secret=${ACMEFIT_POSTGRES_DB_PASSWORD} \
+  #   --client-type springboot
+  # az spring-cloud connection create
 }
 
 function create_payment_service() {
@@ -175,6 +219,7 @@ function deploy_cart_service() {
 }
 
 function deploy_identity_service() {
+  source ./setup-sso-variables-ad.sh
   echo "Deploying identity-service application"
   az spring-cloud app deploy --name $IDENTITY_SERVICE \
     --env "SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=${JWK_SET_URI}" \
@@ -192,9 +237,10 @@ function deploy_order_service() {
     --app $ORDER_SERVICE | jq '.configurations[0].value' -r)
   local app_insights_key=$(az spring-cloud build-service builder buildpack-binding show -n default | jq -r '.properties.launchProperties.properties."connection-string"')
 
+  echo $postgres_connection_url
   az spring-cloud app deploy --name $ORDER_SERVICE \
     --builder $CUSTOM_BUILDER \
-    --env "ConnectionStrings__OrderContext=$postgres_connection_url" "AcmeServiceSettings__AuthUrl=https://${gateway_url}" "ApplicationInsights__ConnectionString=$app_insights_key" \
+    --env "DatabaseProvider=Postgres" "ConnectionStrings__OrderContext=$postgres_connection_url" "AcmeServiceSettings__AuthUrl=https://${gateway_url}" "ApplicationInsights__ConnectionString=$app_insights_key" \
     --source-path "$APPS_ROOT/acme-order"
 }
 
@@ -203,6 +249,7 @@ function deploy_catalog_service() {
 
   az spring-cloud app deploy --name $CATALOG_SERVICE \
     --config-file-pattern catalog \
+    --env "SPRING_DATASOURCE_URL=${JDBC_CONNECTION_STRING_CATALOG}" \
     --source-path "$APPS_ROOT/acme-catalog"
 }
 
@@ -225,25 +272,74 @@ function deploy_frontend_app() {
     --source-path "$APPS_ROOT/acme-shopping"
 }
 
-function main() {
-  configure_defaults
-  create_dependencies
-  create_builder
-  configure_acs
-  configure_gateway
-  create_identity_service
-  create_cart_service
-  create_order_service
-  create_payment_service
-  create_catalog_service
-  create_frontend_app
+function create_databaseuser() {
+  echo "Creating database user"
+  # IMPORTANT PSQL REQUIRES THE APPLICATION ID OF THE MANAGED IDENTITY, NOT THE OBJECT ID.
+  # First step: retrieve the object id of the application managed identity
+  managedidentity_oid=$(az spring-cloud app show --name $CATALOG_SERVICE --query identity.principalId -o tsv)
+  # Second step: retrieve the application id using the object id
+  managedidentity_appid=$(az ad sp show --id ${managedidentity_oid} --query appId -o tsv)
 
-  deploy_identity_service
-  deploy_cart_service
-  deploy_order_service
-  deploy_payment_service
-  deploy_catalog_service
-  deploy_frontend_app
+  CURRENT_IP=$(curl -s http://whatismyip.akamai.com)
+  # allow current agent to access the database
+  az postgres server firewall-rule create \
+    --resource-group $RESOURCE_GROUP \
+    --server $ACMEFIT_POSTGRES_SERVER \
+    --name allow-current-agent \
+    --start-ip-address $CURRENT_IP \
+    --end-ip-address $CURRENT_IP
+
+
+  # Prepare the script using the applicationid
+  create_user_sql="SET aad_validate_oids_in_tenant = off;
+
+REVOKE ALL PRIVILEGES ON DATABASE \"acmefit_catalog\" FROM \"catalogapp\";
+
+DROP USER IF EXISTS \"catalogapp\";
+
+CREATE ROLE \"catalogapp\" WITH LOGIN PASSWORD '${managedidentity_appid}' IN ROLE azure_ad_user;
+
+GRANT ALL PRIVILEGES ON DATABASE \"acmefit_catalog\" TO \"catalogapp\";"
+
+  # the script should be execute by the Azure AD admin.
+  # current user is Azure AD Admin
+
+  # as password is too long it cannot be passed as parameter to PSQL, so we use and environment variable
+  export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --output tsv --query accessToken)
+  echo $create_user_sql > create_user.sql
+  psql "host=${ACMEFIT_POSTGRES_SERVER}.postgres.database.azure.com port=5432 user=${CURRENT_USER}@${ACMEFIT_POSTGRES_SERVER} dbname=postgres sslmode=require"< create_user.sql
+  rm create_user.sql
+
+  # remove access to the database
+  az postgres server firewall-rule delete \
+    --resource-group $RESOURCE_GROUP \
+    --server $ACMEFIT_POSTGRES_SERVER \
+    --name allow-current-agent
+}
+
+function main() {
+  # create_spring_cloud
+  # configure_defaults
+  # create_dependencies
+  # create_builder
+  # configure_acs
+  # configure_sso
+  configure_gateway
+  # create_identity_service
+  # create_cart_service
+  # create_order_service
+  # create_payment_service
+  # create_catalog_service
+  # create_frontend_app
+
+  # create_databaseuser
+
+  # deploy_identity_service
+  # deploy_cart_service
+  # deploy_order_service 
+  # deploy_payment_service 
+  # deploy_catalog_service 
+  # deploy_frontend_app 
 }
 
 function usage() {
