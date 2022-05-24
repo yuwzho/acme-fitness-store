@@ -176,18 +176,17 @@ function create_catalog_service() {
   az spring-cloud service-registry bind --app $CATALOG_SERVICE
   az spring-cloud gateway route-config create --name $CATALOG_SERVICE --app-name $CATALOG_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/catalog-service.json"
 
-  # az spring-cloud connection create postgres \
-  #   --resource-group $RESOURCE_GROUP \
-  #   --service $SPRING_CLOUD_INSTANCE \
-  #   --connection $CATALOG_SERVICE_DB_CONNECTION \
-  #   --app $CATALOG_SERVICE \
-  #   --deployment default \
-  #   --tg $RESOURCE_GROUP \
-  #   --server $ACMEFIT_POSTGRES_SERVER \
-  #   --database $ACMEFIT_CATALOG_DB_NAME \
-  #   --secret name=${ACMEFIT_POSTGRES_DB_USER} secret=${ACMEFIT_POSTGRES_DB_PASSWORD} \
-  #   --client-type springboot
-  # az spring-cloud connection create
+  az spring-cloud connection create postgres \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_CLOUD_INSTANCE \
+    --connection $CATALOG_SERVICE_DB_CONNECTION \
+    --app $CATALOG_SERVICE \
+    --deployment default \
+    --tg $RESOURCE_GROUP \
+    --server $ACMEFIT_POSTGRES_SERVER \
+    --database $ACMEFIT_CATALOG_DB_NAME \
+    --client-type springboot
+  
 }
 
 function create_payment_service() {
@@ -329,20 +328,20 @@ function main() {
   configure_acs
   configure_sso
   configure_gateway
-  create_identity_service
-  create_cart_service
-  create_order_service
-  create_payment_service
-  create_catalog_service
+  create_identity_service 
+  create_cart_service 
+  create_order_service 
+  create_payment_service 
+  create_catalog_service 
   create_frontend_app
 
   # create_databaseuser
 
-  deploy_identity_service
-  deploy_cart_service
-  deploy_order_service
-  deploy_payment_service
-  deploy_catalog_service
+  deploy_identity_service 
+  deploy_cart_service 
+  deploy_order_service 
+  deploy_payment_service 
+  deploy_catalog_service 
   deploy_frontend_app
 }
 
