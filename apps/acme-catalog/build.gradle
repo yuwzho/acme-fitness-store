@@ -11,13 +11,9 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 repositories {
-	maven {
-		url = uri("https://maven.pkg.github.com/felipmiguel/azure-jdbc-msi-extension")
-		credentials {
-			username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-			password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
-		}
-	}
+	//maven {
+	//	url = uri("https://maven.pkg.github.com/felipmiguel/azure-jdbc-msi-extension")
+	// }
 	mavenCentral()
 
 }
@@ -41,7 +37,8 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
-	runtimeOnly 'com.azure.jdbc:azure-jdbc-msi-extension:0.0.1-SNAPSHOT'
+	// runtimeOnly 'com.azure.jdbc:azure-jdbc-msi-extension:0.0.1-SNAPSHOT'
+	runtimeOnly fileTree('libs') { include '*.jar' }
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

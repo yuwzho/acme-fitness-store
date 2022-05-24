@@ -23,7 +23,7 @@ readonly CATALOG_SERVICE="catalog-service"
 readonly FRONTEND_APP="frontend"
 readonly CUSTOM_BUILDER="no-bindings-builder"
 readonly CURRENT_USER=$(az account show --query user.name -o tsv)
-readonly CURRENT_USER_OBJECTID=$(az ad user show --id $CURRENT_USER --query objectId -o tsv)
+readonly CURRENT_USER_OBJECTID=$(az ad user show --id $CURRENT_USER --query id -o tsv)
 readonly CONFIG_REPO=https://github.com/felipmiguel/acme-fitness-store-config
 readonly CATALOG_APP_PSQL_USER=catalogapp
 readonly JDBC_CONNECTION_STRING_CATALOG="jdbc:postgresql://${ACMEFIT_POSTGRES_SERVER}.postgres.database.azure.com:5432/${ACMEFIT_CATALOG_DB_NAME}?sslmode=require&user=${CATALOG_APP_PSQL_USER}@${ACMEFIT_POSTGRES_SERVER}&authenticationPluginClassName=com.azure.jdbc.msi.extension.postgresql.AzurePostgresqlMSIAuthenticationPlugin"
@@ -57,17 +57,17 @@ function configure_defaults() {
 
 function create_dependencies() {
   echo "Creating Azure Cache for Redis Instance $REDIS_NAME in location ${REGION}"
-  az redis create --location $REGION --name $REDIS_NAME --resource-group $RESOURCE_GROUP --sku Basic --vm-size c0
+  # az redis create --location $REGION --name $REDIS_NAME --resource-group $RESOURCE_GROUP --sku Basic --vm-size c0
 
   echo "Creating Azure Database for Postgres $ACMEFIT_POSTGRES_SERVER"
 
-  az postgres server create --admin-user ${ACMEFIT_POSTGRES_DB_USER} \
-    --admin-password $ACMEFIT_POSTGRES_DB_PASSWORD \
-    --name $ACMEFIT_POSTGRES_SERVER \
-    --resource-group $RESOURCE_GROUP \
-    --sku-name GP_Gen5_2 \
-    --version 11 \
-    --storage-size 5120
+  #az postgres server create --admin-user ${ACMEFIT_POSTGRES_DB_USER} \
+  #  --admin-password $ACMEFIT_POSTGRES_DB_PASSWORD \
+  #  --name $ACMEFIT_POSTGRES_SERVER \
+  #  --resource-group $RESOURCE_GROUP \
+  #  --sku-name GP_Gen5_2 \
+  #  --version 11 \
+  #  --storage-size 5120
 
   echo "Creating current logged in user as postgres AD Admin"
   az postgres server ad-admin create -s $ACMEFIT_POSTGRES_SERVER \
@@ -92,6 +92,7 @@ function create_builder() {
 }
 
 function configure_sso() {
+  echo "Configuring SSO"
   az ad app create --display-name acme-fitness >ad.json
   export APPLICATION_ID=$(cat ad.json | jq -r '.appId')
 
@@ -246,11 +247,14 @@ function deploy_order_service() {
 
 function deploy_catalog_service() {
   echo "Deploying catalog-service application"
-
   az spring-cloud app deploy --name $CATALOG_SERVICE \
-    --config-file-pattern catalog \
-    --env "SPRING_DATASOURCE_URL=${JDBC_CONNECTION_STRING_CATALOG}" \
-    --source-path "$APPS_ROOT/acme-catalog"
+      --config-file-pattern catalog \
+      --source-path "$APPS_ROOT/acme-catalog"
+
+  #az spring-cloud app deploy --name $CATALOG_SERVICE \
+  #  --config-file-pattern catalog \
+  #  --env "SPRING_DATASOURCE_URL=${JDBC_CONNECTION_STRING_CATALOG}" \
+  #  --source-path "$APPS_ROOT/acme-catalog"
 }
 
 function deploy_payment_service() {
@@ -318,28 +322,28 @@ GRANT ALL PRIVILEGES ON DATABASE \"acmefit_catalog\" TO \"catalogapp\";"
 }
 
 function main() {
-  # create_spring_cloud
-  # configure_defaults
-  # create_dependencies
-  # create_builder
-  # configure_acs
-  # configure_sso
+  create_spring_cloud
+  configure_defaults
+  create_dependencies
+  create_builder
+  configure_acs
+  configure_sso
   configure_gateway
-  # create_identity_service
-  # create_cart_service
-  # create_order_service
-  # create_payment_service
-  # create_catalog_service
-  # create_frontend_app
+  create_identity_service
+  create_cart_service
+  create_order_service
+  create_payment_service
+  create_catalog_service
+  create_frontend_app
 
   # create_databaseuser
 
-  # deploy_identity_service
-  # deploy_cart_service
-  # deploy_order_service 
-  # deploy_payment_service 
-  # deploy_catalog_service 
-  # deploy_frontend_app 
+  deploy_identity_service
+  deploy_cart_service
+  deploy_order_service
+  deploy_payment_service
+  deploy_catalog_service
+  deploy_frontend_app
 }
 
 function usage() {
