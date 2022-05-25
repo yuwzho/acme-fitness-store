@@ -57,17 +57,17 @@ function configure_defaults() {
 
 function create_dependencies() {
   echo "Creating Azure Cache for Redis Instance $REDIS_NAME in location ${REGION}"
-  # az redis create --location $REGION --name $REDIS_NAME --resource-group $RESOURCE_GROUP --sku Basic --vm-size c0
+  az redis create --location $REGION --name $REDIS_NAME --resource-group $RESOURCE_GROUP --sku Basic --vm-size c0
 
   echo "Creating Azure Database for Postgres $ACMEFIT_POSTGRES_SERVER"
 
-  #az postgres server create --admin-user ${ACMEFIT_POSTGRES_DB_USER} \
-  #  --admin-password $ACMEFIT_POSTGRES_DB_PASSWORD \
-  #  --name $ACMEFIT_POSTGRES_SERVER \
-  #  --resource-group $RESOURCE_GROUP \
-  #  --sku-name GP_Gen5_2 \
-  #  --version 11 \
-  #  --storage-size 5120
+  az postgres server create --admin-user ${ACMEFIT_POSTGRES_DB_USER} \
+   --admin-password $ACMEFIT_POSTGRES_DB_PASSWORD \
+   --name $ACMEFIT_POSTGRES_SERVER \
+   --resource-group $RESOURCE_GROUP \
+   --sku-name GP_Gen5_2 \
+   --version 11 \
+   --storage-size 5120
 
   echo "Creating current logged in user as postgres AD Admin"
   az postgres server ad-admin create -s $ACMEFIT_POSTGRES_SERVER \
