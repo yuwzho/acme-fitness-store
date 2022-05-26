@@ -37,7 +37,6 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
-	// runtimeOnly 'com.azure.jdbc:azure-jdbc-msi-extension:0.0.1-SNAPSHOT'
 	runtimeOnly fileTree('libs') { include '*.jar' }
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
