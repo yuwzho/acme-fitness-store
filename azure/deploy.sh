@@ -25,8 +25,6 @@ readonly CUSTOM_BUILDER="no-bindings-builder"
 readonly CURRENT_USER=$(az account show --query user.name -o tsv)
 readonly CURRENT_USER_OBJECTID=$(az ad user show --id $CURRENT_USER --query id -o tsv)
 readonly CONFIG_REPO=https://github.com/felipmiguel/acme-fitness-store-config
-readonly CATALOG_APP_PSQL_USER=catalogapp
-readonly JDBC_CONNECTION_STRING_CATALOG="jdbc:postgresql://${ACMEFIT_POSTGRES_SERVER}.postgres.database.azure.com:5432/${ACMEFIT_CATALOG_DB_NAME}?sslmode=require&user=${CATALOG_APP_PSQL_USER}@${ACMEFIT_POSTGRES_SERVER}&authenticationPluginClassName=com.azure.jdbc.msi.extension.postgresql.AzurePostgresqlMSIAuthenticationPlugin"
 
 RESOURCE_GROUP='rg-acme-fitness'
 SPRING_CLOUD_INSTANCE='asc-acme-fitness'
@@ -39,7 +37,7 @@ function create_spring_cloud() {
   az provider register --namespace Microsoft.SaaS
   az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan tanzu-asc-ent-mtr
 
-  az spring-cloud create --name ${SPRING_CLOUD_INSTANCE} \
+  az spring create --name ${SPRING_CLOUD_INSTANCE} \
     --resource-group ${RESOURCE_GROUP} \
     --location ${REGION} \
     --sku Enterprise \
@@ -51,8 +49,8 @@ function create_spring_cloud() {
 }
 
 function configure_defaults() {
-  echo "Configure azure defaults resource group: $RESOURCE_GROUP and spring-cloud $SPRING_CLOUD_INSTANCE"
-  az configure --defaults group=$RESOURCE_GROUP spring-cloud=$SPRING_CLOUD_INSTANCE location=${REGION}
+  echo "Configure azure defaults resource group: $RESOURCE_GROUP and spring $SPRING_CLOUD_INSTANCE"
+  az configure --defaults group=$RESOURCE_GROUP spring=$SPRING_CLOUD_INSTANCE location=${REGION}
 }
 
 function create_dependencies() {
@@ -88,7 +86,7 @@ function create_dependencies() {
 
 function create_builder() {
   echo "Creating a custom builder with name $CUSTOM_BUILDER and configuration $PROJECT_ROOT/azure/builder.json"
-  az spring-cloud build-service builder create -n $CUSTOM_BUILDER --builder-file "$PROJECT_ROOT/azure/builder.json"
+  az spring build-service builder create -n $CUSTOM_BUILDER --builder-file "$PROJECT_ROOT/azure/builder.json"
 }
 
 function configure_sso() {
@@ -103,12 +101,12 @@ function configure_sso() {
 }
 
 function configure_gateway() {
-  az spring-cloud gateway update --assign-endpoint true
-  local gateway_url=$(az spring-cloud gateway show | jq -r '.properties.url')
+  az spring gateway update --assign-endpoint true
+  local gateway_url=$(az spring gateway show | jq -r '.properties.url')
 
   source ./setup-sso-variables-ad.sh
   echo "Configuring Spring Cloud Gateway"
-  az spring-cloud gateway update \
+  az spring gateway update \
     --api-description "ACME Fitness API" \
     --api-title "ACME Fitness" \
     --api-version "v.01" \
@@ -120,17 +118,33 @@ function configure_gateway() {
     --issuer-uri ${ISSUER_URI}
 }
 
+function update_sso_portalurl(){
+  source ./setup-sso-variables-ad.sh
+
+  APPLICATION_ID=$(cat ad.json | jq -r '.appId')
+  local gateway_url=$(az spring gateway show | jq -r '.properties.url')
+  local portal_url=$(az spring api-portal show | jq -r '.properties.url')
+
+  reply_urls="https://${gateway_url}/login/oauth2/code/sso"
+  if [ -n "$portal_url" ]; then
+    reply_urls="${reply_urls} https://${portal_url}/oauth2-redirect.html" "https://${portal_url}/login/oauth2/code/sso"
+  fi
+
+  az ad app update --id ${APPLICATION_ID} \
+    --web-redirect-uris ${reply_urls}
+}
+
 function configure_acs() {
   echo "Configuring Application Configuration Service to use repo: ${CONFIG_REPO}"
-  az spring-cloud application-configuration-service git repo add --name acme-config --label main --patterns "default,catalog,identity,payment" --uri "${CONFIG_REPO}" --search-paths config
+  az spring application-configuration-service git repo add --name acme-config --label main --patterns "default,catalog,identity,payment" --uri "${CONFIG_REPO}" --search-paths config
 }
 
 function create_cart_service() {
   echo "Creating cart-service app"
-  az spring-cloud app create --name $CART_SERVICE
-  az spring-cloud gateway route-config create --name $CART_SERVICE --app-name $CART_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/cart-service.json"
+  az spring app create --name $CART_SERVICE
+  az spring gateway route-config create --name $CART_SERVICE --app-name $CART_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/cart-service.json"
 
-  az spring-cloud connection create redis \
+  az spring connection create redis \
     --service $SPRING_CLOUD_INSTANCE \
     --deployment default \
     --resource-group $RESOURCE_GROUP \
@@ -144,17 +158,17 @@ function create_cart_service() {
 
 function create_identity_service() {
   echo "Creating identity service"
-  az spring-cloud app create --name $IDENTITY_SERVICE
-  az spring-cloud application-configuration-service bind --app $IDENTITY_SERVICE
-  az spring-cloud gateway route-config create --name $IDENTITY_SERVICE --app-name $IDENTITY_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/identity-service.json"
+  az spring app create --name $IDENTITY_SERVICE
+  az spring application-configuration-service bind --app $IDENTITY_SERVICE
+  az spring gateway route-config create --name $IDENTITY_SERVICE --app-name $IDENTITY_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/identity-service.json"
 }
 
 function create_order_service() {
   echo "Creating order service"
-  az spring-cloud app create --name $ORDER_SERVICE
-  az spring-cloud gateway route-config create --name $ORDER_SERVICE --app-name $ORDER_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/order-service.json"
+  az spring app create --name $ORDER_SERVICE
+  az spring gateway route-config create --name $ORDER_SERVICE --app-name $ORDER_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/order-service.json"
 
-  az spring-cloud connection create postgres \
+  az spring connection create postgres \
     --resource-group $RESOURCE_GROUP \
     --service $SPRING_CLOUD_INSTANCE \
     --connection $ORDER_SERVICE_POSTGRES_CONNECTION \
@@ -168,15 +182,14 @@ function create_order_service() {
 }
 
 function create_catalog_service() {
-  echo "Creating catalog service with managed identity"
-  az spring-cloud app create \
-    --name $CATALOG_SERVICE \
-    --system-assigned true
-  az spring-cloud application-configuration-service bind --app $CATALOG_SERVICE
-  az spring-cloud service-registry bind --app $CATALOG_SERVICE
-  az spring-cloud gateway route-config create --name $CATALOG_SERVICE --app-name $CATALOG_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/catalog-service.json"
+  echo "Creating catalog service"
+  az spring app create \
+    --name $CATALOG_SERVICE 
+  az spring application-configuration-service bind --app $CATALOG_SERVICE
+  az spring service-registry bind --app $CATALOG_SERVICE
+  az spring gateway route-config create --name $CATALOG_SERVICE --app-name $CATALOG_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/catalog-service.json"
 
-  az spring-cloud connection create postgres \
+  az spring connection create postgres \
     --resource-group $RESOURCE_GROUP \
     --service $SPRING_CLOUD_INSTANCE \
     --connection $CATALOG_SERVICE_DB_CONNECTION \
@@ -191,28 +204,28 @@ function create_catalog_service() {
 
 function create_payment_service() {
   echo "Creating payment service"
-  az spring-cloud app create --name $PAYMENT_SERVICE
-  az spring-cloud application-configuration-service bind --app $PAYMENT_SERVICE
-  az spring-cloud service-registry bind --app $PAYMENT_SERVICE
+  az spring app create --name $PAYMENT_SERVICE
+  az spring application-configuration-service bind --app $PAYMENT_SERVICE
+  az spring service-registry bind --app $PAYMENT_SERVICE
 }
 
 function create_frontend_app() {
   echo "Creating frontend"
-  az spring-cloud app create --name $FRONTEND_APP
-  az spring-cloud gateway route-config create --name $FRONTEND_APP --app-name $FRONTEND_APP --routes-file "$PROJECT_ROOT/azure/routes/frontend.json"
+  az spring app create --name $FRONTEND_APP
+  az spring gateway route-config create --name $FRONTEND_APP --app-name $FRONTEND_APP --routes-file "$PROJECT_ROOT/azure/routes/frontend.json"
 }
 
 function deploy_cart_service() {
   echo "Deploying cart-service application"
-  local redis_conn_str=$(az spring-cloud connection show -g $RESOURCE_GROUP \
+  local redis_conn_str=$(az spring connection show -g $RESOURCE_GROUP \
     --service $SPRING_CLOUD_INSTANCE \
     --deployment default \
     --app $CART_SERVICE \
     --connection $CART_SERVICE_REDIS_CONNECTION | jq -r '.configurations[0].value')
-  local gateway_url=$(az spring-cloud gateway show | jq -r '.properties.url')
-  local app_insights_key=$(az spring-cloud build-service builder buildpack-binding show -n default | jq -r '.properties.launchProperties.properties."connection-string"')
+  local gateway_url=$(az spring gateway show | jq -r '.properties.url')
+  local app_insights_key=$(az spring build-service builder buildpack-binding show -n default | jq -r '.properties.launchProperties.properties."connection-string"')
 
-  az spring-cloud app deploy --name $CART_SERVICE \
+  az spring app deploy --name $CART_SERVICE \
     --builder $CUSTOM_BUILDER \
     --env "CART_PORT=8080" "REDIS_CONNECTIONSTRING=$redis_conn_str" "AUTH_URL=https://${gateway_url}" "INSTRUMENTATION_KEY=$app_insights_key" \
     --source-path "$APPS_ROOT/acme-cart"
@@ -221,7 +234,7 @@ function deploy_cart_service() {
 function deploy_identity_service() {
   source ./setup-sso-variables-ad.sh
   echo "Deploying identity-service application"
-  az spring-cloud app deploy --name $IDENTITY_SERVICE \
+  az spring app deploy --name $IDENTITY_SERVICE \
     --env "SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=${JWK_SET_URI}" \
     --config-file-pattern identity \
     --source-path "$APPS_ROOT/acme-identity"
@@ -229,16 +242,16 @@ function deploy_identity_service() {
 
 function deploy_order_service() {
   echo "Deploying user-service application"
-  local gateway_url=$(az spring-cloud gateway show | jq -r '.properties.url')
-  local postgres_connection_url=$(az spring-cloud connection show -g $RESOURCE_GROUP \
+  local gateway_url=$(az spring gateway show | jq -r '.properties.url')
+  local postgres_connection_url=$(az spring connection show -g $RESOURCE_GROUP \
     --service $SPRING_CLOUD_INSTANCE \
     --deployment default \
     --connection $ORDER_SERVICE_POSTGRES_CONNECTION \
     --app $ORDER_SERVICE | jq '.configurations[0].value' -r)
-  local app_insights_key=$(az spring-cloud build-service builder buildpack-binding show -n default | jq -r '.properties.launchProperties.properties."connection-string"')
+  local app_insights_key=$(az spring build-service builder buildpack-binding show -n default | jq -r '.properties.launchProperties.properties."connection-string"')
 
   echo $postgres_connection_url
-  az spring-cloud app deploy --name $ORDER_SERVICE \
+  az spring app deploy --name $ORDER_SERVICE \
     --builder $CUSTOM_BUILDER \
     --env "DatabaseProvider=Postgres" "ConnectionStrings__OrderContext=$postgres_connection_url" "AcmeServiceSettings__AuthUrl=https://${gateway_url}" "ApplicationInsights__ConnectionString=$app_insights_key" \
     --source-path "$APPS_ROOT/acme-order"
@@ -246,103 +259,56 @@ function deploy_order_service() {
 
 function deploy_catalog_service() {
   echo "Deploying catalog-service application"
-  az spring-cloud app deploy --name $CATALOG_SERVICE \
+  az spring app deploy --name $CATALOG_SERVICE \
       --config-file-pattern catalog \
       --source-path "$APPS_ROOT/acme-catalog"
-
-  #az spring-cloud app deploy --name $CATALOG_SERVICE \
-  #  --config-file-pattern catalog \
-  #  --env "SPRING_DATASOURCE_URL=${JDBC_CONNECTION_STRING_CATALOG}" \
-  #  --source-path "$APPS_ROOT/acme-catalog"
 }
 
 function deploy_payment_service() {
   echo "Deploying payment-service application"
 
-  az spring-cloud app deploy --name $PAYMENT_SERVICE \
+  az spring app deploy --name $PAYMENT_SERVICE \
     --config-file-pattern payment \
     --source-path "$APPS_ROOT/acme-payment"
 }
 
 function deploy_frontend_app() {
   echo "Deploying frontend application"
-  local app_insights_key=$(az spring-cloud build-service builder buildpack-binding show -n default | jq -r '.properties.launchProperties.properties."connection-string"')
+  local app_insights_key=$(az spring build-service builder buildpack-binding show -n default | jq -r '.properties.launchProperties.properties."connection-string"')
 
   rm -rf "$APPS_ROOT/acme-shopping/node_modules"
-  az spring-cloud app deploy --name $FRONTEND_APP \
+  az spring app deploy --name $FRONTEND_APP \
     --builder $CUSTOM_BUILDER \
     --env "APPLICATIONINSIGHTS_CONNECTION_STRING=$app_insights_key" \
     --source-path "$APPS_ROOT/acme-shopping"
 }
 
-function create_databaseuser() {
-  echo "Creating database user"
-  # IMPORTANT PSQL REQUIRES THE APPLICATION ID OF THE MANAGED IDENTITY, NOT THE OBJECT ID.
-  # First step: retrieve the object id of the application managed identity
-  managedidentity_oid=$(az spring-cloud app show --name $CATALOG_SERVICE --query identity.principalId -o tsv)
-  # Second step: retrieve the application id using the object id
-  managedidentity_appid=$(az ad sp show --id ${managedidentity_oid} --query appId -o tsv)
-
-  CURRENT_IP=$(curl -s http://whatismyip.akamai.com)
-  # allow current agent to access the database
-  az postgres server firewall-rule create \
-    --resource-group $RESOURCE_GROUP \
-    --server $ACMEFIT_POSTGRES_SERVER \
-    --name allow-current-agent \
-    --start-ip-address $CURRENT_IP \
-    --end-ip-address $CURRENT_IP
-
-
-  # Prepare the script using the applicationid
-  create_user_sql="SET aad_validate_oids_in_tenant = off;
-
-REVOKE ALL PRIVILEGES ON DATABASE \"acmefit_catalog\" FROM \"catalogapp\";
-
-DROP USER IF EXISTS \"catalogapp\";
-
-CREATE ROLE \"catalogapp\" WITH LOGIN PASSWORD '${managedidentity_appid}' IN ROLE azure_ad_user;
-
-GRANT ALL PRIVILEGES ON DATABASE \"acmefit_catalog\" TO \"catalogapp\";"
-
-  # the script should be execute by the Azure AD admin.
-  # current user is Azure AD Admin
-
-  # as password is too long it cannot be passed as parameter to PSQL, so we use and environment variable
-  export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --output tsv --query accessToken)
-  echo $create_user_sql > create_user.sql
-  psql "host=${ACMEFIT_POSTGRES_SERVER}.postgres.database.azure.com port=5432 user=${CURRENT_USER}@${ACMEFIT_POSTGRES_SERVER} dbname=postgres sslmode=require"< create_user.sql
-  rm create_user.sql
-
-  # remove access to the database
-  az postgres server firewall-rule delete \
-    --resource-group $RESOURCE_GROUP \
-    --server $ACMEFIT_POSTGRES_SERVER \
-    --name allow-current-agent
-}
 
 function main() {
   create_spring_cloud
   configure_defaults
   create_dependencies
-  create_builder
-  configure_acs
+  create_builder 
+  configure_acs 
   configure_sso
   configure_gateway
+
   create_identity_service 
   create_cart_service 
   create_order_service 
   create_payment_service 
   create_catalog_service 
-  create_frontend_app
-
-  # create_databaseuser
+  create_frontend_app 
 
   deploy_identity_service 
   deploy_cart_service 
   deploy_order_service 
   deploy_payment_service 
   deploy_catalog_service 
-  deploy_frontend_app
+  deploy_frontend_app 
+
+  update_sso_portalurl
+  
 }
 
 function usage() {
