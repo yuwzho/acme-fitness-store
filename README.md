@@ -124,6 +124,8 @@ az extension remove --name spring-cloud
 az extension add --name spring
 ```
 
+If `spring-cloud`'s version still < `3.0.0` after above commands, you can try to [re-install Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli). 
+
 ## Clone the repo
 
 ### Create a new folder and clone the sample app repository to your Azure Cloud account
@@ -288,6 +290,12 @@ az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analy
          }
        ]'
 ```
+
+> Note: For Git Bash users, this command may fail when resource IDs are misinterpreted as file paths because they begin with `/`. 
+> 
+> If the above command fails, try setting MSYS_NO_PATHCONV using:
+> 
+> `export MSYS_NO_PATHCONV=1`
 
 ### Configure Application Configuration Service
 
@@ -1271,18 +1279,18 @@ When defining a Route, you can add the RateLimit filter by including it in the l
 
 The following example would limit all users to two requests every 5 seconds to the `/products` route:
 
-    ```json
-    {
-        "predicates": [
-          "Path=/products",
-          "Method=GET"
-        ],
-        "filters": [
-          "StripPrefix=0",
-          "RateLimit=2,5s"
-        ]
-    }
-    ```
+```json
+{
+    "predicates": [
+      "Path=/products",
+      "Method=GET"
+    ],
+    "filters": [
+      "StripPrefix=0",
+      "RateLimit=2,5s"
+    ]
+}
+```
 
 When the limit is exceeded, response will fail with `429 Too Many Requests` status.
 
