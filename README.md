@@ -152,7 +152,7 @@ Open `./azure/setup-env-variables.sh` and enter the following information:
 ```shell
 export SUBSCRIPTION=subscription-id                 # replace it with your subscription-id
 export RESOURCE_GROUP=resource-group-name           # existing resource group or one that will be created in next steps
-export SPRING_APP_SERVICE=azure-spring-cloud-name # name of the service that will be created in the next steps
+export SPRING_APPS_SERVICE=azure-spring-cloud-name # name of the service that will be created in the next steps
 export LOG_ANALYTICS_WORKSPACE=log-analytics-name   # existing workspace or one that will be created in next steps
 export REGION=region-name                           # choose a region with Enterprise tier support
 ```
@@ -200,7 +200,7 @@ az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-
 Create an instance of Azure Spring Apps Enterprise.
 
 ```shell
-az spring create --name ${SPRING_APP_SERVICE} \
+az spring create --name ${SPRING_APPS_SERVICE} \
     --resource-group ${RESOURCE_GROUP} \
     --location ${REGION} \
     --sku Enterprise \
@@ -219,7 +219,7 @@ Set your default resource group name and cluster name using the following comman
 az configure --defaults \
     group=${RESOURCE_GROUP} \
     location=${REGION} \
-    spring=${SPRING_APP_SERVICE}
+    spring=${SPRING_APPS_SERVICE}
 ```
 
 ### Configure Log Analytics for Azure Spring Apps
@@ -243,7 +243,7 @@ export LOG_ANALYTICS_RESOURCE_ID=$(az monitor log-analytics workspace show \
     --workspace-name ${LOG_ANALYTICS_WORKSPACE} | jq -r '.id')
 
 export SPRING_APPS_RESOURCE_ID=$(az spring show \
-    --name ${SPRING_APP_SERVICE} \
+    --name ${SPRING_APPS_SERVICE} \
     --resource-group ${RESOURCE_GROUP} | jq -r '.id')
 ```
 
@@ -795,7 +795,7 @@ for those applications:
 # Bind order service to Postgres
 az spring connection create postgres-flexible \
     --resource-group ${RESOURCE_GROUP} \
-    --service ${SPRING_APP_SERVICE} \
+    --service ${SPRING_APPS_SERVICE} \
     --connection ${ORDER_SERVICE_DB_CONNECTION} \
     --app ${ORDER_SERVICE_APP} \
     --deployment default \
@@ -809,7 +809,7 @@ az spring connection create postgres-flexible \
 # Bind catalog service to Postgres
 az spring connection create postgres-flexible \
     --resource-group ${RESOURCE_GROUP} \
-    --service ${SPRING_APP_SERVICE} \
+    --service ${SPRING_APPS_SERVICE} \
     --connection ${CATALOG_SERVICE_DB_CONNECTION} \
     --app ${CATALOG_SERVICE_APP} \
     --deployment default \
@@ -825,7 +825,7 @@ The Cart Service requires a connection to Azure Cache for Redis, create the Serv
 ```shell
 az spring connection create redis \
     --resource-group ${RESOURCE_GROUP} \
-    --service ${SPRING_APP_SERVICE} \
+    --service ${SPRING_APPS_SERVICE} \
     --connection $CART_SERVICE_CACHE_CONNECTION \
     --app ${CART_SERVICE_APP} \
     --deployment default \
@@ -852,7 +852,7 @@ Retrieve the PostgreSQL connection string and update the Catalog Service:
 ```shell
 POSTGRES_CONNECTION_STR=$(az spring connection show \
     --resource-group ${RESOURCE_GROUP} \
-    --service ${SPRING_APP_SERVICE} \
+    --service ${SPRING_APPS_SERVICE} \
     --deployment default \
     --connection ${ORDER_SERVICE_DB_CONNECTION} \
     --app ${ORDER_SERVICE_APP} | jq '.configurations[0].value' -r)
@@ -866,7 +866,7 @@ Retrieve the Redis connection string and update the Cart Service:
 ```shell
 REDIS_CONN_STR=$(az spring connection show \
     --resource-group ${RESOURCE_GROUP} \
-    --service ${SPRING_APP_SERVICE} \
+    --service ${SPRING_APPS_SERVICE} \
     --deployment default \
     --app ${CART_SERVICE_APP} \
     --connection ${CART_SERVICE_CACHE_CONNECTION} | jq -r '.configurations[0].value')
@@ -1010,7 +1010,7 @@ Delete Service Connectors and activate applications to load secrets from Azure K
 ```shell
 az spring connection delete \
     --resource-group ${RESOURCE_GROUP} \
-    --service ${SPRING_APP_SERVICE} \
+    --service ${SPRING_APPS_SERVICE} \
     --connection ${ORDER_SERVICE_DB_CONNECTION} \
     --app ${ORDER_SERVICE_APP} \
     --deployment default \
@@ -1018,7 +1018,7 @@ az spring connection delete \
 
 az spring connection delete \
     --resource-group ${RESOURCE_GROUP} \
-    --service ${SPRING_APP_SERVICE} \
+    --service ${SPRING_APPS_SERVICE} \
     --connection ${CATALOG_SERVICE_DB_CONNECTION} \
     --app ${CATALOG_SERVICE_APP} \
     --deployment default \
@@ -1026,7 +1026,7 @@ az spring connection delete \
 
 az spring connection delete \
     --resource-group ${RESOURCE_GROUP} \
-    --service ${SPRING_APP_SERVICE} \
+    --service ${SPRING_APPS_SERVICE} \
     --connection ${CART_SERVICE_CACHE_CONNECTION} \
     --app ${CART_SERVICE_APP} \
     --deployment default \
@@ -1067,7 +1067,7 @@ The Application Insights Instrumentation Key must be provided for the non-java a
 Retrieve the Instrumentation Key for Application Insights and add to Key Vault
 
 ```shell
-export INSTRUMENTATION_KEY=$(az monitor app-insights component show --app ${SPRING_APP_SERVICE} | jq -r '.connectionString')
+export INSTRUMENTATION_KEY=$(az monitor app-insights component show --app ${SPRING_APPS_SERVICE} | jq -r '.connectionString')
 
 az keyvault secret set --vault-name ${KEY_VAULT} \
     --name "ApplicationInsights--ConnectionString" --value ${INSTRUMENTATION_KEY}
