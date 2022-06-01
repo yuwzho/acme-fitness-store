@@ -23,7 +23,18 @@ readonly CATALOG_SERVICE="catalog-service"
 readonly FRONTEND_APP="frontend"
 readonly CUSTOM_BUILDER="no-bindings-builder"
 readonly CURRENT_USER=$(az account show --query user.name -o tsv)
-readonly CURRENT_USER_OBJECTID=$(az ad user show --id $CURRENT_USER --query id -o tsv)
+TEMP_USER_ID=$(az ad user show --id $CURRENT_USER --query id -o tsv)
+if [ -n $TEMP_USER_ID ]; then
+    readonly CURRENT_USER_OBJECTID=$TEMP_USER_ID
+else
+    readonly CURRENT_USER_OBJECTID=$(az ad user show --id $CURRENT_USER --query objectId -o tsv)
+fi
+
+if [ -z $CURRENT_USER_OBJECTID ]; then
+    echo "Unable to get current user object id"
+    exit 1
+fi
+
 readonly CONFIG_REPO=https://github.com/felipmiguel/acme-fitness-store-config
 
 RESOURCE_GROUP='rg-acme-fitness'
