@@ -25,17 +25,17 @@ readonly CUSTOM_BUILDER="no-bindings-builder"
 readonly CURRENT_USER=$(az account show --query user.name -o tsv)
 TEMP_USER_ID=$(az ad user show --id $CURRENT_USER --query id -o tsv)
 if [ -n $TEMP_USER_ID ]; then
-    readonly CURRENT_USER_OBJECTID=$TEMP_USER_ID
+  readonly CURRENT_USER_OBJECTID=$TEMP_USER_ID
 else
-    readonly CURRENT_USER_OBJECTID=$(az ad user show --id $CURRENT_USER --query objectId -o tsv)
+  readonly CURRENT_USER_OBJECTID=$(az ad user show --id $CURRENT_USER --query objectId -o tsv)
 fi
 
 if [ -z $CURRENT_USER_OBJECTID ]; then
-    echo "Unable to get current user object id"
-    exit 1
+  echo "Unable to get current user object id"
+  exit 1
 fi
 
-readonly CONFIG_REPO=https://github.com/felipmiguel/acme-fitness-store-config
+readonly CONFIG_REPO=https://github.com/Azure-Samples/acme-fitness-store-config
 
 RESOURCE_GROUP='rg-acme-fitness'
 SPRING_APPS_SERVICE='asc-acme-fitness'
@@ -71,12 +71,12 @@ function create_dependencies() {
   echo "Creating Azure Database for Postgres $ACMEFIT_POSTGRES_SERVER"
 
   az postgres server create --admin-user ${ACMEFIT_POSTGRES_DB_USER} \
-   --admin-password $ACMEFIT_POSTGRES_DB_PASSWORD \
-   --name $ACMEFIT_POSTGRES_SERVER \
-   --resource-group $RESOURCE_GROUP \
-   --sku-name GP_Gen5_2 \
-   --version 11 \
-   --storage-size 5120
+    --admin-password $ACMEFIT_POSTGRES_DB_PASSWORD \
+    --name $ACMEFIT_POSTGRES_SERVER \
+    --resource-group $RESOURCE_GROUP \
+    --sku-name GP_Gen5_2 \
+    --version 11 \
+    --storage-size 5120
 
   echo "Creating current logged in user as postgres AD Admin"
   az postgres server ad-admin create -s $ACMEFIT_POSTGRES_SERVER \
@@ -129,7 +129,7 @@ function configure_gateway() {
     --issuer-uri ${ISSUER_URI}
 }
 
-function update_sso_portalurl(){
+function update_sso_portalurl() {
   source ./setup-sso-variables-ad.sh
 
   APPLICATION_ID=$(cat ad.json | jq -r '.appId')
@@ -147,7 +147,7 @@ function update_sso_portalurl(){
 
 function configure_acs() {
   echo "Configuring Application Configuration Service to use repo: ${CONFIG_REPO}"
-  az spring application-configuration-service git repo add --name acme-config --label main --patterns "catalog/default,catalog/key-vault,identity/default,identity/key-vault,payment/default" --uri ${CONFIG_REPO}
+  az spring application-configuration-service git repo add --name acme-config --label main --patterns "catalog,identity,payment" --uri ${CONFIG_REPO}
 }
 
 function create_cart_service() {
@@ -209,7 +209,7 @@ function create_catalog_service() {
     --server $ACMEFIT_POSTGRES_SERVER \
     --database $ACMEFIT_CATALOG_DB_NAME \
     --client-type springboot
-  
+
 }
 
 function create_payment_service() {
@@ -247,6 +247,7 @@ function deploy_identity_service() {
   az spring app deploy --name $IDENTITY_SERVICE \
     --env "SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=${JWK_SET_URI}" \
     --config-file-pattern identity \
+    --jvm-options='-XX:MaxMetaspaceSize=148644K' \
     --source-path "$APPS_ROOT/acme-identity"
 }
 
@@ -269,8 +270,9 @@ function deploy_order_service() {
 function deploy_catalog_service() {
   echo "Deploying catalog-service application"
   az spring app deploy --name $CATALOG_SERVICE \
-      --config-file-pattern catalog \
-      --source-path "$APPS_ROOT/acme-catalog"
+    --config-file-pattern catalog \
+    --jvm-options='-XX:MaxMetaspaceSize=148644K' \
+    --source-path "$APPS_ROOT/acme-catalog"
 }
 
 function deploy_payment_service() {
@@ -278,6 +280,7 @@ function deploy_payment_service() {
 
   az spring app deploy --name $PAYMENT_SERVICE \
     --config-file-pattern payment \
+    --jvm-options='-XX:MaxMetaspaceSize=148644K' \
     --source-path "$APPS_ROOT/acme-payment"
 }
 
@@ -292,32 +295,31 @@ function deploy_frontend_app() {
     --source-path "$APPS_ROOT/acme-shopping"
 }
 
-
 function main() {
   create_spring_cloud
   configure_defaults
   create_dependencies
-  create_builder 
-  configure_acs 
+  create_builder
+  configure_acs
   configure_sso
   configure_gateway
 
-  create_identity_service 
-  create_cart_service 
-  create_order_service 
+  create_identity_service
+  create_cart_service
+  create_order_service
   create_payment_service 
   create_catalog_service 
-  create_frontend_app 
+  create_frontend_app
 
   deploy_identity_service 
-  deploy_cart_service 
-  deploy_order_service 
+  deploy_cart_service
+  deploy_order_service
   deploy_payment_service 
   deploy_catalog_service 
-  deploy_frontend_app 
+  deploy_frontend_app
 
   update_sso_portalurl
-  
+
 }
 
 function usage() {
