@@ -3,7 +3,7 @@
 set -uxo pipefail
 
 : "${RESOURCE_GROUP:?'must be set'}"
-: "${SPRING_CLOUD_SERVICE:?'must be set'}"
+: "${SPRING_APPS_SERVICE:?'must be set'}"
 : "${WORKSPACE_NAME:?'must be set'}"
 
 main() {
@@ -13,8 +13,8 @@ main() {
     --resource-group "$RESOURCE_GROUP" \
     --workspace-name "$WORKSPACE_NAME" | jq -r '.id')
 
-  spring_cloud_resource_id=$(az spring-cloud show \
-    --name "$SPRING_CLOUD_SERVICE" \
+  spring_cloud_resource_id=$(az spring show \
+    --name "$SPRING_APPS_SERVICE" \
     --resource-group "$RESOURCE_GROUP" | jq -r '.id')
 
   az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analytics" \

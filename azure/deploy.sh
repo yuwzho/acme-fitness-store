@@ -38,7 +38,7 @@ fi
 readonly CONFIG_REPO=https://github.com/felipmiguel/acme-fitness-store-config
 
 RESOURCE_GROUP='rg-acme-fitness'
-SPRING_CLOUD_INSTANCE='asc-acme-fitness'
+SPRING_APPS_SERVICE='asc-acme-fitness'
 REGION='eastus'
 
 function create_spring_cloud() {
@@ -48,7 +48,7 @@ function create_spring_cloud() {
   az provider register --namespace Microsoft.SaaS
   az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan tanzu-asc-ent-mtr
 
-  az spring create --name ${SPRING_CLOUD_INSTANCE} \
+  az spring create --name ${SPRING_APPS_SERVICE} \
     --resource-group ${RESOURCE_GROUP} \
     --location ${REGION} \
     --sku Enterprise \
@@ -60,8 +60,8 @@ function create_spring_cloud() {
 }
 
 function configure_defaults() {
-  echo "Configure azure defaults resource group: $RESOURCE_GROUP and spring $SPRING_CLOUD_INSTANCE"
-  az configure --defaults group=$RESOURCE_GROUP spring=$SPRING_CLOUD_INSTANCE location=${REGION}
+  echo "Configure azure defaults resource group: $RESOURCE_GROUP and spring $SPRING_APPS_SERVICE"
+  az configure --defaults group=$RESOURCE_GROUP spring=$SPRING_APPS_SERVICE location=${REGION}
 }
 
 function create_dependencies() {
@@ -147,7 +147,7 @@ function update_sso_portalurl(){
 
 function configure_acs() {
   echo "Configuring Application Configuration Service to use repo: ${CONFIG_REPO}"
-  az spring application-configuration-service git repo add --name acme-config --label main --patterns "default,catalog,identity,payment" --uri "${CONFIG_REPO}" --search-paths config
+  az spring application-configuration-service git repo add --name acme-config --label main --patterns "catalog/default,catalog/key-vault,identity/default,identity/key-vault,payment/default" --uri ${CONFIG_REPO}
 }
 
 function create_cart_service() {
@@ -156,7 +156,7 @@ function create_cart_service() {
   az spring gateway route-config create --name $CART_SERVICE --app-name $CART_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/cart-service.json"
 
   az spring connection create redis \
-    --service $SPRING_CLOUD_INSTANCE \
+    --service $SPRING_APPS_SERVICE \
     --deployment default \
     --resource-group $RESOURCE_GROUP \
     --target-resource-group $RESOURCE_GROUP \
@@ -181,7 +181,7 @@ function create_order_service() {
 
   az spring connection create postgres \
     --resource-group $RESOURCE_GROUP \
-    --service $SPRING_CLOUD_INSTANCE \
+    --service $SPRING_APPS_SERVICE \
     --connection $ORDER_SERVICE_POSTGRES_CONNECTION \
     --app $ORDER_SERVICE \
     --deployment default \
@@ -194,15 +194,14 @@ function create_order_service() {
 
 function create_catalog_service() {
   echo "Creating catalog service"
-  az spring app create \
-    --name $CATALOG_SERVICE 
+  az spring app create --name $CATALOG_SERVICE
   az spring application-configuration-service bind --app $CATALOG_SERVICE
   az spring service-registry bind --app $CATALOG_SERVICE
   az spring gateway route-config create --name $CATALOG_SERVICE --app-name $CATALOG_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/catalog-service.json"
 
   az spring connection create postgres \
     --resource-group $RESOURCE_GROUP \
-    --service $SPRING_CLOUD_INSTANCE \
+    --service $SPRING_APPS_SERVICE \
     --connection $CATALOG_SERVICE_DB_CONNECTION \
     --app $CATALOG_SERVICE \
     --deployment default \
@@ -229,7 +228,7 @@ function create_frontend_app() {
 function deploy_cart_service() {
   echo "Deploying cart-service application"
   local redis_conn_str=$(az spring connection show -g $RESOURCE_GROUP \
-    --service $SPRING_CLOUD_INSTANCE \
+    --service $SPRING_APPS_SERVICE \
     --deployment default \
     --app $CART_SERVICE \
     --connection $CART_SERVICE_REDIS_CONNECTION | jq -r '.configurations[0].value')
@@ -255,13 +254,12 @@ function deploy_order_service() {
   echo "Deploying user-service application"
   local gateway_url=$(az spring gateway show | jq -r '.properties.url')
   local postgres_connection_url=$(az spring connection show -g $RESOURCE_GROUP \
-    --service $SPRING_CLOUD_INSTANCE \
+    --service $SPRING_APPS_SERVICE \
     --deployment default \
     --connection $ORDER_SERVICE_POSTGRES_CONNECTION \
     --app $ORDER_SERVICE | jq '.configurations[0].value' -r)
   local app_insights_key=$(az spring build-service builder buildpack-binding show -n default | jq -r '.properties.launchProperties.properties."connection-string"')
 
-  echo $postgres_connection_url
   az spring app deploy --name $ORDER_SERVICE \
     --builder $CUSTOM_BUILDER \
     --env "DatabaseProvider=Postgres" "ConnectionStrings__OrderContext=$postgres_connection_url" "AcmeServiceSettings__AuthUrl=https://${gateway_url}" "ApplicationInsights__ConnectionString=$app_insights_key" \
@@ -324,11 +322,11 @@ function main() {
 
 function usage() {
   echo 1>&2
-  echo "Usage: $0 -g <resource_group> -s <spring_cloud_instance>" 1>&2
+  echo "Usage: $0 -g <resource_group> -s <SPRING_APPS_SERVICE>" 1>&2
   echo 1>&2
   echo "Options:" 1>&2
   echo "  -g <namespace>              the Azure resource group to use for the deployment" 1>&2
-  echo "  -s <spring_cloud_instance>  the name of the Azure Spring Cloud Instance to use" 1>&2
+  echo "  -s <SPRING_APPS_SERVICE>  the name of the Azure Spring Apps Instance to use" 1>&2
   echo 1>&2
   exit 1
 }
@@ -339,7 +337,7 @@ function check_args() {
     usage
   fi
 
-  if [[ -z $SPRING_CLOUD_INSTANCE ]]; then
+  if [[ -z $SPRING_APPS_SERVICE ]]; then
     echo "Provide a valid spring cloud instance name with -s"
     usage
   fi
@@ -356,7 +354,7 @@ while getopts ":g:s:r:" options; do
     RESOURCE_GROUP="$OPTARG"
     ;;
   s)
-    SPRING_CLOUD_INSTANCE="$OPTARG"
+    SPRING_APPS_SERVICE="$OPTARG"
     ;;
   r)
     REGION="$OPTARG"

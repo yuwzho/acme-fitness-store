@@ -3,7 +3,7 @@ page_type: sample
 languages:
 - java
 products:
-- Azure Spring Cloud
+- Azure Spring Apps
 - Azure Database for PostgresSQL
 - Azure Cache for Redis
 - Azure Active Directory
@@ -13,28 +13,29 @@ urlFragment: "acme-fitness-store"
 
 # Deploy Spring Boot Apps to Azure
 
-Azure Spring Cloud enables you to easily run Spring Boot and polyglot applications on Azure.
+Azure Spring Apps enables you to easily run Spring Boot and polyglot applications on Azure.
 
 This quickstart shows you how to deploy existing applications written in Java, Python, and C# to Azure. When you're 
 finished, you can continue to manage the application via the Azure CLI or switch to using the Azure Portal.
 
-* [Deploy Applications to Azure Spring Cloud](#deploy-microservice-applications-to-azure-spring-cloud)
+* [Deploy Applications to Azure Spring Apps](#deploy-spring-boot-apps-to-azure)
   * [What will you experience](#what-will-you-experience)
   * [What you will need](#what-you-will-need)
   * [Install the Azure CLI extension](#install-the-azure-cli-extension)
   * [Clone the repo](#clone-the-repo)
   * [Unit 1 - Deploy and Build Applications](#unit-1---deploy-and-build-applications)
   * [Unit 2 - Configure Single Sign On](#unit-2---configure-single-sign-on)
-  * [Unit 3 - Securely Load Application Secrets](#unit-3---securely-load-application-secrets)
-  * [Unit 4 - Monitor End-to-End](#unit-4---monitor-end-to-end)
-  * [Unit 5 - Set Request Rate Limits](#unit-5---set-request-rate-limits)
-  * [Unit 6 - Automate from idea to production](#unit-6---automate-from-idea-to-production)
+  * [Unit 3 - Integrate with Azure Database for PostgreSQL and Azure Cache for Redis](#unit-3---integrate-with-azure-database-for-postgresql-and-azure-cache-for-redis)
+  * [Unit 4 - Securely Load Application Secrets](#unit-4---securely-load-application-secrets)
+  * [Unit 5 - Monitor End-to-End](#unit-5---monitor-end-to-end)
+  * [Unit 6 - Set Request Rate Limits](#unit-6---set-request-rate-limits)
+  * [Unit 7 - Automate from idea to production](#unit-7---automate-from-idea-to-production)
 
 ## What will you experience
 
 You will:
 
-* Provision an Azure Spring Cloud service instance.
+* Provision an Azure Spring Apps service instance.
 * Configure Application Configuration Service repositories
 * Deploy polyglot applications to Azure and build using Tanzu Build Service
 * Configure routing to the applications using Spring Cloud Gateway
@@ -80,11 +81,7 @@ In addition, you will need the following:
 | [`jq` utility](https://stedolan.github.io/jq/download/)
 |
 
-Note -  The [`jq` utility](https://stedolan.github.io/jq/download/). On Windows, download [this Windows port of JQ](https://github.com/stedolan/jq/releases) and add the following to the `~/.bashrc` file:
-
-```shell
-alias jq=<JQ Download location>/jq-win64.exe
-```
+Note -  On Windows, the [`jq` utility](https://stedolan.github.io/jq/download/) should be renamed from `jq-win64.exe` to `jq.exe` and added to the `PATH`
 
 Note - The Bash shell. While Azure CLI should behave identically on all environments, shell
 semantics vary. Therefore, only bash can be used with the commands in this repo.
@@ -112,10 +109,10 @@ To run the code in this article in Azure Cloud Shell:
 
 ## Install the Azure CLI extension
 
-Install the Azure Spring Cloud extension for the Azure CLI using the following command
+Install the Azure Spring Apps extension for the Azure CLI using the following command
 
 ```shell
-az extension add --name spring-cloud
+az extension add --name spring
 ```
 
 Note - `spring-cloud` CLI extension `3.0.0` or later is a pre-requisite to enable the
@@ -124,8 +121,10 @@ command to remove previous versions and install the latest Enterprise tier exten
 
 ```shell
 az extension remove --name spring-cloud
-az extension add --name spring-cloud
+az extension add --name spring
 ```
+
+If `spring-cloud`'s version still < `3.0.0` after above commands, you can try to [re-install Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli). 
 
 ## Clone the repo
 
@@ -153,12 +152,12 @@ Open `./azure/setup-env-variables.sh` and enter the following information:
 ```shell
 export SUBSCRIPTION=subscription-id                 # replace it with your subscription-id
 export RESOURCE_GROUP=resource-group-name           # existing resource group or one that will be created in next steps
-export SPRING_CLOUD_SERVICE=azure-spring-cloud-name # name of the service that will be created in the next steps
+export SPRING_APPS_SERVICE=azure-spring-apps-name   # name of the service that will be created in the next steps
 export LOG_ANALYTICS_WORKSPACE=log-analytics-name   # existing workspace or one that will be created in next steps
-export POSTGRES_SERVER_USER=change-name             # Postgres server username to be created in next steps
-export POSTGRES_SERVER_PASSWORD=change-name         # Postgres server password to be created in next steps
 export REGION=region-name                           # choose a region with Enterprise tier support
 ```
+
+The REGION value should be one of available regions for Azure Spring Apps (e.g. eastus). Please visit [here](https://azure.microsoft.com/en-us/global-infrastructure/services/?products=spring-apps&regions=all) for all available regions for Azure Spring Apps.
 
 Then, set the environment:
 
@@ -168,7 +167,7 @@ source ./azure/setup-env-variables.sh
 
 ### Login to Azure
 
-Login to the Azure CLI and choose your active subscription. Be sure to choose the active subscription that is whitelisted for Azure Spring Cloud
+Login to the Azure CLI and choose your active subscription. 
 
 ```shell
 az login
@@ -176,11 +175,11 @@ az account list -o table
 az account set --subscription ${SUBSCRIPTION}
 ```
 
-### Create Azure Spring Cloud service instance
+### Create Azure Spring Apps service instance
 
-Prepare a name for your Azure Spring Cloud service.  The name must be between 4 and 32 characters long and can contain only lowercase letters, numbers, and hyphens.  The first character of the service name must be a letter and the last character must be either a letter or a number.
+Prepare a name for your Azure Spring Apps service.  The name must be between 4 and 32 characters long and can contain only lowercase letters, numbers, and hyphens.  The first character of the service name must be a letter and the last character must be either a letter or a number.
 
-Create a resource group to contain your Azure Spring Cloud service.
+Create a resource group to contain your Azure Spring Apps service.
 
 > Note: This step can be skipped if using an existing resource group
 
@@ -191,27 +190,28 @@ az group create --name ${RESOURCE_GROUP} \
 
 Accept the legal terms and privacy statements for the Enterprise tier.
 
-> Note: This step is necessary only if your subscription has never been used to create an Enterprise tier instance of Azure Spring Cloud.
+> Note: This step is necessary only if your subscription has never been used to create an Enterprise tier instance of Azure Spring Apps.
 
 ```shell
 az provider register --namespace Microsoft.SaaS
 az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan tanzu-asc-ent-mtr
 ```
 
-Create an instance of Azure Spring Cloud Enterprise.
+Create an instance of Azure Spring Apps Enterprise.
 
 ```shell
-az spring-cloud create --name ${SPRING_CLOUD_SERVICE} \
+az spring create --name ${SPRING_APPS_SERVICE} \
     --resource-group ${RESOURCE_GROUP} \
     --location ${REGION} \
     --sku Enterprise \
     --enable-application-configuration-service \
     --enable-service-registry \
     --enable-gateway \
-    --enable-api-portal
+    --enable-api-portal \
+    --build-pool-size S2 
 ```
 
-The service instance will take around 10-15 minutes to deploy.
+> Note: The service instance will take around 10-15 minutes to deploy.
 
 Set your default resource group name and cluster name using the following commands:
 
@@ -219,68 +219,12 @@ Set your default resource group name and cluster name using the following comman
 az configure --defaults \
     group=${RESOURCE_GROUP} \
     location=${REGION} \
-    spring-cloud=${SPRING_CLOUD_SERVICE}
+    spring=${SPRING_APPS_SERVICE}
 ```
 
-### Create Azure Cache for Redis
+### Configure Log Analytics for Azure Spring Apps
 
-Create an instance of Azure Cache for Redis using the Azure CLI.
-
-```shell
-az redis create \
-  --name ${AZURE_CACHE_NAME} \
-  --location ${REGION} \
-  --resource-group ${RESOURCE_GROUP} \
-  --sku Basic \
-  --vm-size c0
-```
-
-### Create an Azure Database for Postgres
-
-Using the Azure CLI, create an Azure Database for Postgres Flexible Server:
-
-```shell
-az postgres flexible-server create --name ${POSTGRES_SERVER} \
-    --resource-group ${RESOURCE_GROUP} \
-    --location ${REGION} \
-    --admin-user ${POSTGRES_SERVER_USER} \
-    --admin-password ${POSTGRES_SERVER_PASSWORD} \
-    --yes
-
-# Allow connections from other Azure Services
-az postgres flexible-server firewall-rule create --rule-name allAzureIPs \
-     --name ${POSTGRES_SERVER} \
-     --resource-group ${RESOURCE_GROUP} \
-     --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
-     
-# Enable the uuid-ossp extension
-az postgres flexible-server parameter set \
-    --resource-group ${RESOURCE_GROUP} \
-    --server-name ${POSTGRES_SERVER} \
-    --name azure.extensions --value uuid-ossp
-```
-
-Create a database for the order service:
-
-```shell
-az postgres flexible-server db create \
-  --database-name ${ORDER_SERVICE_DB} \
-  --server-name ${POSTGRES_SERVER}
-```
-
-Create a database for the catalog service:
-
-```shell
-az postgres flexible-server db create \
-  --database-name ${CATALOG_SERVICE_DB} \
-  --server-name ${POSTGRES_SERVER}
-```
-
-> Note: wait for all services to be ready before continuing
-
-### Configure Log Analytics for Azure Spring Cloud
-
-Create a Log Analytics Workspace to be used for your Azure Spring Cloud service.
+Create a Log Analytics Workspace to be used for your Azure Spring Apps service.
 
 > Note: This step can be skipped if using an existing workspace
 
@@ -291,23 +235,23 @@ az monitor log-analytics workspace create \
   --resource-group ${RESOURCE_GROUP}   
 ```
 
-Retrieve the resource ID for the recently create Azure Spring Cloud Service and Log Analytics Workspace:
+Retrieve the resource ID for the recently create Azure Spring Apps Service and Log Analytics Workspace:
 
 ```shell
 export LOG_ANALYTICS_RESOURCE_ID=$(az monitor log-analytics workspace show \
     --resource-group ${RESOURCE_GROUP} \
     --workspace-name ${LOG_ANALYTICS_WORKSPACE} | jq -r '.id')
 
-export SPRING_CLOUD_RESOURCE_ID=$(az spring-cloud show \
-    --name ${SPRING_CLOUD_SERVICE} \
+export SPRING_APPS_RESOURCE_ID=$(az spring show \
+    --name ${SPRING_APPS_SERVICE} \
     --resource-group ${RESOURCE_GROUP} | jq -r '.id')
 ```
 
-Configure diagnostic settings for the Azure Spring Cloud Service:
+Configure diagnostic settings for the Azure Spring Apps Service:
 
 ```shell
 az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analytics" \
-    --resource ${SPRING_CLOUD_RESOURCE_ID} \
+    --resource ${SPRING_APPS_RESOURCE_ID} \
     --workspace ${LOG_ANALYTICS_RESOURCE_ID} \
     --logs '[
          {
@@ -347,12 +291,18 @@ az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analy
        ]'
 ```
 
+> Note: For Git Bash users, this command may fail when resource IDs are misinterpreted as file paths because they begin with `/`. 
+> 
+> If the above command fails, try setting MSYS_NO_PATHCONV using:
+> 
+> `export MSYS_NO_PATHCONV=1`
+
 ### Configure Application Configuration Service
 
 Create a configuration repository for Application Configuration Service using the Azure CLI:
 
 ```shell
-az spring-cloud application-configuration-service git repo add --name acme-fitness-store-config \
+az spring application-configuration-service git repo add --name acme-fitness-store-config \
     --label main \
     --patterns "catalog/default,catalog/key-vault,identity/default,identity/key-vault,payment/default" \
     --uri "https://github.com/Azure-Samples/acme-fitness-store-config"
@@ -363,21 +313,22 @@ az spring-cloud application-configuration-service git repo add --name acme-fitne
 Create a custom builder in Tanzu Build Service using the Azure CLI:
 
 ```shell
-az spring-cloud build-service builder create -n ${CUSTOM_BUILDER} \
+az spring build-service builder create -n ${CUSTOM_BUILDER} \
     --builder-file azure/builder.json \
     --no-wait
 ```
 
-### Create applications in Azure Spring Cloud
+### Create applications in Azure Spring Apps
 
 Create an application for each service:
 
 ```shell
-az spring-cloud app create --name ${CART_SERVICE_APP} --instance-count 1 --memory 1Gi
-az spring-cloud app create --name ${ORDER_SERVICE_APP} --instance-count 1 --memory 1Gi
-az spring-cloud app create --name ${PAYMENT_SERVICE_APP} --instance-count 1 --memory 1Gi
-az spring-cloud app create --name ${CATALOG_SERVICE_APP} --instance-count 1 --memory 1Gi
-az spring-cloud app create --name ${FRONTEND_APP} --instance-count 1 --memory 1Gi
+az spring app create --name ${CART_SERVICE_APP} --instance-count 1 --memory 1Gi &
+az spring app create --name ${ORDER_SERVICE_APP} --instance-count 1 --memory 1Gi &
+az spring app create --name ${PAYMENT_SERVICE_APP} --instance-count 1 --memory 1Gi &
+az spring app create --name ${CATALOG_SERVICE_APP} --instance-count 1 --memory 1Gi &
+az spring app create --name ${FRONTEND_APP} --instance-count 1 --memory 1Gi &
+wait
 ```
 
 ### Bind to Application Configuration Service
@@ -386,8 +337,8 @@ Several applications require configuration from Application Configuration Servic
 the bindings:
 
 ```shell
-az spring-cloud application-configuration-service bind --app ${PAYMENT_SERVICE_APP}
-az spring-cloud application-configuration-service bind --app ${CATALOG_SERVICE_APP}
+az spring application-configuration-service bind --app ${PAYMENT_SERVICE_APP}
+az spring application-configuration-service bind --app ${CATALOG_SERVICE_APP}
 ```
 
 ### Bind to Service Registry
@@ -396,57 +347,8 @@ Several application require service discovery using Service Registry, so create
 the bindings:
 
 ```shell
-az spring-cloud service-registry bind --app ${PAYMENT_SERVICE_APP}
-az spring-cloud service-registry bind --app ${CATALOG_SERVICE_APP}
-```
-
-### Create Service Connectors
-
-The Order Service and Catalog Service use Azure Database for Postgres, create Service Connectors 
-for those applications:
-
-```shell
-# Bind order service to Postgres
-az spring-cloud connection create postgres-flexible \
-    --resource-group ${RESOURCE_GROUP} \
-    --service ${SPRING_CLOUD_SERVICE} \
-    --connection ${ORDER_SERVICE_DB_CONNECTION} \
-    --app ${ORDER_SERVICE_APP} \
-    --deployment default \
-    --tg ${RESOURCE_GROUP} \
-    --server ${POSTGRES_SERVER} \
-    --database ${ORDER_SERVICE_DB} \
-    --secret name=${POSTGRES_SERVER_USER} secret=${POSTGRES_SERVER_PASSWORD} \
-    --client-type dotnet
-    
-
-# Bind catalog service to Postgres
-az spring-cloud connection create postgres-flexible \
-    --resource-group ${RESOURCE_GROUP} \
-    --service ${SPRING_CLOUD_SERVICE} \
-    --connection ${CATALOG_SERVICE_DB_CONNECTION} \
-    --app ${CATALOG_SERVICE_APP} \
-    --deployment default \
-    --tg ${RESOURCE_GROUP} \
-    --server ${POSTGRES_SERVER} \
-    --database ${CATALOG_SERVICE_DB} \
-    --secret name=${POSTGRES_SERVER_USER} secret=${POSTGRES_SERVER_PASSWORD} \
-    --client-type springboot
-```
-
-The Cart Service requires a connection to Azure Cache for Redis, create the Service Connector:
-
-```shell
-az spring-cloud connection create redis \
-    --resource-group ${RESOURCE_GROUP} \
-    --service ${SPRING_CLOUD_SERVICE} \
-    --connection $CART_SERVICE_CACHE_CONNECTION \
-    --app ${CART_SERVICE_APP} \
-    --deployment default \
-    --tg ${RESOURCE_GROUP} \
-    --server ${AZURE_CACHE_NAME} \
-    --database 0 \
-    --client-type java 
+az spring service-registry bind --app ${PAYMENT_SERVICE_APP}
+az spring service-registry bind --app ${CATALOG_SERVICE_APP}
 ```
 
 ### Configure Spring Cloud Gateway
@@ -455,36 +357,37 @@ Assign an endpoint and update the Spring Cloud Gateway configuration with API
 information:
 
 ```shell
-az spring-cloud gateway update --assign-endpoint true
-export GATEWAY_URL=$(az spring-cloud gateway show | jq -r '.properties.url')
+az spring gateway update --assign-endpoint true
+export GATEWAY_URL=$(az spring gateway show | jq -r '.properties.url')
     
-az spring-cloud gateway update \
+az spring gateway update \
     --api-description "Acme Fitness Store API" \
     --api-title "Acme Fitness Store" \
     --api-version "v1.0" \
     --server-url "https://${GATEWAY_URL}" \
-    --allowed-origins "*"
+    --allowed-origins "*" \
+    --no-wait
 ```
 
 Create  routing rules for the applications:
 
 ```shell
-az spring-cloud gateway route-config create \
+az spring gateway route-config create \
     --name ${CART_SERVICE_APP} \
     --app-name ${CART_SERVICE_APP} \
     --routes-file azure/routes/cart-service.json
     
-az spring-cloud gateway route-config create \
+az spring gateway route-config create \
     --name ${ORDER_SERVICE_APP} \
     --app-name ${ORDER_SERVICE_APP} \
     --routes-file azure/routes/order-service.json
 
-az spring-cloud gateway route-config create \
+az spring gateway route-config create \
     --name ${CATALOG_SERVICE_APP} \
     --app-name ${CATALOG_SERVICE_APP} \
     --routes-file azure/routes/catalog-service.json
 
-az spring-cloud gateway route-config create \
+az spring gateway route-config create \
     --name ${FRONTEND_APP} \
     --app-name ${FRONTEND_APP} \
     --routes-file azure/routes/frontend.json
@@ -496,44 +399,33 @@ Deploy and build each application, specifying its required parameters
 
 ```shell
 # Deploy Payment Service
-az spring-cloud app deploy --name ${PAYMENT_SERVICE_APP} \
+az spring app deploy --name ${PAYMENT_SERVICE_APP} \
     --config-file-pattern payment/default \
-    --source-path apps/acme-payment
+    --source-path apps/acme-payment 
 
 # Deploy Catalog Service
-az spring-cloud app deploy --name ${CATALOG_SERVICE_APP} \
+az spring app deploy --name ${CATALOG_SERVICE_APP} \
     --config-file-pattern catalog/default \
-    --source-path apps/acme-catalog
+    --source-path apps/acme-catalog 
 
-# Deploy Order Service after retrieving the database connection info
-export POSTGRES_CONNECTION_STR=$(az spring-cloud connection show -g ${RESOURCE_GROUP} \
-    --service ${SPRING_CLOUD_SERVICE} \
-    --deployment default \
-    --connection ${ORDER_SERVICE_DB_CONNECTION} \
-    --app ${ORDER_SERVICE_APP} | jq '.configurations[0].value' -r)
-
-az spring-cloud app deploy --name ${ORDER_SERVICE_APP} \
+# Deploy Order Service
+az spring app deploy --name ${ORDER_SERVICE_APP} \
     --builder ${CUSTOM_BUILDER} \
-    --env "DatabaseProvider=Postgres" "ConnectionStrings__OrderContext=${POSTGRES_CONNECTION_STR}" "DatabaseProvider=Postgres"\
-    --source-path apps/acme-order
+    --source-path apps/acme-order 
 
-# Deploy the Cart Service after retrieving the cache connection info
-export REDIS_CONN_STR=$(az spring-cloud connection show -g ${RESOURCE_GROUP} \
-    --service ${SPRING_CLOUD_SERVICE} \
-    --deployment default \
-    --app ${CART_SERVICE_APP} \
-    --connection $CART_SERVICE_CACHE_CONNECTION | jq -r '.configurations[0].value')
-
-az spring-cloud app deploy --name ${CART_SERVICE_APP} \
+# Deploy Cart Service 
+az spring app deploy --name ${CART_SERVICE_APP} \
     --builder ${CUSTOM_BUILDER} \
-    --env "CART_PORT=8080" "REDIS_CONNECTIONSTRING=${REDIS_CONN_STR}" \
-    --source-path apps/acme-cart
+    --env "CART_PORT=8080" \
+    --source-path apps/acme-cart 
 
 # Deploy Frontend App
-az spring-cloud app deploy --name ${FRONTEND_APP} \
+az spring app deploy --name ${FRONTEND_APP} \
     --builder ${CUSTOM_BUILDER} \
-    --source-path apps/acme-shopping
+    --source-path apps/acme-shopping 
 ```
+
+> Note: Deploying all applications will take 5-10 minutes
 
 ### Access the Application through Spring Cloud Gateway
 
@@ -543,35 +435,64 @@ Retrieve the URL for Spring Cloud Gateway and open it in a browser:
 open "https://${GATEWAY_URL}"
 ```
 
+If using Azure Cloud Shell or Windows, open the output from the following command in a browser:
+
+```shell
+echo "https://${GATEWAY_URL}"
+```
+
 You should see the ACME Fitness Store Application:
 
 ![An image of the ACME Fitness Store Application homepage](media/homepage.png)
 
 Explore the application, but notice that not everything is functioning yet. Continue on to
-Unit 2 to configure Single Sign On to enable the rest of the functionality. 
+Unit 2 to configure Single Sign On to enable the rest of the functionality.
 
 ### Explore the API using API Portal
 
 Assign an endpoint to API Portal and open it in a browser:
 
 ```shell
-az spring-cloud api-portal update --assign-endpoint true
-export PORTAL_URL=$(az spring-cloud api-portal show | jq -r '.properties.url')
+az spring api-portal update --assign-endpoint true
+export PORTAL_URL=$(az spring api-portal show | jq -r '.properties.url')
 
 open "https://${PORTAL_URL}"
 ```
 
-## Unit 2 - Configure Single Sign On
+If using Azure Cloud Shell or Windows, open the output from the following command in a browser:
 
-The following section steps through creating a Single Sign On Provider using Azure AD. 
-To use an existing provider, skip ahead to [Using an Existing SSO Provider](#using-an-existing-sso-identity-provider)
+```shell
+echo "https://${PORTAL_URL}"
+```
+
+## Unit 2 - Configure Single Sign-On
+
+In this Unit, you will configure Single Sign-On for Spring Cloud Gateway using Azure Active Directory or an existing Identity Provider.
+
+Prerequisites:
+
+* Completion of [Unit 1 - Deploy and Build Applications](#unit-1---deploy-and-build-applications)
+* Permissions to manage Azure Active Directory Application Registrations or Credentials for a Single Sign-On Identity Provider.
+
+> Note:
+> This Unit is optional. The application will continue to function without completing this unit. Certain features will remain unavailable including: log in, adding items to the cart, or completing an order.
+> Continue on to [Unit 3 - Integrate with Azure Database for PostgreSQL and Azure Cache For Redis](#unit-3---integrate-with-azure-database-for-postgresql-and-azure-cache-for-redis) to continue this guide without configuring SSO.
 
 ### Register Application with Azure AD
+
+The following section steps through creating a Single Sign On Provider using Azure AD.
+To use an existing provider, skip ahead to [Using an Existing Identity Provider](#using-an-existing-sso-identity-provider)
+
+Choose a unique display name for your Application Registration.
+
+```shell
+export AD_DISPLAY_NAME=change-me    # unique application display name
+```
 
 Create an Application registration with Azure AD and save the output.
 
 ```shell
-az ad app create --display-name acme-fitness-store > ad.json
+az ad app create --display-name ${AD_DISPLAY_NAME} > ad.json
 ```
 
 Retrieve the Application ID and collect the client secret:
@@ -607,11 +528,11 @@ echo ${JWK_SET_URI}
 The `ISSUER_URI` should take the form `https://login.microsoftonline.com/${TENANT_ID}/v2.0`
 The `JWK_SET_URI` should take the form `https://login.microsoftonline.com/${TENANT_ID}/discovery/v2.0/keys`
 
-Add the necessary redirect URIs to the Azure AD Application Registration:
+Add the necessary web redirect URIs to the Azure AD Application Registration:
 
 ```shell
 az ad app update --id ${APPLICATION_ID} \
-    --reply-urls "https://${GATEWAY_URL}/login/oauth2/code/sso" "https://${PORTAL_URL}/oauth2-redirect.html" "https://${PORTAL_URL}/login/oauth2/code/sso"
+    --web-redirect-uris "https://${GATEWAY_URL}/login/oauth2/code/sso" "https://${PORTAL_URL}/oauth2-redirect.html" "https://${PORTAL_URL}/login/oauth2/code/sso"
 ```
 
 Detailed information about redirect URIs can be found [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#add-a-redirect-uri).
@@ -661,18 +582,12 @@ echo "https://${PORTAL_URL}/login/oauth2/code/sso"
 Configure Spring Cloud Gateway with SSO enabled:
 
 ```shell
-export GATEWAY_URL=$(az spring-cloud gateway show | jq -r '.properties.url')
-
-az spring-cloud gateway update \
-    --api-description "ACME Fitness Store API" \
-    --api-title "ACME Fitness Store" \
-    --api-version "v1.0" \
-    --server-url "https://${GATEWAY_URL}" \
-    --allowed-origins "*" \
+az spring gateway update \
     --client-id ${CLIENT_ID} \
     --client-secret ${CLIENT_SECRET} \
     --scope ${SCOPE} \
-    --issuer-uri ${ISSUER_URI}
+    --issuer-uri ${ISSUER_URI} \
+    --no-wait
 ```
 
 ### Deploy the Identity Service Application
@@ -680,25 +595,25 @@ az spring-cloud gateway update \
 Create the identity service application
 
 ```shell
-az spring-cloud app create --name ${IDENTITY_SERVICE_APP} --instance-count 1 --memory 1Gi
+az spring app create --name ${IDENTITY_SERVICE_APP} --instance-count 1 --memory 1Gi
 ```
 
 Bind the identity service to Application Configuration Service
 
 ```shell
-az spring-cloud application-configuration-service bind --app ${IDENTITY_SERVICE_APP}
+az spring application-configuration-service bind --app ${IDENTITY_SERVICE_APP}
 ```
 
 Bind the identity service to Service Registry.
 
 ```shell
-az spring-cloud service-registry bind --app ${IDENTITY_SERVICE_APP}
+az spring service-registry bind --app ${IDENTITY_SERVICE_APP}
 ```
 
 Create routing rules for the identity service application
 
 ```shell
-az spring-cloud gateway route-config create \
+az spring gateway route-config create \
     --name ${IDENTITY_SERVICE_APP} \
     --app-name ${IDENTITY_SERVICE_APP} \
     --routes-file azure/routes/identity-service.json
@@ -707,11 +622,13 @@ az spring-cloud gateway route-config create \
 Deploy the Identity Service:
 
 ```shell
-az spring-cloud app deploy --name ${IDENTITY_SERVICE_APP} \
+az spring app deploy --name ${IDENTITY_SERVICE_APP} \
     --env "JWK_URI=${JWK_SET_URI}" \
     --config-file-pattern identity/default \
     --source-path apps/acme-identity
 ```
+
+> Note: The application will take around 3-5 minutes to deploy.
 
 ### Update Existing Applications
 
@@ -719,12 +636,12 @@ Update the existing applications to use authorization information from Spring Cl
 
 ```shell
 # Update the Cart Service
-az spring-cloud app update --name ${CART_SERVICE_APP} \
-    --env "AUTH_URL=https://${GATEWAY_URL}" "CART_PORT=8080" "REDIS_CONNECTIONSTRING=${REDIS_CONN_STR}"
+az spring app update --name ${CART_SERVICE_APP} \
+    --env "AUTH_URL=https://${GATEWAY_URL}" "CART_PORT=8080" 
     
 # Update the Order Service
-az spring-cloud app  update --name ${ORDER_SERVICE_APP} \
-    --env "AcmeServiceSettings__AuthUrl=https://${GATEWAY_URL}" "ConnectionStrings__OrderContext=$POSTGRES_CONNECTION_STR" "DatabaseProvider=Postgres"
+az spring app  update --name ${ORDER_SERVICE_APP} \
+    --env "AcmeServiceSettings__AuthUrl=https://${GATEWAY_URL}" 
 ```
 
 ### Login to the Application through Spring Cloud Gateway
@@ -733,6 +650,12 @@ Retrieve the URL for Spring Cloud Gateway and open it in a browser:
 
 ```shell
 open "https://${GATEWAY_URL}"
+```
+
+If using Azure Cloud Shell or Windows, open the output from the following command in a browser:
+
+```shell
+echo "https://${GATEWAY_URL}"
 ```
 
 You should see the ACME Fitness Store Application, and be able to log in using your
@@ -744,9 +667,9 @@ be available. This includes adding items to the cart and placing an order.
 Configure API Portal with SSO enabled:
 
 ```shell
-export PORTAL_URL=$(az spring-cloud api-portal show | jq -r '.properties.url')
+export PORTAL_URL=$(az spring api-portal show | jq -r '.properties.url')
 
-az spring-cloud api-portal update \
+az spring api-portal update \
     --client-id ${CLIENT_ID} \
     --client-secret ${CLIENT_SECRET}\
     --scope "openid,profile,email" \
@@ -761,34 +684,240 @@ Open API Portal in a browser, this will redirect you to log in now:
 open "https://${PORTAL_URL}"
 ```
 
+If using Azure Cloud Shell or Windows, open the output from the following command in a browser:
+
+```shell
+echo "https://${PORTAL_URL}"
+```
+
 To access the protected APIs, click Authorize and follow the steps that match your
 SSO provider. Learn more about API Authorization with API Portal [here](https://docs.vmware.com/en/API-portal-for-VMware-Tanzu/1.0/api-portal/GUID-api-viewer.html#api-authorization)
 
-## Unit 3 - Securely Load Application Secrets
+## Unit 3 - Integrate with Azure Database for PostgreSQL and Azure Cache for Redis
 
-Use Azure Key Vault to store and load secrets to connect to Azure services.
+By default, several services use in-memory data storage. This unit will create persistent stores outside the applications and connect applications to those stores.
 
-### Prepare your environment for Key Vault
+Prerequisites:
+
+* Completion of [Unit 1 - Deploy and Build Applications](#unit-1---deploy-and-build-applications)
+
+### Prepare your environment
 
 Create a bash script with environment variables by making a copy of the supplied template:
 
 ```shell
-cp ./azure/setup-env-variables-keyvault-template.sh ./azure/setup-env-variables-keyvault.sh
+cp ./azure/setup-db-env-variables-template.sh ./azure/setup-db-env-variables.sh
 ```
 
-Open `./azure/setup-env-variables-keyvault.sh` and enter the following information:
+Open `./azure/setup-db-env-variables.sh` and enter the following information:
+
+```shell
+export AZURE_CACHE_NAME=change-me                   # Unique name for Azure Cache for Redis Instance
+export POSTGRES_SERVER=change-me                    # Unique name for Azure Database for PostgreSQL Flexible Server
+export POSTGRES_SERVER_USER=change-name             # Postgres server username to be created in next steps
+export POSTGRES_SERVER_PASSWORD=change-name         # Postgres server password to be created in next steps
+```
+
+> Note: AZURE_CACHE_NAME and POSTGRES_SERVER must be unique names to avoid DNS conflicts
+
+Then, set the environment:
+
+```shell
+source ./azure/setup-db-env-variables.sh
+```
+
+### Create Azure Cache for Redis
+
+Create an instance of Azure Cache for Redis using the Azure CLI.
+
+```shell
+az redis create \
+  --name ${AZURE_CACHE_NAME} \
+  --location ${REGION} \
+  --resource-group ${RESOURCE_GROUP} \
+  --sku Basic \
+  --vm-size c0
+```
+
+> Note: The redis cache will take around 15-20 minutes to deploy.
+
+### Create an Azure Database for Postgres
+
+Using the Azure CLI, create an Azure Database for PostgreSQL Flexible Server:
+
+```shell
+az postgres flexible-server create --name ${POSTGRES_SERVER} \
+    --resource-group ${RESOURCE_GROUP} \
+    --location ${REGION} \
+    --admin-user ${POSTGRES_SERVER_USER} \
+    --admin-password ${POSTGRES_SERVER_PASSWORD} \
+    --yes
+
+# Allow connections from other Azure Services
+az postgres flexible-server firewall-rule create --rule-name allAzureIPs \
+     --name ${POSTGRES_SERVER} \
+     --resource-group ${RESOURCE_GROUP} \
+     --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+     
+# Enable the uuid-ossp extension
+az postgres flexible-server parameter set \
+    --resource-group ${RESOURCE_GROUP} \
+    --server-name ${POSTGRES_SERVER} \
+    --name azure.extensions --value uuid-ossp
+```
+
+> Note: The PostgreSQL Flexible Server will take 5-10 minutes to deploy
+
+Create a database for the order service:
+
+```shell
+az postgres flexible-server db create \
+  --database-name ${ORDER_SERVICE_DB} \
+  --server-name ${POSTGRES_SERVER}
+```
+
+Create a database for the catalog service:
+
+```shell
+az postgres flexible-server db create \
+  --database-name ${CATALOG_SERVICE_DB} \
+  --server-name ${POSTGRES_SERVER}
+```
+
+> Note: wait for all services to be ready before continuing
+
+### Create Service Connectors
+
+The Order Service and Catalog Service use Azure Database for Postgres, create Service Connectors
+for those applications:
+
+```shell
+# Bind order service to Postgres
+az spring connection create postgres-flexible \
+    --resource-group ${RESOURCE_GROUP} \
+    --service ${SPRING_APPS_SERVICE} \
+    --connection ${ORDER_SERVICE_DB_CONNECTION} \
+    --app ${ORDER_SERVICE_APP} \
+    --deployment default \
+    --tg ${RESOURCE_GROUP} \
+    --server ${POSTGRES_SERVER} \
+    --database ${ORDER_SERVICE_DB} \
+    --secret name=${POSTGRES_SERVER_USER} secret=${POSTGRES_SERVER_PASSWORD} \
+    --client-type dotnet
+    
+
+# Bind catalog service to Postgres
+az spring connection create postgres-flexible \
+    --resource-group ${RESOURCE_GROUP} \
+    --service ${SPRING_APPS_SERVICE} \
+    --connection ${CATALOG_SERVICE_DB_CONNECTION} \
+    --app ${CATALOG_SERVICE_APP} \
+    --deployment default \
+    --tg ${RESOURCE_GROUP} \
+    --server ${POSTGRES_SERVER} \
+    --database ${CATALOG_SERVICE_DB} \
+    --secret name=${POSTGRES_SERVER_USER} secret=${POSTGRES_SERVER_PASSWORD} \
+    --client-type springboot
+```
+
+The Cart Service requires a connection to Azure Cache for Redis, create the Service Connector:
+
+```shell
+az spring connection create redis \
+    --resource-group ${RESOURCE_GROUP} \
+    --service ${SPRING_APPS_SERVICE} \
+    --connection $CART_SERVICE_CACHE_CONNECTION \
+    --app ${CART_SERVICE_APP} \
+    --deployment default \
+    --tg ${RESOURCE_GROUP} \
+    --server ${AZURE_CACHE_NAME} \
+    --database 0 \
+    --client-type java 
+```
+
+> Note: Currently, the Azure Spring Apps CLI extension only allows for client types of java, springboot, or dotnet.
+> The cart service uses a client connection type of java because the connection strings are the same for python and java.
+> This will be changed when additional options become available in the CLI.
+
+### Update Applications
+
+Next, update the affected applications to use the newly created databases and redis cache.
+
+Restart the Catalog Service for the Service Connector to take effect:
+```shell
+az spring app restart --name ${CATALOG_SERVICE_APP}
+```
+
+Retrieve the PostgreSQL connection string and update the Catalog Service:
+```shell
+POSTGRES_CONNECTION_STR=$(az spring connection show \
+    --resource-group ${RESOURCE_GROUP} \
+    --service ${SPRING_APPS_SERVICE} \
+    --deployment default \
+    --connection ${ORDER_SERVICE_DB_CONNECTION} \
+    --app ${ORDER_SERVICE_APP} | jq '.configurations[0].value' -r)
+
+az spring app update \
+    --name order-service \
+    --env "DatabaseProvider=Postgres" "ConnectionStrings__OrderContext=${POSTGRES_CONNECTION_STR}" "AcmeServiceSettings__AuthUrl=https://${GATEWAY_URL}"
+```
+
+Retrieve the Redis connection string and update the Cart Service:
+```shell
+REDIS_CONN_STR=$(az spring connection show \
+    --resource-group ${RESOURCE_GROUP} \
+    --service ${SPRING_APPS_SERVICE} \
+    --deployment default \
+    --app ${CART_SERVICE_APP} \
+    --connection ${CART_SERVICE_CACHE_CONNECTION} | jq -r '.configurations[0].value')
+
+az spring app update \
+    --name cart-service \
+    --env "CART_PORT=8080" "REDIS_CONNECTIONSTRING=${REDIS_CONN_STR}" "AUTH_URL=https://${GATEWAY_URL}"
+```
+
+### View Persisted Data
+
+Verify cart data is now persisted in Redis by adding a few items to your cart. Then, restart the cart service:
+
+```shell
+az spring app restart --name ${CART_SERVICE_APP}
+```
+
+Notice that after restarting the cart service, the items in your cart will now persist.
+
+Verify order data is now persisted in a PostgreSQL Database by placing an order. View your placed orders with the following URL:
+
+```text
+https://${GATEWAY_URL}/order/${USER_ID}
+```
+
+Your USER_ID is your username URL encoded.
+
+Now restart the order service application:
+
+```shell
+az spring app restart --name ${ORDER_SERVICE_APP}
+```
+
+After restarting, revisit the URL for your placed orders and notice that they persisted. 
+
+## Unit 4 - Securely Load Application Secrets
+
+In this unit, you will use Azure Key Vault to securely store and load secrets to connect to Azure services.
+
+Prerequisites:
+
+* Completion of [Unit 1 - Deploy and Build Applications](#unit-1---deploy-and-build-applications)
+* Completion of [Unit 3 - Integrate with Azure Database for PostgreSQL and Azure Cache for Redis](#unit-3---integrate-with-azure-database-for-postgresql-and-azure-cache-for-redis)
+
+### Create Azure Key Vault and store secrets
+
+Choose a unique name for your Key Vault and set an environment variable:
 
 ```shell
 export KEY_VAULT=change-me      # customize this
 ```
-
-Set the Environment.
-
-```shell
-source ./azure/setup-env-variables-keyvault.sh
-```
-
-### Create Azure Key Vault and store secrets
 
 Create an Azure Key Vault and store connection secrets.
 
@@ -838,23 +967,22 @@ az keyvault secret set --vault-name ${KEY_VAULT} \
     --name "SSO-PROVIDER-JWK-URI" --value ${JWK_SET_URI}
 ```
 
+> Note: Creating the SSO-PROVIDER-JWK-URI Secret can be skipped if not configuring Single Sign On
+
 Enable System Assigned Identities for applications and export identities to environment.
 
 ```shell
-az spring-cloud app identity assign --name ${CART_SERVICE_APP}
-export CART_SERVICE_APP_IDENTITY=$(az spring-cloud app show --name ${CART_SERVICE_APP} | jq -r '.identity.principalId')
+az spring app identity assign --name ${CART_SERVICE_APP}
+export CART_SERVICE_APP_IDENTITY=$(az spring app show --name ${CART_SERVICE_APP} | jq -r '.identity.principalId')
 
-az spring-cloud app identity assign --name ${ORDER_SERVICE_APP}
-export ORDER_SERVICE_APP_IDENTITY=$(az spring-cloud app show --name ${ORDER_SERVICE_APP} | jq -r '.identity.principalId')
+az spring app identity assign --name ${ORDER_SERVICE_APP}
+export ORDER_SERVICE_APP_IDENTITY=$(az spring app show --name ${ORDER_SERVICE_APP} | jq -r '.identity.principalId')
 
-az spring-cloud app identity assign --name ${CATALOG_SERVICE_APP}
-export CATALOG_SERVICE_APP_IDENTITY=$(az spring-cloud app show --name ${CATALOG_SERVICE_APP} | jq -r '.identity.principalId')
+az spring app identity assign --name ${CATALOG_SERVICE_APP}
+export CATALOG_SERVICE_APP_IDENTITY=$(az spring app show --name ${CATALOG_SERVICE_APP} | jq -r '.identity.principalId')
 
-az spring-cloud app identity assign --name ${IDENTITY_SERVICE_APP}
-export IDENTITY_SERVICE_APP_IDENTITY=$(az spring-cloud app show --name ${IDENTITY_SERVICE_APP} | jq -r '.identity.principalId')
-
-az spring-cloud app identity assign --name ${FRONTEND_APP}
-export FRONTEND_APP_IDENTITY=$(az spring-cloud app show --name ${FRONTEND_APP} | jq -r '.identity.principalId')
+az spring app identity assign --name ${IDENTITY_SERVICE_APP}
+export IDENTITY_SERVICE_APP_IDENTITY=$(az spring app show --name ${IDENTITY_SERVICE_APP} | jq -r '.identity.principalId')
 ```
 
 Add an access policy to Azure Key Vault to allow Managed Identities to read secrets.
@@ -871,59 +999,63 @@ az keyvault set-policy --name ${KEY_VAULT} \
 
 az keyvault set-policy --name ${KEY_VAULT} \
     --object-id ${IDENTITY_SERVICE_APP_IDENTITY} --secret-permissions get list
-
-az keyvault set-policy --name ${KEY_VAULT} \
-    --object-id ${FRONTEND_APP_IDENTITY} --secret-permissions get list
 ```
+
+> Note: Identity Service will not exist if you haven't completed Unit 2. Skip configuring an identity or policy for this service if not configuring Single Sign-On at this point.
 
 ### Activate applications to load secrets from Azure Key Vault
 
 Delete Service Connectors and activate applications to load secrets from Azure Key Vault.
 
 ```shell
-az spring-cloud connection delete \
+az spring connection delete \
     --resource-group ${RESOURCE_GROUP} \
-    --service ${SPRING_CLOUD_SERVICE} \
+    --service ${SPRING_APPS_SERVICE} \
     --connection ${ORDER_SERVICE_DB_CONNECTION} \
     --app ${ORDER_SERVICE_APP} \
     --deployment default \
     --yes 
 
-az spring-cloud connection delete \
+az spring connection delete \
     --resource-group ${RESOURCE_GROUP} \
-    --service ${SPRING_CLOUD_SERVICE} \
+    --service ${SPRING_APPS_SERVICE} \
     --connection ${CATALOG_SERVICE_DB_CONNECTION} \
     --app ${CATALOG_SERVICE_APP} \
     --deployment default \
     --yes 
 
-az spring-cloud connection delete \
+az spring connection delete \
     --resource-group ${RESOURCE_GROUP} \
-    --service ${SPRING_CLOUD_SERVICE} \
+    --service ${SPRING_APPS_SERVICE} \
     --connection ${CART_SERVICE_CACHE_CONNECTION} \
     --app ${CART_SERVICE_APP} \
     --deployment default \
     --yes 
     
-az spring-cloud app update --name ${ORDER_SERVICE_APP} \
+az spring app update --name ${ORDER_SERVICE_APP} \
     --env "ConnectionStrings__KeyVaultUri=${KEYVAULT_URI}" "AcmeServiceSettings__AuthUrl=https://${GATEWAY_URL}" "DatabaseProvider=Postgres"
 
-az spring-cloud app update --name ${CATALOG_SERVICE_APP} \
+az spring app update --name ${CATALOG_SERVICE_APP} \
     --config-file-pattern catalog/default,catalog/key-vault \
     --env "SPRING_CLOUD_AZURE_KEYVAULT_SECRET_PROPERTY_SOURCES_0_ENDPOINT=${KEYVAULT_URI}" "SPRING_CLOUD_AZURE_KEYVAULT_SECRET_PROPERTY_SOURCES_0_NAME='acme-fitness-store-vault'" "SPRING_PROFILES_ACTIVE=default,key-vault"
     
-az spring-cloud app update --name ${IDENTITY_SERVICE_APP} \
+az spring app update --name ${IDENTITY_SERVICE_APP} \
     --config-file-pattern identity/default,identity/key-vault \
     --env "SPRING_CLOUD_AZURE_KEYVAULT_SECRET_PROPERTY_SOURCES_0_ENDPOINT=${KEYVAULT_URI}" "SPRING_CLOUD_AZURE_KEYVAULT_SECRET_PROPERTY_SOURCES_0_NAME='acme-fitness-store-vault'" "SPRING_PROFILES_ACTIVE=default,key-vault"
     
-az spring-cloud app update --name ${CART_SERVICE_APP} \
+az spring app update --name ${CART_SERVICE_APP} \
     --env "CART_PORT=8080" "KEYVAULT_URI=${KEYVAULT_URI}" "AUTH_URL=https://${GATEWAY_URL}"
-    
-az spring-cloud app update --name ${FRONTEND_APP} \
-    --env "KEYVAULT_URI=${KEYVAULT_URI}"
 ```
 
-## Unit 4 - Monitor End-to-End
+## Unit 5 - Monitor End-to-End
+
+In this unit you will explore live application metrics and query logs to know the health of your applications.
+
+Prerequisites:
+
+* Completion of [Unit 1 - Deploy and Build Applications](#unit-1---deploy-and-build-applications)
+* Completion of [Unit 3 - Integrate with Azure Database for PostgreSQL and Azure Cache for Redis](#unit-3---integrate-with-azure-database-for-postgresql-and-azure-cache-for-redis)
+* Completion of [Unit 4 - Securely Load Application Secrets](#unit-4---securely-load-application-secrets)
 
 ### Add Instrumentation Key to Key Vault
 
@@ -935,7 +1067,7 @@ The Application Insights Instrumentation Key must be provided for the non-java a
 Retrieve the Instrumentation Key for Application Insights and add to Key Vault
 
 ```shell
-export INSTRUMENTATION_KEY=$(az spring-cloud build-service builder buildpack-binding show -n default | jq -r '.properties.launchProperties.properties.connection_string')
+export INSTRUMENTATION_KEY=$(az monitor app-insights component show --app ${SPRING_APPS_SERVICE} | jq -r '.connectionString')
 
 az keyvault secret set --vault-name ${KEY_VAULT} \
     --name "ApplicationInsights--ConnectionString" --value ${INSTRUMENTATION_KEY}
@@ -946,9 +1078,9 @@ az keyvault secret set --vault-name ${KEY_VAULT} \
 Increase the sampling rate for the Application Insights binding.
 
 ```shell
-az spring-cloud build-service builder buildpack-binding set \
+az spring build-service builder buildpack-binding set \
     --builder-name default \
-    -n default \
+    --name default \
     --type ApplicationInsights \
     --properties sampling-rate=100 connection_string=${INSTRUMENTATION_KEY}
 ```
@@ -960,13 +1092,32 @@ sampling rate to take effect. For the non-java applications, this will allow the
 the Instrumentation Key from Key Vault. 
 
 ```shell
-az spring-cloud app restart -n ${FRONTEND_APP}
-az spring-cloud app restart -n ${CART_SERVICE_APP}
-az spring-cloud app restart -n ${ORDER_SERVICE_APP}
-az spring-cloud app restart -n ${IDENTITY_SERVICE_APP}
-az spring-cloud app restart -n ${CATALOG_SERVICE_APP}
-az spring-cloud app restart -n ${PAYMENT_SERVICE_APP}
+az spring app restart -n ${CART_SERVICE_APP}
+az spring app restart -n ${ORDER_SERVICE_APP}
+az spring app restart -n ${IDENTITY_SERVICE_APP}
+az spring app restart -n ${CATALOG_SERVICE_APP}
+az spring app restart -n ${PAYMENT_SERVICE_APP}
 ```
+
+### Get the log stream for an Application
+
+Use the following command to get the latest 100 lines of app console logs from the Catalog Service.
+
+```shell
+az spring app logs \
+    -n ${CATALOG_SERVICE_APP} \
+    --lines 100
+```
+
+By adding the `-f` parameter you can get real-time log streaming from an app. Try log streaming for the Catalog Service.
+
+```shell
+az spring app logs \
+    -n ${CATALOG_SERVICE_APP} \
+    -f
+```
+
+You can use `az spring app logs -h` to explore more parameters and log stream functionalities.
 
 ### Generate Traffic
 
@@ -977,32 +1128,15 @@ To continuously generate traffic, use the traffic generator:
 ```shell
 cd traffic-generator
 GATEWAY_URL=https://${GATEWAY_URL} ./gradlew gatlingRun-com.vmware.acme.simulation.GuestSimulation
+cd -
 ```
 
-### Get the log stream for an Application
-
-Use the following command to get the latest 100 lines of app console logs from the Catalog Service.
-
-```shell
-az spring-cloud app logs \
-    -n ${CATALOG_SERVICE_APP} \
-    --lines 100
-```
-
-By adding the `-f` parameter you can get real-time log streaming from an app. Try log streaming for the Catalog Service.
-
-```shell
-az spring-cloud app logs \
-    -n ${CATALOG_SERVICE_APP} \
-    -f
-```
-
-You can use `az spring-cloud app logs -h` to explore more parameters and log stream functionalities.
+Continue on to the next sections while the traffic generator runs.
 
 ### Start monitoring apps and dependencies - in Application Insights
 
-Open the Application Insights created by Azure Spring Cloud and start monitoring Spring Boot applications. 
-You can find the Application Insights in the same Resource Group where you created an Azure Spring Cloud service instance.
+Open the Application Insights created by Azure Spring Apps and start monitoring Spring Boot applications. 
+You can find the Application Insights in the same Resource Group where you created an Azure Spring Apps service instance.
 
 Navigate to the `Application Map` blade:
 
@@ -1025,16 +1159,15 @@ Click on a SQL call to see the end-to-end transaction in context:
 
 ![An image showing the end-to-end transaction of a SQL call](media/fitness-store-end-to-end-transaction-details.jpg)
 
-Navigate to the `Failures/Exceptions` blade - you can see a collection of exceptions:
+Navigate to the `Failures` blade and the `Exceptions` panel - you can see a collection of exceptions:
 
-![An image showing application failures graphed](media/failures.png)
+![An image showing application failures graphed](media/fitness-store-exceptions.jpg)
 
 Navigate to the `Metrics` blade - you can see metrics contributed by Spring Boot apps,
 Spring Cloud modules, and dependencies.
 The chart below shows `http_server_requests` and `Heap Memory Used`.
 
 ![An image showing metrics over time](media/metrics.jpg)
-
 
 Spring Boot registers a lot number of core metrics: JVM, CPU, Tomcat, Logback...
 The Spring Boot auto-configuration enables the instrumentation of requests handled by Spring MVC.
@@ -1047,7 +1180,7 @@ The REST controllers `ProductController`, and `PaymentController` have been inst
 
 You can see these custom metrics in the `Metrics` blade:
 
-![An image showing custom metrics instrumented by Micrometer](media/fitness-store-custom-metrics.jpg)
+![An image showing custom metrics instrumented by Micrometer](media/fitness-store-custom-metrics-with-payments-2.jpg)
 
 Navigate to the `Live Metrics` blade - you can see live metrics on screen with low latencies < 1 second:
 
@@ -1056,10 +1189,10 @@ Navigate to the `Live Metrics` blade - you can see live metrics on screen with l
 ### Start monitoring ACME Fitness Store's logs and metrics in Azure Log Analytics
 
 Open the Log Analytics that you created - you can find the Log Analytics in the same
-Resource Group where you created an Azure Spring Cloud service instance.
+Resource Group where you created an Azure Spring Apps service instance.
 
 In the Log Analytics page, selects `Logs` blade and run any of the sample queries supplied below
-for Azure Spring Cloud.
+for Azure Spring Apps.
 
 Type and run the following Kusto query to see application logs:
 
@@ -1085,7 +1218,7 @@ Type and run the following Kusto query to see `catalog-service` application logs
 
 ![Example output from catalog service logs](media/catalog-app-logs-in-log-analytics.jpg)
 
-Type and run the following Kusto query  to see errors and exceptions thrown by each app:
+Type and run the following Kusto query to see errors and exceptions thrown by each app:
 ```sql
     AppPlatformLogsforSpring 
     | where Log contains "error" or Log contains "exception"
@@ -1097,7 +1230,7 @@ Type and run the following Kusto query  to see errors and exceptions thrown by e
 
 ![An example output from the Ingress Logs](media/ingress-logs-in-log-analytics.jpg)
 
-Type and run the following Kusto query to see all in the inbound calls into Azure Spring Cloud:
+Type and run the following Kusto query to see all in the inbound calls into Azure Spring Apps:
 
 ```sql
     AppPlatformIngressLogs
@@ -1105,8 +1238,7 @@ Type and run the following Kusto query to see all in the inbound calls into Azur
     | sort by TimeGenerated
 ```
 
-Type and run the following Kusto query to see all the logs from the managed Spring Cloud
-Config Gateway managed by Azure Spring Cloud:
+Type and run the following Kusto query to see all the logs from Spring Cloud Gateway managed by Azure Spring Apps:
 
 ```sql
     AppPlatformSystemLogs
@@ -1116,8 +1248,7 @@ Config Gateway managed by Azure Spring Cloud:
 
 ![An example out from the Spring Cloud Gateway Logs](media/spring-cloud-gateway-logs-in-log-analytics.jpg)
 
-Type and run the following Kusto query to see all the logs from the managed Spring Cloud
-Service Registry managed by Azure Spring Cloud:
+Type and run the following Kusto query to see all the logs from Spring Cloud Service Registry managed by Azure Spring Apps:
 
 ```sql
     AppPlatformSystemLogs
@@ -1127,24 +1258,26 @@ Service Registry managed by Azure Spring Cloud:
 
 ![An example output from service registry logs](media/service-registry-logs-in-log-analytics.jpg)
 
-## Unit 5 - Set Request Rate Limits
+## Unit 6 - Set Request Rate Limits
 
-Spring Cloud Gateway includes route filters from the Open Source version as well as several additional route filters. One of these additional filters is the `RateLimit` [filter](https://docs.vmware.com/en/VMware-Spring-Cloud-Gateway-for-Kubernetes/1.1/scg-k8s/GUID-route-filters.html#ratelimit-limiting-user-requests-filter).
+In this unit you will use Spring Cloud Gateway filters to apply rate limiting to your API.
 
-Learn more about the additional Spring Cloud Gateway route filters [here](https://docs.vmware.com/en/VMware-Spring-Cloud-Gateway-for-Kubernetes/1.1/scg-k8s/GUID-route-filters.html#filters-added-in-spring-cloud-gateway-for-kubernetes)
+Prerequisites:
 
-### Update Spring Cloud Gateway Routes
+* Completion of [Unit 1 - Deploy and Build Applications](#unit-1---deploy-and-build-applications)
 
-Update the route definitions for the catalog service:
+### Spring Cloud Gateway RateLimit Filter
 
-```shell
-az spring-cloud gateway route-config update \
-    --name ${CATALOG_SERVICE_APP} \
-    --app-name ${CATALOG_SERVICE_APP} \
-    --routes-file azure/routes/catalog-service_rate-limit.json
-```
+Spring Cloud Gateway includes route filters from the Open Source version as well as several additional route filters. One of these additional filters is the [RateLimit: Limiting user requests filter](https://docs.vmware.com/en/VMware-Spring-Cloud-Gateway-for-Kubernetes/1.1/scg-k8s/GUID-route-filters.html#ratelimit-limiting-user-requests-filter). The RateLimit filter limits the number of requests allowed per route during a time window.
 
-This updates the catalog service route definition to include the following definition:
+When defining a Route, you can add the RateLimit filter by including it in the list of filters for the route. The filter accepts 4 options:
+
+* Number of requests accepted during the window.
+* Duration of the window: by default milliseconds, but you can use s, m or h suffix to specify it in seconds, minutes or hours.
+* (Optional) User partition key: it's also possible to apply rate limiting per user, that is, different users can have its own throughput allowed based on an identifier found in the request. Set whether the key is in a JWT claim or HTTP header with '' or '' syntax.
+* (Optional) It is possible to rate limit by IP addresses. Note, this cannot be combined with the rate limiting per user.
+
+The following example would limit all users to two requests every 5 seconds to the `/products` route:
 
 ```json
 {
@@ -1154,17 +1287,36 @@ This updates the catalog service route definition to include the following defin
     ],
     "filters": [
       "StripPrefix=0",
-      "RateLimit=2,10s"
-    ],
-    "tags": [
-      "catalog"
+      "RateLimit=2,5s"
     ]
-  }
+}
 ```
 
-In the updated route config, `RateLimit=2,10s`, will limit requests to `/products` to 2 requests every 10 seconds. This route filter will prevent users from creating unnecessary traffic to the catalog.
+When the limit is exceeded, response will fail with `429 Too Many Requests` status.
 
-## Unit 6 - Automate from idea to production
+### Update Spring Cloud Gateway Routes
+
+Apply the `RateLimit` filter to the `/products` route using the following command:
+
+```bash
+az spring gateway route-config update \
+    --name ${CATALOG_SERVICE_APP} \
+    --app-name ${CATALOG_SERVICE_APP} \
+    --routes-file azure/routes/catalog-service_rate-limit.json
+```
+
+### Verify Request Rate Limits
+
+Retrieve the URL for the `/products` route in Spring Cloud Gateway using the following command:
+
+```bash
+GATEWAY_URL=$(az spring gateway show | jq -r '.properties.url')
+echo "https://${GATEWAY_URL}/products"
+```
+
+Make several requests to the URL for `/products` within a five second period to see requests fail with a status `429 Too Many Requests`.
+
+## Unit 7 - Automate from idea to production
 
 ### Prerequisites
 
@@ -1214,7 +1366,7 @@ az storage container create \
 
 ### Create a Service Principal
 
-Create a service principal with enough scope/role to manage your Azure Spring Cloud instance:
+Create a service principal with enough scope/role to manage your Azure Spring Apps instance:
 
 ```shell
     az ad sp create-for-rbac --role contributor --scopes /subscriptions/${SUBSCRIPTION} --sdk-auth
@@ -1236,7 +1388,7 @@ With results:
     }
 ```
 
-This output will needed for following steps.
+This output will be needed as a secret value for the next step.
 
 ### Add Secrets to GitHub Actions
 
@@ -1267,6 +1419,8 @@ Now you can run GitHub Actions in your repository. The `provision` workflow will
 
 ![Output from the provision workflow](media/provision.png)
 
+> Note: The entire provision workflow will run in approximately 60 minutes.
+
 Each application has a `Deploy` workflow that will redeploy the application when changes are made to that application. An example output from the catalog service is seen below:
 
 ![Output from the Deploy Catalog workflow](media/deploy-catalog.png)
@@ -1277,12 +1431,12 @@ The `cleanup` workflow can be manually run to delete all resources created by th
 
 ## Next Steps
 
-In this quickstart, you've deployed polyglot applications to Azure Spring Cloud using Azure CLI.
+In this quickstart, you've deployed polyglot applications to Azure Spring Apps using Azure CLI.
 You also configured VMware Tanzu components in the enterprise tier. To learn more about
-Azure Spring Cloud or VMware Tanzu components, go to:
+Azure Spring Apps or VMware Tanzu components, go to:
 
-* [Azure Spring Cloud](https://azure.microsoft.com/en-us/services/spring-cloud/)
-* [Azure Spring Cloud docs](https://docs.microsoft.com/en-us/azure/spring-cloud/quickstart-provision-service-instance-enterprise?tabs=azure-portal)
+* [Azure Spring Apps](https://azure.microsoft.com/en-us/services/spring-cloud/)
+* [Azure Spring Apps docs](https://docs.microsoft.com/en-us/azure/spring-cloud/quickstart-provision-service-instance-enterprise?tabs=azure-portal)
 * [Deploy Spring microservices from scratch](https://github.com/microsoft/azure-spring-cloud-training)
 * [Deploy existing Spring microservices](https://github.com/Azure-Samples/azure-spring-cloud)
 * [Azure for Java Cloud Developers](https://docs.microsoft.com/en-us/azure/java/)

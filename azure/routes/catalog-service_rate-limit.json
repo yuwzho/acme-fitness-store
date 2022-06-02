@@ -6,7 +6,7 @@
     ],
     "filters": [
       "StripPrefix=0",
-      "RateLimit=2,10s"
+      "RateLimit=2,5s"
     ],
     "tags": [
       "catalog"
@@ -18,8 +18,7 @@
       "Method=GET"
     ],
     "filters": [
-      "StripPrefix=0",
-      "RateLimit=2,10s"
+      "StripPrefix=0"
     ],
     "tags": [
       "catalog"

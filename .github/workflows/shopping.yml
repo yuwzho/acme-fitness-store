@@ -8,10 +8,8 @@ on:
     paths:
       - 'apps/acme-shopping/**'
 env:
-  SPRING_CLOUD_SERVICE: ${{ secrets.TF_PROJECT_NAME }}-asc
+  SPRING_APPS_SERVICE: ${{ secrets.TF_PROJECT_NAME }}-asa
   RESOURCE_GROUP: ${{ secrets.TF_PROJECT_NAME }}-resources
-  KEY_VAULT: ${{ secrets.TF_PROJECT_NAME }}-keyvault
-  CUSTOM_BUILDER: no-bindings-builder
   FRONTEND_APP: frontend
 
 jobs:
@@ -34,17 +32,11 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Set up Azure Spring Extension
-        run: az extension add --name spring-cloud
+        run: az extension add --name spring
       - name: Deploy Shopping
         run: |
-          keyvault_uri=$(az keyvault show \
-           --resource-group ${RESOURCE_GROUP} \
-           --name ${KEY_VAULT} | jq -r '.properties.vaultUri')
-
-          az spring-cloud app deploy \
+          az spring app deploy \
             --name ${FRONTEND_APP} \
             --resource-group ${RESOURCE_GROUP} \
-            --service ${SPRING_CLOUD_SERVICE} \
-            --builder ${CUSTOM_BUILDER} \
-            --env "KEYVAULT_URI=${keyvault_uri}" \
+            --service ${SPRING_APPS_SERVICE} \
             --source-path ./

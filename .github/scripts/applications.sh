@@ -3,7 +3,7 @@
 set -euxo pipefail
 
 : "${RESOURCE_GROUP:?'must be set'}"
-: "${SPRING_CLOUD_SERVICE:?'must be set'}"
+: "${SPRING_APPS_SERVICE:?'must be set'}"
 : "${IDENTITY_SERVICE_APP:?'must be set'}"
 : "${CART_SERVICE_APP:?'must be set'}"
 : "${ORDER_SERVICE_APP:?'must be set'}"
@@ -18,7 +18,7 @@ create_app_if_not_exist() {
 
   is_found=$(echo "$app_names" | jq --arg name "$app" 'any(.[]; . == $name)')
   if [[ "$is_found" = false ]]; then
-    az spring-cloud app create --name "$app" --instance-count 1 --memory 1Gi
+    az spring app create --name "$app" --instance-count 1 --memory 1Gi
   else
     echo "Application '$app' has been already created."
   fi
@@ -27,9 +27,9 @@ create_app_if_not_exist() {
 main() {
   local app_names
 
-  az configure --defaults group="$RESOURCE_GROUP" spring-cloud="$SPRING_CLOUD_SERVICE"
+  az configure --defaults group="$RESOURCE_GROUP" spring="$SPRING_APPS_SERVICE"
 
-  app_names=$(az spring-cloud app list --query '[].name')
+  app_names=$(az spring app list --query '[].name')
 
   create_app_if_not_exist "$app_names" "$IDENTITY_SERVICE_APP"
   create_app_if_not_exist "$app_names" "$CART_SERVICE_APP"
