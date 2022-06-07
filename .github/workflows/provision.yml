@@ -11,9 +11,7 @@ on:
       - 'azure/routes/**'
 env:
   SPRING_APPS_SERVICE: ${{ secrets.TF_PROJECT_NAME }}-asa
-  RESOURCE_GROUP: ${{ secrets.TF_PROJECT_NAME }}-resources
-  WORKSPACE_NAME: ${{ secrets.TF_PROJECT_NAME }}-workspace
-  CUSTOM_BUILDER: no-bindings-builder
+  RESOURCE_GROUP: ${{ secrets.TF_PROJECT_NAME }}-grp
   CART_SERVICE_APP: cart-service
   IDENTITY_SERVICE_APP: identity-service
   ORDER_SERVICE_APP: order-service
@@ -21,7 +19,6 @@ env:
   CATALOG_SERVICE_APP: catalog-service
   FRONTEND_APP: frontend
   KEY_VAULT: ${{ secrets.TF_PROJECT_NAME }}-keyvault
-
 jobs:
   provision:
     runs-on: ubuntu-latest
@@ -48,7 +45,10 @@ jobs:
           terraform plan -input=false \
             -var "project_name=${{ secrets.TF_PROJECT_NAME}}" \
             -var "resource_group_location=${{ secrets.AZURE_LOCATION }}" \
-            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}"
+            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}" \
+            -var "sso-client-id=${{ secrets.OIDC_CLIENT_ID }}" \
+            -var "sso-client-secret=${{ secrets.OIDC_CLIENT_SECRET }}" \
+            -var "sso-issuer-uri=${{ secrets.OIDC_ISSUER_URI }}"
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
@@ -57,58 +57,16 @@ jobs:
           terraform apply -auto-approve -input=false \
             -var "project_name=${{ secrets.TF_PROJECT_NAME}}" \
             -var "resource_group_location=${{ secrets.AZURE_LOCATION }}" \
-            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}"
+            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}" \
+            -var "sso-client-id=${{ secrets.OIDC_CLIENT_ID }}" \
+            -var "sso-client-secret=${{ secrets.OIDC_CLIENT_SECRET }}" \
+            -var "sso-issuer-uri=${{ secrets.OIDC_ISSUER_URI }}"
       - name: Set up Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Set up Azure Spring Extension
         run: az extension add --name spring
-      - name: Create Azure Spring Apps
-        run: ../.github/scripts/azure-spring-apps.sh
-        env:
-          RESOURCE_GROUP: ${{ env.RESOURCE_GROUP }}
-          REGION: ${{ secrets.AZURE_LOCATION }}
-          SPRING_APPS_SERVICE: ${{ env.SPRING_APPS_SERVICE }}
-      - name: Configure diagnostic settings
-        run: ../.github/scripts/diagnostic.sh
-        env:
-          RESOURCE_GROUP: ${{ env.RESOURCE_GROUP }}
-          SPRING_APPS_SERVICE: ${{ env.SPRING_APPS_SERVICE }}
-          WORKSPACE_NAME: ${{ env.WORKSPACE_NAME }}
-      - name: Configure Application Configuration Service
-        run: ../.github/scripts/application-configuration-service.sh
-        env:
-          RESOURCE_GROUP: ${{ env.RESOURCE_GROUP }}
-          SPRING_APPS_SERVICE: ${{ env.SPRING_APPS_SERVICE }}
-      - name: Configure Tanzu Build Service
-        working-directory: azure
-        run: ../.github/scripts/build-service.sh
-        env:
-          RESOURCE_GROUP: ${{ env.RESOURCE_GROUP }}
-          SPRING_APPS_SERVICE: ${{ env.SPRING_APPS_SERVICE }}
-          CUSTOM_BUILDER: ${{ env.CUSTOM_BUILDER }}
-      - name: Create applications in Azure Spring Apps
-        run: ../.github/scripts/applications.sh
-        env:
-          RESOURCE_GROUP: ${{ env.RESOURCE_GROUP }}
-          SPRING_APPS_SERVICE: ${{ env.SPRING_APPS_SERVICE }}
-          IDENTITY_SERVICE_APP: ${{ env.IDENTITY_SERVICE_APP }}
-          CART_SERVICE_APP: ${{ env.CART_SERVICE_APP }}
-          ORDER_SERVICE_APP: ${{ env.ORDER_SERVICE_APP }}
-          PAYMENT_SERVICE_APP: ${{ env.PAYMENT_SERVICE_APP }}
-          CATALOG_SERVICE_APP: ${{ env.CATALOG_SERVICE_APP }}
-          FRONTEND_APP: ${{ env.FRONTEND_APP }}
-      - name: Bind to Application Configuration Service
-        run: |
-          az spring application-configuration-service bind --app ${IDENTITY_SERVICE_APP}
-          az spring application-configuration-service bind --app ${PAYMENT_SERVICE_APP}
-          az spring application-configuration-service bind --app ${CATALOG_SERVICE_APP}
-      - name: Bind to Service Registry
-        run: |
-          az spring service-registry bind --app ${IDENTITY_SERVICE_APP}
-          az spring service-registry bind --app ${PAYMENT_SERVICE_APP}
-          az spring service-registry bind --app ${CATALOG_SERVICE_APP}
       - name: Configure Spring Cloud Gateway
         working-directory: azure/routes
         run: ../../.github/scripts/gateway.sh
@@ -120,10 +78,6 @@ jobs:
           ORDER_SERVICE_APP: ${{ env.ORDER_SERVICE_APP }}
           CATALOG_SERVICE_APP: ${{ env.CATALOG_SERVICE_APP }}
           FRONTEND_APP: ${{ env.FRONTEND_APP }}
-          CLIENT_ID: ${{ secrets.OIDC_CLIENT_ID  }}
-          CLIENT_SECRET: ${{ secrets.OIDC_CLIENT_SECRET }}
-          SCOPE: openid,profile,email
-          ISSUER_URI: ${{ secrets.OIDC_ISSUER_URI }}
       - name: Configure Identity Provider
         run: ../.github/scripts/identity-provider.sh
         env:
@@ -135,7 +89,5 @@ jobs:
           CATALOG_SERVICE_APP: ${{ env.CATALOG_SERVICE_APP }}
           FRONTEND_APP: ${{ env.FRONTEND_APP }}
           CLIENT_ID: ${{ secrets.OIDC_CLIENT_ID  }}
-          CLIENT_SECRET: ${{ secrets.OIDC_CLIENT_SECRET }}
-          SCOPE: openid,profile,email
-          ISSUER_URI: ${{ secrets.OIDC_ISSUER_URI }}
           KEY_VAULT: ${{ env.KEY_VAULT }}
+
