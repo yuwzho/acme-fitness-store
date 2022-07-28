@@ -194,7 +194,7 @@ Accept the legal terms and privacy statements for the Enterprise tier.
 
 ```shell
 az provider register --namespace Microsoft.SaaS
-az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan tanzu-asc-ent-mtr
+az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan asa-ent-hr-mtr
 ```
 
 Create an instance of Azure Spring Apps Enterprise.
