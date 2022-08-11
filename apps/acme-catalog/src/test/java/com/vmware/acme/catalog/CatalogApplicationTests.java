@@ -1,6 +1,7 @@
 package com.vmware.acme.catalog;
 
 import io.restassured.RestAssured;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.actuate.metrics.AutoConfigureMetrics;
@@ -36,6 +37,8 @@ class CatalogApplicationTests {
     @Container
     private static final PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:14.4-alpine3.16");
 
+    private static GenericContainer prometheus;
+
     @DynamicPropertySource
     static void sqlserverProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
@@ -45,34 +48,38 @@ class CatalogApplicationTests {
 
     @BeforeEach
     void before() {
+        if (prometheus == null) {
+            prometheus = createPrometheus();
+            prometheus.start();
+        }
+
         org.testcontainers.Testcontainers.exposeHostPorts(this.serverPort);
         RestAssured.port = this.serverPort;
     }
 
+    @AfterAll
+    static void afterAll() {
+        prometheus.stop();
+    }
+
     @Test
     void listAllProducts() {
-        try (final GenericContainer prometheus = createPrometheus()) {
-            prometheus.start();
-            given()
-                    .get("/products")
-                    .then()
-                    .assertThat()
-                    .body("data.size()", equalTo(8));
-            checkMetric(prometheus, "/products");
-        }
+        given()
+                .get("/products")
+                .then()
+                .assertThat()
+                .body("data.size()", equalTo(8));
+        checkMetric("/products");
     }
 
     @Test
     void findProductById() {
-        try (final GenericContainer prometheus = createPrometheus()) {
-            prometheus.start();
-            given()
-                    .get("/products/533445d-530e-4a76-9398-5d16713b827b")
-                    .then()
-                    .assertThat()
-                    .body("data.description", equalTo("Magic Yoga Mat!"));
-            checkMetric(prometheus, "/products/{id}");
-        }
+        given()
+                .get("/products/533445d-530e-4a76-9398-5d16713b827b")
+                .then()
+                .assertThat()
+                .body("data.description", equalTo("Magic Yoga Mat!"));
+        checkMetric("/products/{id}");
     }
 
     private GenericContainer createPrometheus() {
@@ -89,7 +96,7 @@ class CatalogApplicationTests {
                 .withCopyToContainer(Transferable.of(config), "/etc/prometheus/prometheus.yml");
     }
 
-    private void checkMetric(GenericContainer prometheus, String path) {
+    private void checkMetric(String path) {
         var query = String.format("store_products_seconds_count{uri=\"%s\"}", path);
         Awaitility.given().pollInterval(Duration.ofSeconds(2))
                 .atMost(Duration.ofSeconds(15))
