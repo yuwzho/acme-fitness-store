@@ -59,7 +59,9 @@ class CatalogApplicationTests {
 
     @AfterAll
     static void afterAll() {
-        prometheus.stop();
+        if (prometheus != null) {
+            prometheus.stop();
+        }
     }
 
     @Test
