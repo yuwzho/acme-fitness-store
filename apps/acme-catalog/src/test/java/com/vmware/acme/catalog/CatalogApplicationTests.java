@@ -1,7 +1,6 @@
 package com.vmware.acme.catalog;
 
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.actuate.metrics.AutoConfigureMetrics;
@@ -11,7 +10,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.Transferable;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -37,7 +36,11 @@ class CatalogApplicationTests {
     @Container
     private static final PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:14.4-alpine3.16");
 
-    private static GenericContainer prometheus;
+    @Container
+    static final GenericContainer<?> prometheus = new GenericContainer<>("prom/prometheus:v2.37.0")
+            .withExposedPorts(9090)
+            .waitingFor(Wait.forLogMessage("(?s).*Server is ready to receive web requests.*$", 1))
+            .withAccessToHost(true);
 
     @DynamicPropertySource
     static void sqlserverProperties(DynamicPropertyRegistry registry) {
@@ -48,20 +51,21 @@ class CatalogApplicationTests {
 
     @BeforeEach
     void before() {
-        if (prometheus == null) {
-            prometheus = createPrometheus();
-            prometheus.start();
-        }
-
         org.testcontainers.Testcontainers.exposeHostPorts(this.serverPort);
         RestAssured.port = this.serverPort;
-    }
 
-    @AfterAll
-    static void afterAll() {
-        if (prometheus != null) {
-            prometheus.stop();
-        }
+        var config = String.format("scrape_configs:\n" +
+                "  - job_name: \"prometheus\"\n" +
+                "    scrape_interval: 2s\n" +
+                "    metrics_path: \"/actuator/prometheus\"\n" +
+                "    static_configs:\n" +
+                "      - targets: ['host.testcontainers.internal:%s']", this.serverPort);
+        prometheus.copyFileToContainer(Transferable.of(config), "/etc/prometheus/prometheus.yml");
+
+        // Reload config
+        prometheus.getDockerClient().killContainerCmd(prometheus.getContainerId())
+                .withSignal("SIGHUP")
+                .exec();
     }
 
     @Test
@@ -82,20 +86,6 @@ class CatalogApplicationTests {
                 .assertThat()
                 .body("data.description", equalTo("Magic Yoga Mat!"));
         checkMetric("/products/{id}");
-    }
-
-    private GenericContainer createPrometheus() {
-        var config = String.format("scrape_configs:\n" +
-                "  - job_name: \"prometheus\"\n" +
-                "    scrape_interval: 2s\n" +
-                "    metrics_path: \"/actuator/prometheus\"\n" +
-                "    static_configs:\n" +
-                "      - targets: ['host.testcontainers.internal:%s']", this.serverPort);
-        return new GenericContainer<>("prom/prometheus:v2.37.0")
-                .withExposedPorts(9090)
-                .waitingFor(new LogMessageWaitStrategy().withRegEx("(?s).*Server is ready to receive web requests.*$"))
-                .withAccessToHost(true)
-                .withCopyToContainer(Transferable.of(config), "/etc/prometheus/prometheus.yml");
     }
 
     private void checkMetric(String path) {
