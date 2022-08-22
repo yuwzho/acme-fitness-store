@@ -251,7 +251,8 @@ function usage() {
   echo "Usage: $0 -g <resource_group> -s <SPRING_APPS_SERVICE>" 1>&2
   echo 1>&2
   echo "Options:" 1>&2
-  echo "  -g <namespace>              the Azure resource group to use for the deployment" 1>&2
+  echo "  -g <namespace>            the Azure resource group to use for the deployment" 1>&2
+  echo "  -r <region>               the Azure region to use for the deployment" 1>&2
   echo "  -s <SPRING_APPS_SERVICE>  the name of the Azure Spring Apps Instance to use" 1>&2
   echo 1>&2
   exit 1
