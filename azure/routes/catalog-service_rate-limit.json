@@ -1,30 +1,37 @@
-[
-  {
-    "predicates": [
-      "Path=/products",
-      "Method=GET"
-    ],
-    "filters": [
-      "StripPrefix=0",
-      "RateLimit=2,5s"
-    ],
-    "tags": [
-      "catalog"
-    ]
-  },
-  {
-    "predicates": [
-      "Path=/products/{id}",
-      "Method=GET"
-    ],
-    "filters": [
-      "StripPrefix=0"
-    ],
-    "tags": [
-      "catalog"
-    ]
-  },
-  {
+{
+  "routes": [
+     {
+        "title": "products-route",
+        "description": "/products endpoint",
+        "predicates": [
+          "Path=/products",
+          "Method=GET"
+        ],
+        "filters": [
+          "StripPrefix=0",
+          "RateLimit=2,5s"
+        ],
+        "tags": [
+          "catalog"
+        ]
+     },
+     {
+      "title": "products-id-route",
+      "description": "/products/id endpoint",
+      "predicates": [
+        "Path=/products/{id}",
+        "Method=GET"
+      ],
+      "filters": [
+        "StripPrefix=0"
+      ],
+      "tags": [
+        "catalog"
+      ]
+   },
+   {
+    "title": "catalogliveness-route",
+    "description": "/products/id endpoint",
     "predicates": [
       "Path=/catalogliveness",
       "Method=GET"
@@ -36,17 +43,20 @@
     "tags": [
       "catalog"
     ]
-  },
-  {
-    "predicates": [
+    },
+    {
+     "title": "catalogliveness-route",
+     "description": "/products/id endpoint",
+     "predicates": [
       "Path=/static/images/{id}",
       "Method=GET"
-    ],
-    "filters": [
-      "StripPrefix=0"
-    ],
-    "tags": [
-      "catalog"
-    ]
-  }
-]
+     ],
+     "filters": [
+       "StripPrefix=0"
+     ],
+     "tags": [
+       "catalog"
+     ]
+     }
+  ]
+}
