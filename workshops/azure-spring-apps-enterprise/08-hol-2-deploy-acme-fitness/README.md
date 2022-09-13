@@ -13,6 +13,23 @@ Below are the diffrent steps that we configure/create to successfully deploy the
 
 ## 1. Configure sampling rate for Application Insights
 
+Create a bash script with the key-vault environment varialbe by making a copy of the supplied template:
+
+```shell
+cp ./scripts/setup-keyvault-env-variables-template.sh ./scripts/setup-keyvault-env-variables.sh
+```
+
+Open `./scripts/setup-keyvault-env-variables.sh` and update the following information:
+
+```shell
+export KEY_VAULT=acme-fitness-kv-CHANGE-ME     # Unique name for Azure Key Vault. Replace CHANGE_ME with the 4 unique characters that were created as part of ARM template in Section 3.
+```
+
+Then, set the environment:
+
+```shell
+source ./scripts/setup-keyvault-env-variables.sh
+```
 
 Retrieve the Instrumentation Key for Application Insights and add to Key Vault
 
@@ -42,11 +59,12 @@ First step is to create an application for each service:
 
 
 ```shell
-az spring app create --name ${CART_SERVICE_APP} --instance-count 1 --memory 1Gi
-az spring app create --name ${ORDER_SERVICE_APP} --instance-count 1 --memory 1Gi
-az spring app create --name ${PAYMENT_SERVICE_APP} --instance-count 1 --memory 1Gi
-az spring app create --name ${CATALOG_SERVICE_APP} --instance-count 1 --memory 1Gi
-az spring app create --name ${FRONTEND_APP} --instance-count 1 --memory 1Gi
+az spring app create --name ${CART_SERVICE_APP} --instance-count 1 --memory 1Gi &
+az spring app create --name ${ORDER_SERVICE_APP} --instance-count 1 --memory 1Gi &
+az spring app create --name ${PAYMENT_SERVICE_APP} --instance-count 1 --memory 1Gi &
+az spring app create --name ${CATALOG_SERVICE_APP} --instance-count 1 --memory 1Gi &
+az spring app create --name ${FRONTEND_APP} --instance-count 1 --memory 1Gi &
+wait
 ```
 
 Next step is to provide config information for Payment Service and Catalog Service. Remaining services do not need config data stored separately. 

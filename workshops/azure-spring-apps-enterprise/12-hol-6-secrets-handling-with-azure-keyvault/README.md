@@ -5,24 +5,6 @@ Once this section is complete, the architecture looks as below:
 
 ## 1. Prepare your environment
 
-Create a bash script with environment variables by making a copy of the supplied template:
-
-```shell
-cp ./scripts/setup-keyvault-env-variables-template.sh ./scripts/setup-keyvault-env-variables.sh
-```
-
-Open `./scripts/setup-keyvault-env-variables.sh` and update the following information:
-
-```shell
-export KEY_VAULT=acme-fitness-kv-CHANGE-ME     # Unique name for Azure Key Vault. Replace CHANGE_ME with the 4 unique characters that were created as part of ARM template in Section 3.
-```
-
-Then, set the environment:
-
-```shell
-source ./scripts/setup-keyvault-env-variables.sh
-```
-
 Store Key Vault URI.
 
 ```shell
