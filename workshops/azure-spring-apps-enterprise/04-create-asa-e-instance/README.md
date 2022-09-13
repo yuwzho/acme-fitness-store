@@ -20,6 +20,16 @@ az spring create --name ${SPRING_APPS_SERVICE} \
     --enable-api-portal \
     --build-pool-size S2 
 ```
+> Note: The service instance will take around 10-15 minutes to deploy. You will notice in the above command have arguments to enable application-configuration-service, service-registry, gateway and api-portal. The significance of these services will be discussed in later sections when we introduce a demo microservices application. For now please go ahead and run the above command.
+
+Set your default resource group name and cluster name using the following commands:
+
+```shell
+az configure --defaults \
+    group=${RESOURCE_GROUP} \
+    location=${REGION} \
+    spring=${SPRING_APPS_SERVICE}
+```
 
 ### Configure Log Analytics workspace
 
@@ -79,16 +89,6 @@ az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analy
        ]'
 ```
 
-> Note: The service instance will take around 10-15 minutes to deploy. You will notice in the above command have arguments to enable application-configuration-service, service-registry, gateway and api-portal. The significance of these services will be discussed in later sections when we introduce a demo microservices application. For now please go ahead and run the above command.
-
-Set your default resource group name and cluster name using the following commands:
-
-```shell
-az configure --defaults \
-    group=${RESOURCE_GROUP} \
-    location=${REGION} \
-    spring=${SPRING_APPS_SERVICE}
-```
 
 After successfully completing the above steps you created an azure spring apps enterprise instance. This instance acts as a container to which all the services/apps will be deployed to in the following sections.
 
