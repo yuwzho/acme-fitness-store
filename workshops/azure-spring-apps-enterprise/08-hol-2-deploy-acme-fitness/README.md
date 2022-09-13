@@ -8,8 +8,7 @@ Below are the diffrent steps that we configure/create to successfully deploy the
 - [2. Create Application Configuration Service](#2-create-application-configuration-service)
   - [2.1. Bind to Application Configuration Service](#21-bind-to-application-configuration-service)
 - [3. Bind to Service Registry](#3-bind-to-service-registry)
-- [4. Configure Tanzu Build Service](#4-configure-tanzu-build-service)
-- [5. Build and Deploy Polyglot Applications](#5-build-and-deploy-polyglot-applications)
+- [4. Build and Deploy Polyglot Applications](#4-build-and-deploy-polyglot-applications)
 
 ## 1. Create applications in Azure Spring Apps
 
@@ -54,18 +53,7 @@ Applications need to communicate with each other. As we learnt in [previous sect
 az spring service-registry bind --app ${PAYMENT_SERVICE_APP}
 az spring service-registry bind --app ${CATALOG_SERVICE_APP}
 ```
-
-## 4. Configure Tanzu Build Service
-
-As discussed in previous section [Tanzu Build Service](../07-asa-e-components-overview/tanzu-build-service/README.md) provides the feature to create OCI Images from source code. ASA-E comes with a default builder for Spring Boot application. For other languages that do not have default support, we need to create a custom builder using the command below: 
-
-```shell
-az spring build-service builder create -n ${CUSTOM_BUILDER} \
-    --builder-file ./08-hol-2-deploy-acme-fitness/buildpacks/builder.json \
-    --no-wait
-```
-
-## 5. Build and Deploy Polyglot Applications
+## 4. Build and Deploy Polyglot Applications
 
 Now that all the required services are configured, the next step is to go ahead and deploy the services/apps. For this we need access to the source code for the services. 
 
