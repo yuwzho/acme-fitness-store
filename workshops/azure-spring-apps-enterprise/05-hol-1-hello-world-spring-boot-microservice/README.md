@@ -113,7 +113,7 @@ curl https://primary:...hello-world/default/hello/
 If successful, you should see the message: `Hello from Azure Spring Apps Enterprise`.
 
 ## Delete the hello-world app
-Once you successfully test the hellow-world app, please go ahead and delete the app to save costs. To delete this app, use the below command.
+Once you successfully test the hello-world app, please go ahead and delete the app to save on resources. To delete this app, use the below command.
 
 ```bash
 az spring app delete --name hello-world

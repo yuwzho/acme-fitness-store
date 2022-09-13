@@ -151,10 +151,10 @@ az spring app update \
 Verify order data is now persisted in a PostgreSQL Database by placing an order. View your placed orders with the following URL:
 
 ```text
-https://${GATEWAY_URL}/order/${USER_ID}
+echo https://${GATEWAY_URL}/order/${USER_ID}
 ```
 
-Your USER_ID is your username URL encoded.
+Your USER_ID is your username as a URL encoded string. For example: John Smith is John%20Smith.
 
 Now restart the order service application:
 

@@ -29,8 +29,6 @@ az spring gateway update \
 Routing rules bind endpoints in the request to the backend applications. For example in the Cart route below, the routing rule indicates any requests to /cart/** endpoint gets routed to backend Cart App.
 
 ```shell
-cd 09-hol-3-configure-spring-cloud-gateway
-
 az spring gateway route-config create \
     --name ${CART_SERVICE_APP} \
     --app-name ${CART_SERVICE_APP} \
@@ -51,7 +49,6 @@ az spring gateway route-config create \
     --app-name ${FRONTEND_APP} \
     --routes-file ./routes/frontend.json
 
-cd ..
 ```
 
 ### Access the Application through Spring Cloud Gateway
@@ -59,7 +56,7 @@ cd ..
 Retrieve the URL for Spring Cloud Gateway and open it in a browser:
 
 ```shell
-open "https://${GATEWAY_URL}"
+echo "https://${GATEWAY_URL}"
 ```
 
 You should see the ACME Fitness Store Application:
@@ -75,7 +72,7 @@ Assign an endpoint to API Portal and open it in a browser:
 az spring api-portal update --assign-endpoint true
 export PORTAL_URL=$(az spring api-portal show | jq -r '.properties.url')
 
-open "https://${PORTAL_URL}"
+echo "https://${PORTAL_URL}"
 ```
 
 ⬅️ Previous guide: [08 - Hands On Lab 2 - Deploy Acme Fitness](../08-hol-2-deploy-acme-fitness/README.md)

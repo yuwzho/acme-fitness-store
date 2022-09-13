@@ -10,9 +10,36 @@ Below are the diffrent steps that we configure/create to successfully deploy the
 - [3. Bind to Service Registry](#3-bind-to-service-registry)
 - [4. Build and Deploy Polyglot Applications](#4-build-and-deploy-polyglot-applications)
 
-## 1. Create applications in Azure Spring Apps
+
+## 1. Configure sampling rate for Application Insights
+
+
+Retrieve the Instrumentation Key for Application Insights and add to Key Vault
+
+```shell
+export INSTRUMENTATION_KEY=$(az monitor app-insights component show --app ${SPRING_APPS_SERVICE} | jq -r '.connectionString')
+
+az keyvault secret set --vault-name ${KEY_VAULT} \
+    --name "ApplicationInsights--ConnectionString" --value ${INSTRUMENTATION_KEY}
+```
+
+### Update Sampling Rate
+
+Increase the sampling rate for the Application Insights binding.
+
+```shell
+az spring build-service builder buildpack-binding set \
+    --builder-name default \
+    --name default \
+    --type ApplicationInsights \
+    --properties sampling-rate=100 connection_string=${INSTRUMENTATION_KEY}
+```
+
+## 2. Create applications in Azure Spring Apps
 
 First step is to create an application for each service:
+
+
 
 ```shell
 az spring app create --name ${CART_SERVICE_APP} --instance-count 1 --memory 1Gi
@@ -23,7 +50,7 @@ az spring app create --name ${FRONTEND_APP} --instance-count 1 --memory 1Gi
 ```
 
 Next step is to provide config information for Payment Service and Catalog Service. Remaining services do not need config data stored separately. 
-## 2. Create Application Configuration Service
+## 3. Create Application Configuration Service
 
 Before we can go ahead and point the services to config stored in an external location, we first need to create an application config instance pointing to that external repo. In this case we are going to create an application config instance that points to a github repo using azure cli.
 
@@ -34,9 +61,9 @@ az spring application-configuration-service git repo add --name acme-fitness-sto
     --uri "https://github.com/Azure-Samples/acme-fitness-store-config"
 ```
 
-### 2.1. Bind to Application Configuration Service
+### 3.1. Bind to Application Configuration Service
 
-Now the next step is to bind the above created application configuration service instance to the azure apps that use this external config. Here we bin
+Now the next step is to bind the above created application configuration service instance to the azure apps that use this external config:
 
 
 ```shell
@@ -45,7 +72,7 @@ az spring application-configuration-service bind --app ${CATALOG_SERVICE_APP} &
 wait
 ```
 
-## 3. Bind to Service Registry
+## 4. Bind to Service Registry
 
 Applications need to communicate with each other. As we learnt in [previous section](../07-asa-e-components-overview/service-registry/README.md) ASA-E internally uses Tanzu Service Registry for dynamic service discovery. To achieve this, required services/apps need to be bound to the service registry using the commands below: 
 
@@ -53,7 +80,7 @@ Applications need to communicate with each other. As we learnt in [previous sect
 az spring service-registry bind --app ${PAYMENT_SERVICE_APP}
 az spring service-registry bind --app ${CATALOG_SERVICE_APP}
 ```
-## 4. Build and Deploy Polyglot Applications
+## 5. Build and Deploy Polyglot Applications
 
 Now that all the required services are configured, the next step is to go ahead and deploy the services/apps. For this we need access to the source code for the services. 
 
@@ -72,18 +99,15 @@ az spring app deploy --name ${CATALOG_SERVICE_APP} \
 
 # Deploy Order Service
 az spring app deploy --name ${ORDER_SERVICE_APP} \
-    --builder ${CUSTOM_BUILDER} \
     --source-path ./apps/acme-order 
 
 # Deploy Cart Service 
 az spring app deploy --name ${CART_SERVICE_APP} \
-    --builder ${CUSTOM_BUILDER} \
     --env "CART_PORT=8080" \
     --source-path ./apps/acme-cart 
 
 # Deploy Frontend App
 az spring app deploy --name ${FRONTEND_APP} \
-    --builder ${CUSTOM_BUILDER} \
     --source-path ./apps/acme-shopping 
 ```
 

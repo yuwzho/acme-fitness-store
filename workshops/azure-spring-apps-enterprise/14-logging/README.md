@@ -18,6 +18,9 @@ az spring app logs \
 
 You can use `az spring app logs -h` to explore more parameters and log stream functionalities.
 
+
+
+
 ### Start monitoring ACME Fitness Store's logs and metrics in Azure Log Analytics
 
 Open the Log Analytics that you created - you can find the Log Analytics in the same
@@ -36,7 +39,7 @@ Type and run the following Kusto query to see application logs:
     | project TimeGenerated, AppName, Log
 ```
 
-![Example output from all application logs query](media/all-app-logs-in-log-analytics.jpg)
+![Example output from all application logs query](../../../media/all-app-logs-in-log-analytics.jpg)
 
 Type and run the following Kusto query to see `catalog-service` application logs:
 
@@ -48,7 +51,7 @@ Type and run the following Kusto query to see `catalog-service` application logs
     | project TimeGenerated, AppName, Log
 ```
 
-![Example output from catalog service logs](media/catalog-app-logs-in-log-analytics.jpg)
+![Example output from catalog service logs](../../../media/catalog-app-logs-in-log-analytics.jpg)
 
 Type and run the following Kusto query to see errors and exceptions thrown by each app:
 ```sql
@@ -60,7 +63,7 @@ Type and run the following Kusto query to see errors and exceptions thrown by ea
     | render piechart
 ```
 
-![An example output from the Ingress Logs](media/ingress-logs-in-log-analytics.jpg)
+![An example output from the Ingress Logs](../../../media/ingress-logs-in-log-analytics.jpg)
 
 Type and run the following Kusto query to see all in the inbound calls into Azure Spring Apps:
 
@@ -78,7 +81,7 @@ Type and run the following Kusto query to see all the logs from Spring Cloud Gat
     | project TimeGenerated,Log
 ```
 
-![An example out from the Spring Cloud Gateway Logs](media/spring-cloud-gateway-logs-in-log-analytics.jpg)
+![An example out from the Spring Cloud Gateway Logs](../../../media/spring-cloud-gateway-logs-in-log-analytics.jpg)
 
 Type and run the following Kusto query to see all the logs from Spring Cloud Service Registry managed by Azure Spring Apps:
 
@@ -88,4 +91,4 @@ Type and run the following Kusto query to see all the logs from Spring Cloud Ser
     | project TimeGenerated, Log
 ```
 
-![An example output from service registry logs](media/service-registry-logs-in-log-analytics.jpg)
+![An example output from service registry logs](../../../media/service-registry-logs-in-log-analytics.jpg)

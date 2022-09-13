@@ -8,7 +8,7 @@ Once this section is complete, the architecture looks as below:
 Choose a unique display name for your Application Registration.
 
 ```shell
-export AD_DISPLAY_NAME=change-me    # unique application display name
+export AD_DISPLAY_NAME=acme-ad-YOUR-UNIQUE_USERNAME    # unique application display name
 ```
 
 Create an Application registration with Azure AD and save the output.
@@ -130,7 +130,7 @@ az spring app  update --name ${ORDER_SERVICE_APP} \
 Retrieve the URL for Spring Cloud Gateway and open it in a browser:
 
 ```shell
-open "https://${GATEWAY_URL}"
+echo "https://${GATEWAY_URL}"
 ```
 
 You should see the ACME Fitness Store Application, and be able to log in using your
@@ -156,7 +156,7 @@ az spring api-portal update \
 Open API Portal in a browser, this will redirect you to log in now:
 
 ```shell
-open "https://${PORTAL_URL}"
+echo "https://${PORTAL_URL}"
 ```
 
 To access the protected APIs, click Authorize and follow the steps that match your
