@@ -7,7 +7,7 @@ This workshop leverages Github Codespaces to provide a development environment f
 
 1. The first step in getting access to github codespaces option for [Azure Samples](https://github.com/Azure-Samples/) is to send your github id to XXX@XXX.com email distribution or to the workshop co-ordinator. The admin of this distribution list will add you to the organization and assign you permissions that makes the Codespaces option visible.
 
-2. Upon getting the confirmation that you are added to the Org, navigate to https://github.com/Azure-Samples/acme-fitness-demo/tree/Azure, click "Code" button. You should be able to "Codespaces" as an option listed. If you do not see that option listed, most probably you are not added to [Azure-Samples](https://github.com/Azure-Samples/) org or your github id is still not active in this org. Please discuss this issue with your workshop co-ordinator.
+2. Upon getting the confirmation that you are added to the Org, navigate to https://github.com/Azure-Samples/acme-fitness-store/tree/Azure, click "Code" button. You should be able to "Codespaces" as an option listed. If you do not see that option listed, most probably you are not added to [Azure-Samples](https://github.com/Azure-Samples/) org or your github id is still not active in this org. Please discuss this issue with your workshop co-ordinator.
 
 3. Assuming the above steps are succesful, you should be able to open a terminal inside VS Code that opens up in Codespaces. Refer to this link to understand more about [Codespaces](https://github.com/CodeSpaces). This Codespace comes installed with the following software:
    1. * [JDK 17](https://docs.microsoft.com/java/openjdk/download?WT.mc_id=azurespringcloud-github-judubois#openjdk-17)
@@ -58,7 +58,6 @@ This step should be completed only after the successful completion of the above 
 
 Create a bash script with environment variables by making a copy of the supplied template:
 
-Make sure you are in `workshops/azure-spring-apps-enterprise` directory
 ```shell
 cp ./scripts/setup-env-variables-template.sh ./scripts/setup-env-variables.sh
 ```

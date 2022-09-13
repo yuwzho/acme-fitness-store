@@ -5,8 +5,6 @@ Once this section is complete, the architecture looks as below:
 
 ## 1. Register Application with Azure AD
 
-Make sure you are in `workshops/azure-spring-apps-enterprise` directory
-
 Choose a unique display name for your Application Registration.
 
 ```shell
@@ -62,7 +60,6 @@ The `ISSUER_URI` should take the form `https://login.microsoftonline.com/${TENAN
 The `JWK_SET_URI` should take the form `https://login.microsoftonline.com/${TENANT_ID}/discovery/v2.0/keys`
 
 ## 2. Deploy the Identity Service Application
-//TODO .. Explain the purpose of this service
 
 Create the identity service application
 
@@ -88,7 +85,7 @@ Create routing rules for the identity service application
 az spring gateway route-config create \
     --name ${IDENTITY_SERVICE_APP} \
     --app-name ${IDENTITY_SERVICE_APP} \
-    --routes-file ./10-hol-4-configure-single-signon/routes/identity-service.json
+    --routes-file ./routes/identity-service.json
 ```
 
 ### 2.1. Deploy the Identity Service:
@@ -97,7 +94,7 @@ az spring gateway route-config create \
 az spring app deploy --name ${IDENTITY_SERVICE_APP} \
     --env "JWK_URI=${JWK_SET_URI}" \
     --config-file-pattern identity/default \
-    --source-path ../../apps/acme-identity
+    --source-path ./apps/acme-identity
 ```
 
 > Note: The application will take around 3-5 minutes to deploy.
@@ -128,8 +125,6 @@ az spring app update --name ${CART_SERVICE_APP} \
 az spring app  update --name ${ORDER_SERVICE_APP} \
     --env "AcmeServiceSettings__AuthUrl=https://${GATEWAY_URL}" 
 ```
-//TODO Explain how these env vars enable applications to use Gateway Authorization information
-
 ### 3.2. Login to the Application through Spring Cloud Gateway
 
 Retrieve the URL for Spring Cloud Gateway and open it in a browser:

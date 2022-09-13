@@ -15,8 +15,6 @@ Below are the diffrent steps that we configure/create to successfully deploy the
 
 First step is to create an application for each service:
 
-Make sure you are in `workshops/azure-spring-apps-enterprise` directory
-
 ```shell
 az spring app create --name ${CART_SERVICE_APP} --instance-count 1 --memory 1Gi
 az spring app create --name ${ORDER_SERVICE_APP} --instance-count 1 --memory 1Gi
@@ -77,35 +75,33 @@ Now go ahead and create the apps.
 # Deploy Payment Service
 az spring app deploy --name ${PAYMENT_SERVICE_APP} \
     --config-file-pattern payment/default \
-    --source-path ../../apps/acme-payment 
+    --source-path ./apps/acme-payment 
 
 # Deploy Catalog Service
 az spring app deploy --name ${CATALOG_SERVICE_APP} \
     --config-file-pattern catalog/default \
-    --source-path ../../apps/acme-catalog 
+    --source-path ./apps/acme-catalog 
 
 # Deploy Order Service
 az spring app deploy --name ${ORDER_SERVICE_APP} \
     --builder ${CUSTOM_BUILDER} \
-    --source-path ../../apps/acme-order 
+    --source-path ./apps/acme-order 
 
 # Deploy Cart Service 
 az spring app deploy --name ${CART_SERVICE_APP} \
     --builder ${CUSTOM_BUILDER} \
     --env "CART_PORT=8080" \
-    --source-path ../../apps/acme-cart 
+    --source-path ./apps/acme-cart 
 
 # Deploy Frontend App
 az spring app deploy --name ${FRONTEND_APP} \
     --builder ${CUSTOM_BUILDER} \
-    --source-path ../../apps/acme-shopping 
+    --source-path ./apps/acme-shopping 
 ```
 
 You will notice that we need to supply a custom builder for frontend, cart service and order service as these are not Java based apps. Also to note is config-file-pattern for payment and catalog services. As you might recall in previous step, we configured aplication config service for payment and catalog services. This argument is providing the file pattern. More details about this pattern can be found in the previous section [application configuration sevice](../07-asa-e-components-overview/application-config-service/README.md)
 
 After completing the above steps all the required applications should be successfully deployed. You can check for the status of these apps using the command below:
-
-//TODO Murthy to add command 
 
 So far in this section we were able to successfully create and deploy the apps into an existing azure spring apps instance. 
 
