@@ -5,6 +5,8 @@ Once this section is complete, the architecture looks as below:
 
 ## 1. Configure Spring Cloud Gateway
 
+Make sure you are in `workshops/azure-spring-apps-enterprise` directory
+
 Assign a public endpoint and update the Spring Cloud Gateway configuration with API
 information:
 

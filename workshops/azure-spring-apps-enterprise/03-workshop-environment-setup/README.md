@@ -7,7 +7,7 @@ This workshop leverages Github Codespaces to provide a development environment f
 
 1. The first step in getting access to github codespaces option for [Azure Samples](https://github.com/Azure-Samples/) is to send your github id to XXX@XXX.com email distribution or to the workshop co-ordinator. The admin of this distribution list will add you to the organization and assign you permissions that makes the Codespaces option visible.
 
-2. Upon getting the confirmation that you are added to the Org, navigate to https://github.com/Azure-Samples/acme-fitness-demo/tree/workshop repository, click "Code" button. You should be able to "Codespaces" as an option listed. If you do not see that option listed, most probably you are not added to [Azure-Samples](https://github.com/Azure-Samples/) org or your github id is still not active in this org. Please discuss this issue with your workshop co-ordinator or send an email to XXX@XXX.com.
+2. Upon getting the confirmation that you are added to the Org, navigate to https://github.com/Azure-Samples/acme-fitness-demo/tree/Azure, click "Code" button. You should be able to "Codespaces" as an option listed. If you do not see that option listed, most probably you are not added to [Azure-Samples](https://github.com/Azure-Samples/) org or your github id is still not active in this org. Please discuss this issue with your workshop co-ordinator.
 
 3. Assuming the above steps are succesful, you should be able to open a terminal inside VS Code that opens up in Codespaces. Refer to this link to understand more about [Codespaces](https://github.com/CodeSpaces). This Codespace comes installed with the following software:
    1. * [JDK 17](https://docs.microsoft.com/java/openjdk/download?WT.mc_id=azurespringcloud-github-judubois#openjdk-17)
@@ -32,7 +32,7 @@ As we had already noted in the prior sections and also as we go to next sections
 
 Please right click on the below button and choose the Open in new tab option. The reason is there are quite a number of fields that need to be populated in that form and we are providing guidance on the values to populate with.
 
-[![Deploy to Azure](images/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3a%2f%2fraw.githubusercontent.com%2fmurthy-vmware%2facme-fitness-store%2fworkshop%2f03-workshop-environment-setup%2facmedeploy.json)
+[![Deploy to Azure](images/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3a%2f%2fraw.githubusercontent.com%2fAzure-Samples%2facme-fitness-store%2fAzure%2fworkshops%2fazure-spring-apps-enterprise%2f03-workshop-environment-setup%2facmedeploy.json)
 
 
 To know about the description of the fields, click on the little info icon next to every field. For the fields where default value is populated, the recommendation is to use the default for the first time use. The only field that needs to be popluated in here is the ``ObjectId``. To get the value for this field, perform the below steps
@@ -58,7 +58,7 @@ This step should be completed only after the successful completion of the above 
 
 Create a bash script with environment variables by making a copy of the supplied template:
 
-From the root directory of the repo
+Make sure you are in `workshops/azure-spring-apps-enterprise` directory
 ```shell
 cp ./scripts/setup-env-variables-template.sh ./scripts/setup-env-variables.sh
 ```
@@ -78,23 +78,7 @@ Now, set the environment:
 
 ```shell
 source ./scripts/setup-env-variables.sh
-```
-
-### Install the Azure CLI spring extension
-
-Alright, now that you triggered the task to create the dependent services/resources we will go ahead with the next steps of installing azure cli in our Codespace. While there is an option to use Azure Portal to create the required resources, for the purposes of this workshop we use azure cli. 
-
-Install the Azure Spring Apps extension for the Azure CLI using the following command
-
-```shell
-az extension add --name spring
-```
-
-Note - `spring` CLI extension `1.1.5` or later is a pre-requisite to enable the
-latest Enterprise tier functionality to configure VMware Tanzu Components.
-```
-
-If `spring`'s version still < `1.1.5` after above commands, you can try to [re-install Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli). 
+``` 
 
 ### Login to Azure
 

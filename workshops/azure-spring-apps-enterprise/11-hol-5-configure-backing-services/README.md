@@ -5,7 +5,7 @@ Once this section is complete, the architecture looks as below:
 
 ## 1. Prepare your environment
 
-Make sure that you are in `asa-e-workshop` directory
+Make sure you are in `workshops/azure-spring-apps-enterprise` directory
 
 Create a bash script with environment variables by making a copy of the supplied template:
 

@@ -5,6 +5,8 @@ Once this section is complete, the architecture looks as below:
 
 ## 1. Register Application with Azure AD
 
+Make sure you are in `workshops/azure-spring-apps-enterprise` directory
+
 Choose a unique display name for your Application Registration.
 
 ```shell
