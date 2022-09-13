@@ -297,18 +297,6 @@
                             }
                         },
                         {
-                            "type": "Microsoft.Insights/components",
-                            "apiVersion": "2020-02-02",
-                            "name": "[variables('opInsightsWorkspaceName')]",
-                            "location": "[parameters('location')]",
-                            "kind": "other",
-                            "properties": {
-                                "Application_Type": "Web",
-                                "Flow_Type": "Bluefield",
-                                "Request_Source": "rest"
-                            }
-                        },
-                        {
                             "type": "Microsoft.Cache/redis",
                             "apiVersion": "2020-06-01",
                             "name": "[variables('cacheName')]",
