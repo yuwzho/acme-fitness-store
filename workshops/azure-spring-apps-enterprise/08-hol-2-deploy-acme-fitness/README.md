@@ -15,6 +15,8 @@ Below are the diffrent steps that we configure/create to successfully deploy the
 
 First step is to create an application for each service:
 
+Make sure you are in `workshops/azure-spring-apps-enterprise` directory
+
 ```shell
 az spring app create --name ${CART_SERVICE_APP} --instance-count 1 --memory 1Gi
 az spring app create --name ${ORDER_SERVICE_APP} --instance-count 1 --memory 1Gi
