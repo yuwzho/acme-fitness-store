@@ -38,7 +38,7 @@ fi
 readonly CONFIG_REPO=https://github.com/Azure-Samples/acme-fitness-store-config
 
 RESOURCE_GROUP='rg-acme-fitness'
-SPRING_APPS_SERVICE='asc-acme-fitness'
+SPRING_APPS_SERVICE='spring-acme-fitness'
 REGION='eastus'
 
 function create_spring_cloud() {
@@ -70,29 +70,35 @@ function create_dependencies() {
 
   echo "Creating Azure Database for Postgres $ACMEFIT_POSTGRES_SERVER"
 
-  az postgres server create --admin-user ${ACMEFIT_POSTGRES_DB_USER} \
-    --admin-password $ACMEFIT_POSTGRES_DB_PASSWORD \
+  # create postgresql flexible server
+  az postgres flexible-server create \
     --name $ACMEFIT_POSTGRES_SERVER \
     --resource-group $RESOURCE_GROUP \
-    --sku-name GP_Gen5_2 \
-    --version 11 \
-    --storage-size 5120
+    --location $REGION \
+    --admin-user $ACMEFIT_POSTGRES_DB_USER \
+    --admin-password $ACMEFIT_POSTGRES_DB_PASSWORD \
+    --public-access 0.0.0.0 \
+    --tier Burstable \
+    --sku-name Standard_B1ms \
+    --storage-size 32
 
-  echo "Creating current logged in user as postgres AD Admin"
-  az postgres server ad-admin create -s $ACMEFIT_POSTGRES_SERVER \
-    -g $RESOURCE_GROUP \
-    -u $CURRENT_USER \
-    -i $CURRENT_USER_OBJECTID
+  # echo "Creating current logged in user as postgres AD Admin"
+  # az postgres server ad-admin create -s $ACMEFIT_POSTGRES_SERVER \
+  #   -g $RESOURCE_GROUP \
+  #   -u $CURRENT_USER \
+  #   -i $CURRENT_USER_OBJECTID
 
   echo "Creating Postgres Database $ACMEFIT_CATALOG_DB_NAME"
-  az postgres db create \
-    --name $ACMEFIT_CATALOG_DB_NAME \
-    --server-name $ACMEFIT_POSTGRES_SERVER
+  az postgres flexible-server db create \
+    -g $RESOURCE_GROUP \
+    -s $ACMEFIT_POSTGRES_SERVER \
+    -d $ACMEFIT_CATALOG_DB_NAME
 
   echo "Creating Postgres Database $ACMEFIT_ORDER_DB_NAME"
-  az postgres db create \
-    --name $ACMEFIT_ORDER_DB_NAME \
-    --server-name $ACMEFIT_POSTGRES_SERVER
+  az postgres flexible-server db create \
+    -g $RESOURCE_GROUP \
+    -s $ACMEFIT_POSTGRES_SERVER \
+    -d $ACMEFIT_ORDER_DB_NAME
 }
 
 function create_builder() {
@@ -199,7 +205,7 @@ function create_catalog_service() {
   az spring service-registry bind --app $CATALOG_SERVICE
   az spring gateway route-config create --name $CATALOG_SERVICE --app-name $CATALOG_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/catalog-service.json"
 
-  az spring connection create postgres \
+  az spring connection create postgres-flexible \
     --resource-group $RESOURCE_GROUP \
     --service $SPRING_APPS_SERVICE \
     --connection $CATALOG_SERVICE_DB_CONNECTION \
@@ -307,15 +313,15 @@ function main() {
   create_identity_service
   create_cart_service
   create_order_service
-  create_payment_service 
-  create_catalog_service 
+  create_payment_service
+  create_catalog_service
   create_frontend_app
 
-  deploy_identity_service 
+  deploy_identity_service
   deploy_cart_service
   deploy_order_service
-  deploy_payment_service 
-  deploy_catalog_service 
+  deploy_payment_service
+  deploy_catalog_service
   deploy_frontend_app
 
   update_sso_portalurl
