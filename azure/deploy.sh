@@ -80,7 +80,15 @@ function create_dependencies() {
     --public-access 0.0.0.0 \
     --tier Burstable \
     --sku-name Standard_B1ms \
+    --version 14 \
     --storage-size 32
+
+  # active ad autentication?
+  az postgres flexible-server parameter set \
+    --server-name ${ACMEFIT_POSTGRES_SERVER} \
+    --resource-group ${RESOURCE_GROUP} \
+    --name azure.extensions \
+    --value uuid-ossp
 
   # echo "Creating current logged in user as postgres AD Admin"
   # az postgres server ad-admin create -s $ACMEFIT_POSTGRES_SERVER \
@@ -185,7 +193,7 @@ function create_order_service() {
   az spring app create --name $ORDER_SERVICE
   az spring gateway route-config create --name $ORDER_SERVICE --app-name $ORDER_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/order-service.json"
 
-  az spring connection create postgres \
+  az spring connection create postgres-flexible \
     --resource-group $RESOURCE_GROUP \
     --service $SPRING_APPS_SERVICE \
     --connection $ORDER_SERVICE_POSTGRES_CONNECTION \
@@ -274,11 +282,24 @@ function deploy_order_service() {
 }
 
 function deploy_catalog_service() {
+  echo "Building catalog-service application"
+  CURRENT_DIR=$(pwd)
+  cd "$APPS_ROOT/acme-catalog"
+  $APPS_ROOT/acme-catalog/gradlew clean build 
+  cd $CURRENT_DIR
+
   echo "Deploying catalog-service application"
   az spring app deploy --name $CATALOG_SERVICE \
     --config-file-pattern catalog \
     --jvm-options='-XX:MaxMetaspaceSize=148644K' \
-    --source-path "$APPS_ROOT/acme-catalog"
+    --artifact-path $APPS_ROOT/acme-catalog/build/libs/acme-catalog-0.0.1-SNAPSHOT.jar \
+    --env "SPRING_DATASOURCE_AZURE_CREDENTIALFREEENABLED=true"
+  # TODO: Replace everything in this function by the below command once the sdk is released
+  # az spring app deploy --name $CATALOG_SERVICE \
+  #   --config-file-pattern catalog \
+  #   --jvm-options='-XX:MaxMetaspaceSize=148644K' \
+  #   --source-path "$APPS_ROOT/acme-catalog" \
+  #   --env "SPRING_DATASOURCE_AZURE_CREDENTIALFREEENABLED=true"
 }
 
 function deploy_payment_service() {

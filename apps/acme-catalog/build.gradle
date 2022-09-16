@@ -11,11 +11,8 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 repositories {
-	//maven {
-	//	url = uri("https://maven.pkg.github.com/felipmiguel/azure-jdbc-msi-extension")
-	// }
+	mavenLocal()
 	mavenCentral()
-
 }
 
 ext {
@@ -32,13 +29,15 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
 	implementation 'com.azure.spring:spring-cloud-azure-starter-keyvault-secrets'
+	
+	runtimeOnly 'com.azure.spring:spring-cloud-azure-starter-jdbc-postgresql'
 
 	runtimeOnly 'org.postgresql:postgresql'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
-	runtimeOnly 'com.azure.spring:spring-cloud-azure-starter-jdbc-postgresql'
 	
+	// runtimeOnly fileTree('libs') { include '*.jar' }	
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
