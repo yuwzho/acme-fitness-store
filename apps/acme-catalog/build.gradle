@@ -11,13 +11,12 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 repositories {
-	mavenLocal()
 	mavenCentral()
 }
 
 ext {
 	set('springCloudVersion', "2021.0.1")
-	set('springCloudAzureVersion', "4.4.0-beta.1")
+	set('springCloudAzureVersion', "4.5.0-beta.1")
 }
 
 dependencies {
@@ -35,9 +34,6 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
-
-	
-	// runtimeOnly fileTree('libs') { include '*.jar' }	
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

@@ -222,7 +222,8 @@ function create_catalog_service() {
     --tg $RESOURCE_GROUP \
     --server $ACMEFIT_POSTGRES_SERVER \
     --database $ACMEFIT_CATALOG_DB_NAME \
-    --client-type springboot
+    --client-type springboot \
+    --system-identity
 
 }
 
@@ -292,14 +293,8 @@ function deploy_catalog_service() {
   az spring app deploy --name $CATALOG_SERVICE \
     --config-file-pattern catalog \
     --jvm-options='-XX:MaxMetaspaceSize=148644K' \
-    --artifact-path $APPS_ROOT/acme-catalog/build/libs/acme-catalog-0.0.1-SNAPSHOT.jar \
+    --source-path "$APPS_ROOT/acme-catalog" \
     --env "SPRING_DATASOURCE_AZURE_PASSWORDLESSENABLED=true"
-  # TODO: Replace everything in this function by the below command once the sdk is released
-  # az spring app deploy --name $CATALOG_SERVICE \
-  #   --config-file-pattern catalog \
-  #   --jvm-options='-XX:MaxMetaspaceSize=148644K' \
-  #   --source-path "$APPS_ROOT/acme-catalog" \
-  #   --env "SPRING_DATASOURCE_AZURE_PASSWORDLESSENABLED=true"
 }
 
 function deploy_payment_service() {
