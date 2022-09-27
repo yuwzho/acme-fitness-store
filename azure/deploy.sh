@@ -69,44 +69,28 @@ function create_dependencies() {
   az redis create --location $REGION --name $REDIS_NAME --resource-group $RESOURCE_GROUP --sku Basic --vm-size c0
 
   echo "Creating Azure Database for Postgres $ACMEFIT_POSTGRES_SERVER"
-
-  # create postgresql flexible server
-  az postgres flexible-server create \
-    --name $ACMEFIT_POSTGRES_SERVER \
-    --resource-group $RESOURCE_GROUP \
-    --location $REGION \
-    --admin-user $ACMEFIT_POSTGRES_DB_USER \
-    --admin-password $ACMEFIT_POSTGRES_DB_PASSWORD \
-    --public-access 0.0.0.0 \
-    --tier Burstable \
-    --sku-name Standard_B1ms \
-    --version 14 \
-    --storage-size 32
-
-  # active ad autentication?
-  az postgres flexible-server parameter set \
-    --server-name ${ACMEFIT_POSTGRES_SERVER} \
+  # create postgresql  server
+  az postgres server create \
+    --name ${ACMEFIT_POSTGRES_SERVER} \
     --resource-group ${RESOURCE_GROUP} \
-    --name azure.extensions \
-    --value uuid-ossp
-
-  # echo "Creating current logged in user as postgres AD Admin"
-  # az postgres server ad-admin create -s $ACMEFIT_POSTGRES_SERVER \
-  #   -g $RESOURCE_GROUP \
-  #   -u $CURRENT_USER \
-  #   -i $CURRENT_USER_OBJECTID
+    --location ${REGION} \
+    --admin-user ${ACMEFIT_POSTGRES_DB_USER} \
+    --admin-password "${ACMEFIT_POSTGRES_DB_PASSWORD}" \
+    --sku-name GP_Gen5_2 \
+    --public 0.0.0.0 \
+    --storage-size 5120
 
   echo "Creating Postgres Database $ACMEFIT_CATALOG_DB_NAME"
-  az postgres flexible-server db create \
+  az postgres db create \
     -g $RESOURCE_GROUP \
     -s $ACMEFIT_POSTGRES_SERVER \
-    -d $ACMEFIT_CATALOG_DB_NAME
+    -n $ACMEFIT_CATALOG_DB_NAME
 
   echo "Creating Postgres Database $ACMEFIT_ORDER_DB_NAME"
-  az postgres flexible-server db create \
+  az postgres db create \
     -g $RESOURCE_GROUP \
     -s $ACMEFIT_POSTGRES_SERVER \
-    -d $ACMEFIT_ORDER_DB_NAME
+    -n $ACMEFIT_ORDER_DB_NAME
 }
 
 function create_builder() {
@@ -193,7 +177,7 @@ function create_order_service() {
   az spring app create --name $ORDER_SERVICE
   az spring gateway route-config create --name $ORDER_SERVICE --app-name $ORDER_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/order-service.json"
 
-  az spring connection create postgres-flexible \
+  az spring connection create postgres \
     --resource-group $RESOURCE_GROUP \
     --service $SPRING_APPS_SERVICE \
     --connection $ORDER_SERVICE_POSTGRES_CONNECTION \
@@ -213,7 +197,7 @@ function create_catalog_service() {
   az spring service-registry bind --app $CATALOG_SERVICE
   az spring gateway route-config create --name $CATALOG_SERVICE --app-name $CATALOG_SERVICE --routes-file "$PROJECT_ROOT/azure/routes/catalog-service.json"
 
-  az spring connection create postgres-flexible \
+  az spring connection create postgres \
     --resource-group $RESOURCE_GROUP \
     --service $SPRING_APPS_SERVICE \
     --connection $CATALOG_SERVICE_DB_CONNECTION \
@@ -224,7 +208,6 @@ function create_catalog_service() {
     --database $ACMEFIT_CATALOG_DB_NAME \
     --client-type springboot \
     --system-identity
-
 }
 
 function create_payment_service() {
@@ -286,7 +269,7 @@ function deploy_catalog_service() {
   echo "Building catalog-service application"
   CURRENT_DIR=$(pwd)
   cd "$APPS_ROOT/acme-catalog"
-  $APPS_ROOT/acme-catalog/gradlew clean build 
+  $APPS_ROOT/acme-catalog/gradlew clean build
   cd $CURRENT_DIR
 
   echo "Deploying catalog-service application"
