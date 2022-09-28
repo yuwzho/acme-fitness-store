@@ -1,6 +1,7 @@
 In this section you are going complete the following pre-requisites
  - Setting an Azure account with Enterprise Subscription
  - Access Github Codespaces
+ - Set the env variables
   
 ## Azure Account
 To start the workshop, you need to have an Azure account with active subscription. If you already have an enterprise account from your company, you can skip this section and move on to the next one. 
@@ -25,4 +26,31 @@ The requirement to get Codespaces enabled for you is to get your gitid added to 
 
 ![codespaces](images/codespaces.png)
 
-### Use Codespaces
+### Login to Azure
+
+Login to the Azure CLI and choose your active subscription. In the terminal of VS Code in Codespace, run the below commands
+
+```shell
+az login --use-device-code
+az account list -o table
+az account set --subscription ${SUBSCRIPTION_ID}
+```
+
+Accept the legal terms and privacy statements for the Enterprise tier.
+
+> Note: This step is necessary only if your subscription has never been used to create an Enterprise tier instance of Azure Spring Apps.
+
+```shell
+az provider register --namespace Microsoft.SaaS
+az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan asa-ent-hr-mtr
+```
+
+
+### Set the env vars
+ - Open the file ./scripts/set-env-vars.sh
+ - Update the variable names based on the comments
+
+Run the below command
+```shell
+./scripts/1-set-pre-requisites.sh
+```
