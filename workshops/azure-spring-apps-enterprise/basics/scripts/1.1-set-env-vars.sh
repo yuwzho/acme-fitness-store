@@ -1,3 +1,3 @@
-#!/bin/bash
+#!/bin/bash -e
 set -x
-source ../env/env-vars.sh
+. ./env/env-vars.sh 
