@@ -55,3 +55,8 @@ Accept the legal terms and privacy statements for the Enterprise tier.
 ```shell
 ./scripts/1.3-accept-license.sh
 ```
+
+⬅️ Previous guide: [Main Guide](../README.md)
+
+➡️ Next guide: [02 - Create Resource Group](../02-create-resource-group/README.md)
+
