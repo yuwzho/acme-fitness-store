@@ -5,7 +5,7 @@ set -euo pipefail
 readonly PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 readonly APPS_ROOT="${PROJECT_ROOT}/apps"
 
-readonly REDIS_NAME="fitness-cache-demo"
+readonly REDIS_NAME="fitness-cache-javalab"
 readonly ORDER_SERVICE_POSTGRES_CONNECTION="order_service_db"
 readonly CART_SERVICE_REDIS_CONNECTION="cart_service_cache"
 readonly CATALOG_SERVICE_DB_CONNECTION="catalog_service_db"
@@ -13,7 +13,7 @@ readonly ACMEFIT_CATALOG_DB_NAME="acmefit_catalog"
 readonly ACMEFIT_ORDER_DB_NAME="acmefit_order"
 readonly ACMEFIT_POSTGRES_DB_PASSWORD="Acm3F!tness"
 readonly ACMEFIT_POSTGRES_DB_USER=dbadmin
-readonly ACMEFIT_POSTGRES_SERVER="acmefitnessdb-demo"
+readonly ACMEFIT_POSTGRES_SERVER="acmefitnessdb-demo-javalab"
 readonly ORDER_DB_NAME="orders"
 readonly CART_SERVICE="cart-service"
 readonly IDENTITY_SERVICE="identity-service"
@@ -38,7 +38,7 @@ fi
 readonly CONFIG_REPO=https://github.com/Azure-Samples/acme-fitness-store-config
 
 RESOURCE_GROUP='rg-acme-fitness'
-SPRING_APPS_SERVICE='spring-acme-fitness'
+SPRING_APPS_SERVICE='spring-acme-fitness-javalab'
 REGION='eastus'
 
 function create_spring_cloud() {
@@ -100,7 +100,7 @@ function create_builder() {
 
 function configure_sso() {
   echo "Configuring SSO"
-  az ad app create --display-name acme-fitness >ad.json
+  az ad app create --display-name acme-fitness-javalab >ad.json
   export APPLICATION_ID=$(cat ad.json | jq -r '.appId')
 
   az ad app credential reset --id ${APPLICATION_ID} --append >sso.json
