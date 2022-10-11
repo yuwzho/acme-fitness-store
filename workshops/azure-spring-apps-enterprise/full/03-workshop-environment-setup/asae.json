@@ -14,12 +14,6 @@
                 "description": "The name of the Application Insights instance for Azure Spring Cloud"
             }
         },
-        "laWorkspaceResourceId": {
-            "type": "string",
-            "metadata": {
-                "description": "The resource ID of the existing Log Analytics workspace. This will be used for both diagnostics logs and Application Insights"
-            }
-        },
         "tags": {
             "type": "object",
             "metadata": {
@@ -44,8 +38,7 @@
                 "Application_Type": "web",
                 "ApplicationId": "[parameters('appInsightsName')]",
                 "Flow_Type": "Bluefield",
-                "Request_Source": "rest",
-                "WorkspaceResourceId": "[parameters('laWorkspaceResourceId')]"
+                "Request_Source": "rest"
             }
         },
         {
@@ -146,28 +139,6 @@
             "dependsOn": [
                 "[resourceId('Microsoft.AppPlatform/Spring', parameters('springCloudInstanceName'))]"
             ]
-        },
-        {
-            "type": "Microsoft.AppPlatform/Spring/providers/diagnosticSettings",
-            "name": "[concat(parameters('springCloudInstanceName'), '/Microsoft.Insights/monitoring')]",
-            "dependsOn": [  
-                "[resourceId('Microsoft.AppPlatform/Spring/', parameters('springCloudInstanceName'))]"       
-            ],
-            "apiVersion": "2017-05-01-preview",
-            "properties": {
-                "name": "monitoring",
-                "workspaceId": "[parameters('laWorkspaceResourceId')]",
-                "logs": [
-                    {
-                        "category": "ApplicationConsole",
-                        "enabled": true,
-                        "retentionPolicy": {
-                            "days": 30,
-                            "enabled": false
-                        }
-                    }
-                ]
-            }
         }
                
     ],
