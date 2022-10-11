@@ -311,74 +311,7 @@
                             "sku": {
                                 "name": "E0",
                                 "tier": "Enterprise"
-                            },
-                            "resources": [
-                                {
-                                    "type": "serviceRegistries",
-                                    "name": "default",
-                                    "apiVersion": "2022-03-01-preview",
-                                    "location": "[parameters('location')]",
-                                    "dependsOn": [
-                                        "[resourceId('Microsoft.AppPlatform/Spring', variables('springAppsInstanceName'))]"
-                                    ]
-                                },
-                                {
-                                    "type": "configurationServices",
-                                    "name": "default",
-                                    "apiVersion": "2022-03-01-preview",
-                                    "location": "[parameters('location')]",
-                                    "dependsOn": [
-                                        "[resourceId('Microsoft.AppPlatform/Spring', variables('springAppsInstanceName'))]"
-                                    ]
-                                },
-                                {
-                                    "type": "gateways",
-                                    "name": "default",
-                                    "apiVersion": "2022-03-01-preview",
-                                    "location": "[parameters('location')]",
-                                    "sku": {
-                                        "name": "E0",
-                                        "tier": "Enterprise",
-                                        "capacity": 2
-                                    },
-                                    "dependsOn": [
-                                        "[resourceId('Microsoft.AppPlatform/Spring', variables('springAppsInstanceName'))]"
-                                    ]
-                                },
-                                {
-                                    "type": "apiPortals",
-                                    "name": "default",
-                                    "apiVersion": "2022-03-01-preview",
-                                    "location": "[parameters('location')]",
-                                    "sku": {
-                                        "name": "E0",
-                                        "tier": "Enterprise",
-                                        "capacity": 1
-                                    },
-                                    "properties": {
-                                        "gatewayIds": [
-                                            "[concat(resourceId('Microsoft.AppPlatform/Spring', variables('springAppsInstanceName')), '/gateways/default')]"
-                                        ]
-                                    },
-                                    "dependsOn": [
-                                        "[resourceId('Microsoft.AppPlatform/Spring', variables('springAppsInstanceName'))]"
-                                    ]
-                                },
-                                {
-                                    "type": "Microsoft.AppPlatform/Spring/buildServices/agentPools",
-                                    "name": "[concat(variables('springAppsInstanceName'), '/default/default')]",
-                                    "apiVersion": "2022-03-01-preview",
-                                    "location": "[parameters('location')]",
-                                    "properties": {
-                                        "poolSize": {
-                                            "name": "S1"
-                                        }
-                                    },
-                                    "dependsOn": [
-                                        "[resourceId('Microsoft.AppPlatform/Spring', variables('springAppsInstanceName'))]"
-                                    ]
-                                }
-                            ]
+                            }
                         }
                     ]
                 }
