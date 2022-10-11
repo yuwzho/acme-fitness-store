@@ -210,6 +210,15 @@
             "metadata": {
                 "description": "Specify a boolean value that indicates whether diagnostics should be saved to the specified storage account."
             }
+        },
+        "tags": {
+            "type": "object",
+            "metadata": {
+                "description": "The tags that will be associated to the Resources"
+            },
+            "defaultValue": {
+                "environment": "lab"
+            }
         }
     },
     "variables": {
@@ -344,22 +353,22 @@
                         },
                         {
                             "type": "Microsoft.Insights/components",
-                            "apiVersion": "2020-02-02",
                             "name": "[variables('appInsightsName')]",
+                            "apiVersion": "2020-02-02",
                             "location": "[parameters('location')]",
-                            "kind": "other",
+                            "tags": "[parameters('tags')]",
                             "properties": {
                                 "Application_Type": "web",
                                 "ApplicationId": "[variables('appInsightsName')]",
                                 "Flow_Type": "Bluefield",
-                                "Request_Source": "rest",
-                                "WorkspaceResourceId": "[variables('logAnalyticsWorkspaceName')]"
+                                "Request_Source": "rest"
                             }
                         },
                         {
                             "apiVersion": "2022-03-01-preview",
                             "name": "[variables('springAppsInstanceName')]",
                             "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
                             "dependsOn": [
                                 "[resourceId('Microsoft.Insights/components', variables('appInsightsName'))]"
 
@@ -423,7 +432,7 @@
                                 },
                                 {
                                     "type": "Microsoft.AppPlatform/Spring/buildServices/agentPools",
-                                    "name": "[concat(variables('springAppsInstanceName'), '/default/default')]",
+                                    "name": "[concat(variables('springAppsInstanceName'), '/default/default')]",
                                     "apiVersion": "2022-03-01-preview",
                                     "location": "[parameters('location')]",
                                     "properties": {
@@ -439,7 +448,7 @@
                         },
                         {
                             "apiVersion": "2022-03-01-preview",
-                            "name": "[concat(variables('springAppsInstanceName'), '/default/default/default')]",
+                            "name": "[concat(variables('springAppsInstanceName'), '/default/default/default')]",
                             "type": "Microsoft.AppPlatform/Spring/buildservices/builders/buildpackBindings",
                             "properties": {
                                 "bindingType": "ApplicationInsights",
@@ -453,28 +462,6 @@
                             "dependsOn": [
                                 "[resourceId('Microsoft.AppPlatform/Spring', variables('springAppsInstanceName'))]"
                             ]
-                        },
-                        {
-                            "type": "Microsoft.AppPlatform/Spring/providers/diagnosticSettings",
-                            "name": "[concat(variables('springAppsInstanceName'), '/Microsoft.Insights/monitoring')]",
-                            "dependsOn": [
-                                "[resourceId('Microsoft.AppPlatform/Spring/', variables('springAppsInstanceName'))]"
-                            ],
-                            "apiVersion": "2017-05-01-preview",
-                            "properties": {
-                                "name": "monitoring",
-                                "workspaceId": "[variables('logAnalyticsWorkspaceName')]",
-                                "logs": [
-                                    {
-                                        "category": "ApplicationConsole",
-                                        "enabled": true,
-                                        "retentionPolicy": {
-                                            "days": 30,
-                                            "enabled": false
-                                        }
-                                    }
-                                ]
-                            }
                         }
                     ]
                 }
