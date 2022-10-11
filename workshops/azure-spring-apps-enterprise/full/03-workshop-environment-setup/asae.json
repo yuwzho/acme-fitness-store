@@ -284,6 +284,20 @@
                                     "bypass": "AzureServices"
                                 }
                             }
+                        },
+                        {
+                            "type": "Microsoft.Insights/components",
+                            "apiVersion": "2020-02-02",
+                            "name": "[variables('appInsightsName')]",
+                            "location": "[parameters('location')]",
+                            "kind": "other",
+                            "properties": {
+                                "Application_Type": "web",
+                                "ApplicationId": "[variables('appInsightsName')]",
+                                "Flow_Type": "Bluefield",
+                                "Request_Source": "rest",
+                                "WorkspaceResourceId": "[variables('logAnalyticsWorkspaceName')]"
+                            }
                         }
                     ]
                 }
