@@ -246,6 +246,103 @@
                     "variables": {},
                     "resources": [
                         {
+                            "type": "Microsoft.KeyVault/vaults",
+                            "name": "[variables('keyVaultName')]",
+                            "apiVersion": "2021-06-01-preview",
+                            "location": "[parameters('location')]",
+                            "properties": {
+                                "enabledForDeployment": "[parameters('enabledForDeployment')]",
+                                "enabledForDiskEncryption": "[parameters('enabledForDiskEncryption')]",
+                                "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
+                                "tenantId": "[parameters('tenantId')]",
+                                "accessPolicies": [
+                                    {
+                                        "objectId": "[parameters('objectId')]",
+                                        "tenantId": "[parameters('tenantId')]",
+                                        "permissions": {
+                                            "keys": "[parameters('keysPermissions')]",
+                                            "secrets": "[parameters('secretsPermissions')]",
+                                            "certificates": "[parameters('certificatesPermissions')]"
+                                        }
+                                    },
+                                    {
+                                        "objectId": "[parameters('objectId')]",
+                                        "tenantId": "[parameters('tenantId')]",
+                                        "permissions": {
+                                            "keys": "[parameters('keysPermissions')]",
+                                            "secrets": "[parameters('secretsPermissions')]",
+                                            "certificates": "[parameters('certificatesPermissions')]"
+                                        }
+                                    }
+                                ],
+                                "sku": {
+                                    "name": "[parameters('skuName')]",
+                                    "family": "A"
+                                },
+                                "networkAcls": {
+                                    "defaultAction": "Allow",
+                                    "bypass": "AzureServices"
+                                }
+                            }
+                        },
+                        {
+                            "type": "Microsoft.Cache/redis",
+                            "apiVersion": "2020-06-01",
+                            "name": "[variables('cacheName')]",
+                            "location": "[parameters('location')]",
+                            "properties": {
+                                "enableNonSslPort": "[parameters('enableNonSslPort')]",
+                                "minimumTlsVersion": "1.2",
+                                "sku": {
+                                    "capacity": "[parameters('redisCacheCapacity')]",
+                                    "family": "[parameters('redisCacheFamily')]",
+                                    "name": "[parameters('redisCacheSKU')]"
+                                }
+                            }
+                        },
+                        {
+                            "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+                            "apiVersion": "2021-06-01",
+                            "name": "[variables('dbName')]",
+                            "location": "[parameters('location')]",
+                            "sku": {
+                                "name": "[parameters('dbInstanceType')]",
+                                "tier": "[parameters('serverEdition')]"
+                            },
+                            "properties": {
+                                "version": "[parameters('version')]",
+                                "administratorLogin": "[parameters('administratorLogin')]",
+                                "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+                                "network": {
+                                    "delegatedSubnetResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), json(format('{0}/subnets/{1}', parameters('virtualNetworkExternalId'), parameters('subnetName'))))]",
+                                    "privateDnsZoneArmResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), parameters('privateDnsZoneArmResourceId'))]"
+                                },
+                                "highAvailability": {
+                                    "mode": "[parameters('haMode')]"
+                                },
+                                "storage": {
+                                    "storageSizeGB": "[parameters('skuSizeGB')]"
+                                },
+                                "backup": {
+                                    "backupRetentionDays": 7,
+                                    "geoRedundantBackup": "Disabled"
+                                },
+                                "availabilityZone": "[parameters('availabilityZone')]"
+                            }
+                        },
+                        {
+                            "type": "Microsoft.OperationalInsights/workspaces",
+                            "apiVersion": "2015-11-01-preview",
+                            "name": "[variables('logAnalyticsWorkspaceName')]",
+                            "location": "[parameters('location')]",
+                            "properties": {
+                                "sku": {
+                                    "name": "PerGB2018"
+                                },
+                                "retentionInDays": 30
+                            }
+                        },
+                        {
                             "type": "Microsoft.Insights/components",
                             "apiVersion": "2020-02-02",
                             "name": "[variables('appInsightsName')]",
