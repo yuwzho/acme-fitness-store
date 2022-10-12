@@ -352,27 +352,10 @@
                             }
                         },
                         {
-                            "type": "Microsoft.Insights/components",
-                            "name": "[variables('appInsightsName')]",
-                            "apiVersion": "2020-02-02",
-                            "location": "[parameters('location')]",
-                            "tags": "[parameters('tags')]",
-                            "properties": {
-                                "Application_Type": "web",
-                                "ApplicationId": "[variables('appInsightsName')]",
-                                "Flow_Type": "Bluefield",
-                                "Request_Source": "rest"
-                            }
-                        },
-                        {
                             "apiVersion": "2022-03-01-preview",
                             "name": "[variables('springAppsInstanceName')]",
                             "location": "[parameters('location')]",
                             "tags": "[parameters('tags')]",
-                            "dependsOn": [
-                                "[resourceId('Microsoft.Insights/components', variables('appInsightsName'))]"
-
-                            ],
                             "type": "Microsoft.AppPlatform/Spring",
                             "sku": {
                                 "name": "E0",
@@ -450,15 +433,6 @@
                             "apiVersion": "2022-03-01-preview",
                             "name": "[concat(variables('springAppsInstanceName'), '/default/default/default')]",
                             "type": "Microsoft.AppPlatform/Spring/buildservices/builders/buildpackBindings",
-                            "properties": {
-                                "bindingType": "ApplicationInsights",
-                                "launchProperties": {
-                                    "properties": {
-                                        "sampling_percentage": 10,
-                                        "connection_string": "[reference(concat('microsoft.insights/components/', variables('appInsightsName')), '2015-05-01').ConnectionString]"
-                                    }
-                                }
-                            },
                             "dependsOn": [
                                 "[resourceId('Microsoft.AppPlatform/Spring', variables('springAppsInstanceName'))]"
                             ]
