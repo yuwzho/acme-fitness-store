@@ -227,6 +227,7 @@
         "cacheName": "[concat(parameters('projectName'), '-cache-', substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
         "keyVaultName": "[concat(parameters('projectName'), '-kv-', substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
         "springAppsInstanceName": "[concat(parameters('projectName'), '-springapps-', substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
+        "serviceRegName": "[concat(parameters('projectName'), '-servicereg-', substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
         "logAnalyticsWorkspaceName": "[concat(parameters('projectName'),'-la-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
         "appInsightsName": "[concat(parameters('projectName'),'-insights-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]"
     },
@@ -364,7 +365,7 @@
                             "resources": [
                                 {
                                     "type": "Microsoft.AppPlatform/Spring/serviceRegistries",
-                                    "name": "default",
+                                    "name": "[variables('serviceRegName')]",
                                     "apiVersion": "2022-09-01-preview",
                                     "location": "[parameters('location')]",
                                     "dependsOn": [
