@@ -210,15 +210,6 @@
             "metadata": {
                 "description": "Specify a boolean value that indicates whether diagnostics should be saved to the specified storage account."
             }
-        },
-        "tags": {
-            "type": "object",
-            "metadata": {
-                "description": "The tags that will be associated to the Resources"
-            },
-            "defaultValue": {
-                "environment": "lab"
-            }
         }
     },
     "variables": {
@@ -226,8 +217,6 @@
         "dbName": "[concat(parameters('projectName'), '-db-', substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
         "cacheName": "[concat(parameters('projectName'), '-cache-', substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
         "keyVaultName": "[concat(parameters('projectName'), '-kv-', substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
-        "springAppsInstanceName": "[concat(parameters('projectName'), '-springapps-', substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
-        "serviceRegName": "[concat(parameters('projectName'), '-servicereg-', substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
         "logAnalyticsWorkspaceName": "[concat(parameters('projectName'),'-la-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
         "appInsightsName": "[concat(parameters('projectName'),'-insights-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]"
     },
