@@ -11,7 +11,7 @@
         },
         "location": {
             "type": "string",
-            "defaultValue": "westeurope",
+            "defaultValue": "centralus",
             "metadata": {
                 "description": "Specifies the Azure location where the key vault should be created."
             }
