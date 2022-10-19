@@ -36,7 +36,7 @@ After successful completion of this step verify that the resource group and all 
 
 [Resource Group](images/arm-resourcegroup.png)
 
-Another optional step is to create ASA-E instance using ARM template. While the step before is processing, we can use the below ARM template to provision ASA-E instance. Please choose the Resource Group that was created as part of the above ARM template.
+Another optional step is to create ASA-E instance using ARM template. While the step before is processing, we can use the below ARM template to provision ASA-E instance. Please choose the Resource Group that was created as part of the above step. If you were using all the default values, the resource group name should be acme-fitness-rg.
 
 [![Deploy to Azure](images/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3a%2f%2fraw.githubusercontent.com%2fAzure-Samples%2facme-fitness-store%2fAzure%2fworkshops%2fazure-spring-apps-enterprise%2ffull%2f03-workshop-environment-setup%2fasae.json)
 
