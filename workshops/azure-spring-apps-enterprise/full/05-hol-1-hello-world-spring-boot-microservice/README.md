@@ -77,7 +77,7 @@ In order to create the app instance graphically, you can use [the Azure portal](
 Alternatively, you can use the command line to create the app instance, which is easier:
 
 ```bash
-az spring app create -n hello-world --resource-group ${RESOURCE_GROUP}
+az spring app create -n hello-world
 ```
 
 You can now build your "hello-world" project and deploy it to Azure Spring Apps Enterprise:
