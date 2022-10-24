@@ -4,11 +4,13 @@ This diagram below shows the final result once this section is complete:
 ![diagram](images/just-services.png)
 
 Below are the diffrent steps that we configure/create to successfully deploy the services/apps
-- [1. Create applications in Azure Spring Apps](#1-create-applications-in-azure-spring-apps)
-- [2. Create Application Configuration Service](#2-create-application-configuration-service)
-  - [2.1. Bind to Application Configuration Service](#21-bind-to-application-configuration-service)
-- [3. Bind to Service Registry](#3-bind-to-service-registry)
-- [4. Build and Deploy Polyglot Applications](#4-build-and-deploy-polyglot-applications)
+- [1. Configure sampling rate for Application Insights](#1-configure-sampling-rate-for-application-insights)
+  - [Update Sampling Rate](#update-sampling-rate)
+- [2. Create applications in Azure Spring Apps](#2-create-applications-in-azure-spring-apps)
+- [3. Create Application Configuration Service](#3-create-application-configuration-service)
+  - [3.1. Bind to Application Configuration Service](#31-bind-to-application-configuration-service)
+- [4. Bind to Service Registry](#4-bind-to-service-registry)
+- [5. Build and Deploy Polyglot Applications](#5-build-and-deploy-polyglot-applications)
 
 
 ## 1. Configure sampling rate for Application Insights
@@ -34,7 +36,8 @@ source ./scripts/setup-keyvault-env-variables.sh
 Retrieve the Instrumentation Key for Application Insights and add to Key Vault
 
 ```shell
-export INSTRUMENTATION_KEY=$(az monitor app-insights component show --app ${SPRING_APPS_SERVICE} | jq -r '.connectionString')
+export INSTRUMENTATION_KEY=$(az monitor app-insights component show --app \ 
+ ${SPRING_APPS_SERVICE} | jq -r '.connectionString')
 
 az keyvault secret set --vault-name ${KEY_VAULT} \
     --name "ApplicationInsights--ConnectionString" --value ${INSTRUMENTATION_KEY}
