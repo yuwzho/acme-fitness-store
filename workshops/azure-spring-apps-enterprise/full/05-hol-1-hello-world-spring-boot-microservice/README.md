@@ -12,7 +12,7 @@ A typical way to create Spring Boot applications is to use the Spring Initialize
 In the same directory as this README execute the curl command line below:
 
 ```bash
-curl https://start.spring.io/starter.tgz -d dependencies=web -d baseDir=hello-world -d bootVersion=2.7.0 -d javaVersion=17 | tar -xzvf -
+curl https://start.spring.io/starter.tgz -d dependencies=web -d baseDir=hello-world -d bootVersion=2.7.5 -d javaVersion=17 -d type=maven-project | tar -xzvf -
 ```
 
 > We force the Spring Boot version to be 2.7.0, and keep default settings that use the `com.example.demo` package.
@@ -77,7 +77,7 @@ In order to create the app instance graphically, you can use [the Azure portal](
 Alternatively, you can use the command line to create the app instance, which is easier:
 
 ```bash
-az spring app create -n hello-world
+az spring app create -n hello-world --resource-group ${RESOURCE_GROUP}
 ```
 
 You can now build your "hello-world" project and deploy it to Azure Spring Apps Enterprise:
