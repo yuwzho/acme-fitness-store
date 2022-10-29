@@ -112,6 +112,18 @@ curl https://primary:...hello-world/default/hello/
 
 If successful, you should see the message: `Hello from Azure Spring Apps Enterprise`.
 
+## View Logs
+
+```shell
+az spring app logs -s ${SPRING_APPS_SERVICE} -g ${RESOURCE_GROUP} -n hello-world -f
+```
+
+## Scale App
+
+```shell
+az spring app scale -n hello-world --instance-count 3
+```
+
 ## Delete the hello-world app
 Once you successfully test the hello-world app, please go ahead and delete the app to save on resources. To delete this app, use the below command.
 
@@ -122,32 +134,6 @@ az spring app delete --name hello-world
 
 Congratulations, you have deployed your first Spring Boot microservice to Azure Spring Apps!
 
-Here is the final script to build and deploy everything that was done in this guide:
-
-```
-curl https://start.spring.io/starter.tgz -d dependencies=web -d baseDir=hello-world -d bootVersion=2.7.0 -d javaVersion=17 | tar -xzvf -
-cd hello-world
-cat > HelloController.java << EOF
-package com.example.demo;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-public class HelloController {
-
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello from Azure Spring Apps Enterprise";
-    }
-}
-EOF
-mv HelloController.java src/main/java/com/example/demo/HelloController.java
-az spring app create -n hello-world --runtime-version Java_17
-./mvnw clean package
-az spring app deploy -n hello-world --artifact-path target/demo-0.0.1-SNAPSHOT.jar
-cd ..
-```
 
 ---
 
