@@ -1,0 +1,48 @@
+In the previous section we deployed a simple hello-world service to asa-e instance. In this section we are going to deploy the frontend of acme-fitness, configure that with Spring Cloud Gateway and validate that we are able to access the frontend. 
+
+This diagram below shows the final result once this section is complete:
+![diagram](images/just-services.png)
+
+Below are the diffrent steps that we configure/create to successfully deploy the services/apps
+- [1. Create Application Configuration Service](#1-create-application-configuration-service)
+  - [1.1. Configure apps to Application Configuration Service](#11-configure-apps-to-application-configuration-service)
+- [2. Bind apps to Service Registry](#2-bind-apps-to-service-registry)
+
+
+## 1. Create Application Configuration Service
+
+Before we can go ahead and point the services to config stored in an external location, we first need to create an application config instance pointing to that external repo. In this case we are going to create an application config instance that points to a github repo using azure cli.
+
+```shell
+az spring application-configuration-service git repo add --name acme-fitness-store-config \
+    --label main \
+    --patterns "catalog/default,catalog/key-vault,identity/default,identity/key-vault,payment/default" \
+    --uri "https://github.com/Azure-Samples/acme-fitness-store-config"
+```
+
+### 1.1. Configure apps to Application Configuration Service
+
+Now the next step is to bind the above created application configuration service instance to the azure apps that use this external config:
+
+
+```shell
+az spring application-configuration-service bind --app ${PAYMENT_SERVICE_APP} &
+az spring application-configuration-service bind --app ${CATALOG_SERVICE_APP} &
+wait
+```
+
+## 2. Bind apps to Service Registry
+
+Applications need to communicate with each other. As we learnt in [previous section](../07-asa-e-components-overview/service-registry/README.md) ASA-E internally uses Tanzu Service Registry for dynamic service discovery. To achieve this, required services/apps need to be bound to the service registry using the commands below: 
+
+```shell
+az spring service-registry bind --app ${PAYMENT_SERVICE_APP}
+az spring service-registry bind --app ${CATALOG_SERVICE_APP}
+```
+
+So far in this section we were able to successfully create and deploy the apps into an existing azure spring apps instance. 
+
+
+⬅️ Previous guide: [07 - ASA-E components Overview](../07-asa-e-components-overview/README.md)
+
+➡️ Next guide: [09 - Hands On Lab 3 - Spring Cloud Gateway Configuration](../09-hol-3-configure-spring-cloud-gateway/README.md)

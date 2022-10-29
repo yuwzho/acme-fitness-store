@@ -1,0 +1,123 @@
+In the previous section we deployed a simple hello-world service to asa-e instance. In this section we are going to deploy the frontend of acme-fitness, configure that with Spring Cloud Gateway and validate that we are able to access the frontend. 
+
+This diagram below shows the final result once this section is complete:
+![diagram](images/just-services.png)
+
+Below are the diffrent steps that we configure/create to successfully deploy the services/apps
+- [1. Configure sampling rate for Application Insights](#1-configure-sampling-rate-for-application-insights)
+  - [Update Sampling Rate](#update-sampling-rate)
+- [2. Create and Deploy frontend application in Azure Spring Apps](#2-create-and-deploy-frontend-application-in-azure-spring-apps)
+- [3. Configure Spring Cloud Gateway](#3-configure-spring-cloud-gateway)
+  - [Create  routing rules for the applications:](#create--routing-rules-for-the-applications)
+  - [Access the Application through Spring Cloud Gateway](#access-the-application-through-spring-cloud-gateway)
+
+
+## 1. Configure sampling rate for Application Insights
+
+Create a bash script with the key-vault environment varialbe by making a copy of the supplied template:
+
+```shell
+cp ./scripts/setup-keyvault-env-variables-template.sh ./scripts/setup-keyvault-env-variables.sh
+```
+
+Open `./scripts/setup-keyvault-env-variables.sh` and update the following information:
+
+```shell
+export KEY_VAULT=acme-fitness-kv-CHANGE-ME     # Unique name for Azure Key Vault. Replace CHANGE_ME with the 4 unique characters that were created as part of ARM template in Section 3.
+```
+
+Then, set the environment:
+
+```shell
+source ./scripts/setup-keyvault-env-variables.sh
+```
+
+Retrieve the Instrumentation Key for Application Insights and add to Key Vault
+
+```shell
+export INSTRUMENTATION_KEY=$(az monitor app-insights component show --app \ 
+ ${SPRING_APPS_SERVICE} | jq -r '.connectionString')
+
+az keyvault secret set --vault-name ${KEY_VAULT} \
+    --name "ApplicationInsights--ConnectionString" --value ${INSTRUMENTATION_KEY}
+```
+
+### Update Sampling Rate
+
+Increase the sampling rate for the Application Insights binding.
+
+```shell
+az spring build-service builder buildpack-binding set \
+    --builder-name default \
+    --name default \
+    --type ApplicationInsights \
+    --properties sampling-rate=100 connection_string=${INSTRUMENTATION_KEY}
+```
+
+## 2. Create and Deploy frontend application in Azure Spring Apps
+
+First step is to create an application for each service:
+
+
+
+```shell
+az spring app create --name ${FRONTEND_APP} --instance-count 1 --memory 1Gi &
+wait
+```
+
+Once the above step is complete, we need to deploy the app.
+```shell
+az spring app deploy --name ${FRONTEND_APP} \
+    --source-path ./apps/acme-shopping 
+```
+
+## 3. Configure Spring Cloud Gateway
+
+Assign a public endpoint and update the Spring Cloud Gateway configuration with API
+information:
+
+```shell
+az spring gateway update --assign-endpoint true
+export GATEWAY_URL=$(az spring gateway show | jq -r '.properties.url')
+```
+The assign-endpoint argument with a value of true creates a publicly accessible endpoint for the gateway.
+
+```shell
+az spring gateway update \
+    --api-description "Acme Fitness Store API" \
+    --api-title "Acme Fitness Store" \
+    --api-version "v1.0" \
+    --server-url "https://${GATEWAY_URL}" \
+    --allowed-origins "*" \
+    --no-wait
+```
+
+### Create  routing rules for the applications:
+
+Routing rules bind endpoints in the request to the backend applications. In the step below we are creating a rule in SCG to the frontend app.
+
+```shell
+
+az spring gateway route-config create \
+    --name ${FRONTEND_APP} \
+    --app-name ${FRONTEND_APP} \
+    --routes-file ./routes/frontend.json
+
+```
+
+### Access the Application through Spring Cloud Gateway
+
+Retrieve the URL for Spring Cloud Gateway and open it in a browser:
+
+```shell
+echo "https://${GATEWAY_URL}"
+```
+
+You should see the ACME Fitness Store Application:
+
+Explore the application, but notice that not everything is functioning yet. Continue on to
+next section to configure Single Sign On to enable the rest of the functionality.
+
+⬅️ Previous guide: [07 - ASA-E components Overview](../07-asa-e-components-overview/README.md)
+
+➡️ Next guide: [09 - Hands On Lab 3 - Spring Cloud Gateway Configuration](../09-hol-3-configure-spring-cloud-gateway/README.md)

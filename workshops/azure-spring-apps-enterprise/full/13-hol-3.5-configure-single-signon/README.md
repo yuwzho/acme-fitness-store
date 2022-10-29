@@ -80,7 +80,7 @@ Bind the identity service to Service Registry.
 az spring service-registry bind --app ${IDENTITY_SERVICE_APP}
 ```
 
-Create routing rules for the identity service application
+Create routing rules for the identity service application in SCG
 
 ```shell
 az spring gateway route-config create \
@@ -126,6 +126,7 @@ az spring app update --name ${CART_SERVICE_APP} \
 az spring app  update --name ${ORDER_SERVICE_APP} \
     --env "AcmeServiceSettings__AuthUrl=https://${GATEWAY_URL}" 
 ```
+
 ### 3.2. Login to the Application through Spring Cloud Gateway
 
 Retrieve the URL for Spring Cloud Gateway and open it in a browser:
