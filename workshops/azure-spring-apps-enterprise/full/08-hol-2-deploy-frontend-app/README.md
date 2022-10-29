@@ -5,11 +5,12 @@ This diagram below shows the final result once this section is complete:
 
 Below are the diffrent steps that we configure/create to successfully deploy the services/apps
 - [1. Configure sampling rate for Application Insights](#1-configure-sampling-rate-for-application-insights)
-  - [Update Sampling Rate](#update-sampling-rate)
+  - [1.1. Update Sampling Rate](#11-update-sampling-rate)
 - [2. Create and Deploy frontend application in Azure Spring Apps](#2-create-and-deploy-frontend-application-in-azure-spring-apps)
 - [3. Configure Spring Cloud Gateway](#3-configure-spring-cloud-gateway)
-  - [Create  routing rules for the applications:](#create--routing-rules-for-the-applications)
-  - [Access the Application through Spring Cloud Gateway](#access-the-application-through-spring-cloud-gateway)
+  - [3.1. Create  routing rules for the applications:](#31-create--routing-rules-for-the-applications)
+- [4. Access the Application through Spring Cloud Gateway](#4-access-the-application-through-spring-cloud-gateway)
+- [5. Explore the API using API Portal](#5-explore-the-api-using-api-portal)
 
 
 ## 1. Configure sampling rate for Application Insights
@@ -42,7 +43,7 @@ az keyvault secret set --vault-name ${KEY_VAULT} \
     --name "ApplicationInsights--ConnectionString" --value ${INSTRUMENTATION_KEY}
 ```
 
-### Update Sampling Rate
+### 1.1. Update Sampling Rate
 
 Increase the sampling rate for the Application Insights binding.
 
@@ -92,7 +93,7 @@ az spring gateway update \
     --no-wait
 ```
 
-### Create  routing rules for the applications:
+### 3.1. Create  routing rules for the applications:
 
 Routing rules bind endpoints in the request to the backend applications. In the step below we are creating a rule in SCG to the frontend app.
 
@@ -105,12 +106,23 @@ az spring gateway route-config create \
 
 ```
 
-### Access the Application through Spring Cloud Gateway
+## 4. Access the Application through Spring Cloud Gateway
 
 Retrieve the URL for Spring Cloud Gateway and open it in a browser:
 
 ```shell
 echo "https://${GATEWAY_URL}"
+```
+
+## 5. Explore the API using API Portal
+
+Assign an endpoint to API Portal and open it in a browser:
+
+```shell
+az spring api-portal update --assign-endpoint true
+export PORTAL_URL=$(az spring api-portal show | jq -r '.properties.url')
+
+echo "https://${PORTAL_URL}"
 ```
 
 You should see the ACME Fitness Store Application:

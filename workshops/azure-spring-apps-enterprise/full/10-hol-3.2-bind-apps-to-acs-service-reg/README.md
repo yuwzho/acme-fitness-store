@@ -1,9 +1,9 @@
-In the previous section we deployed a simple hello-world service to asa-e instance. In this section we are going to deploy the frontend of acme-fitness, configure that with Spring Cloud Gateway and validate that we are able to access the frontend. 
+In this section we are going to bind the backend apps that were deployed in the previous section to Application Config Service and Service Registry.
 
 This diagram below shows the final result once this section is complete:
 ![diagram](images/just-services.png)
 
-Below are the diffrent steps that we configure/create to successfully deploy the services/apps
+Below are the diffrent steps to bind apps to Application Configuration Service and Service Registry.
 - [1. Create Application Configuration Service](#1-create-application-configuration-service)
   - [1.1. Configure apps to Application Configuration Service](#11-configure-apps-to-application-configuration-service)
 - [2. Bind apps to Service Registry](#2-bind-apps-to-service-registry)
@@ -33,14 +33,14 @@ wait
 
 ## 2. Bind apps to Service Registry
 
-Applications need to communicate with each other. As we learnt in [previous section](../07-asa-e-components-overview/service-registry/README.md) ASA-E internally uses Tanzu Service Registry for dynamic service discovery. To achieve this, required services/apps need to be bound to the service registry using the commands below: 
+Applications need to communicate with each other. As we learnt in [section before](../07-asa-e-components-overview/service-registry/README.md) ASA-E internally uses Tanzu Service Registry for dynamic service discovery. To achieve this, required services/apps need to be bound to the service registry using the commands below: 
 
 ```shell
 az spring service-registry bind --app ${PAYMENT_SERVICE_APP}
 az spring service-registry bind --app ${CATALOG_SERVICE_APP}
 ```
 
-So far in this section we were able to successfully create and deploy the apps into an existing azure spring apps instance. 
+So far in this section we were able to successfully bind backend apps to Application Config Service and Service Registry. 
 
 
 ⬅️ Previous guide: [07 - ASA-E components Overview](../07-asa-e-components-overview/README.md)

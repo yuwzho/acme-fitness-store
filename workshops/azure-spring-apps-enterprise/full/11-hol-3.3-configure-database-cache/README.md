@@ -41,6 +41,8 @@ az postgres flexible-server parameter set \
 
 ## 2. Create a database for the services:
 
+Create a database for the order service:
+
 ```shell
 az postgres flexible-server db create \
   --database-name ${ORDER_SERVICE_DB} \
