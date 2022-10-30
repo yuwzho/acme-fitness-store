@@ -74,7 +74,7 @@ az spring gateway route-config create \
 
 ```
 
-This conpletes successful deployments of all the backend apps and updating the rules for these apps in SCG.
+This completes successful deployments of all the backend apps and updating the rules for these apps in SCG.
 
 ⬅️ Previous guide: [08 - Hands On Lab 2 - Deploy Frontend app](../08-hol-2-deploy-frontend-app/README.md)
 

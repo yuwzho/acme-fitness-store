@@ -1,4 +1,4 @@
-By default, several services use in-memory data storage. This unit will create persistent stores outside the applications and connect applications to those stores.
+This unit will create persistent stores (postgres, Azure Cache for Redis) outside the applications and connect applications to those stores. The arm template that was eexcuted in [03-workshop-environment-setup](../03-workshop-environment-setup/acmedeploy.json) created the Postgres Server instance and Azure Cache for Redis instance.
 
 Once this section is complete, the architecture looks as below:
 ![architecture](images/postgres-redis.png) 
