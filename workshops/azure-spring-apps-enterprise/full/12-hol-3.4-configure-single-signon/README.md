@@ -60,7 +60,7 @@ echo ${JWK_SET_URI}
 The `ISSUER_URI` should take the form `https://login.microsoftonline.com/${TENANT_ID}/v2.0`
 The `JWK_SET_URI` should take the form `https://login.microsoftonline.com/${TENANT_ID}/discovery/v2.0/keys`
 
-## 2. Deploy the Identity Service Application
+## 2. Create and Deploy the Identity Service Application
 
 Create the identity service application
 
