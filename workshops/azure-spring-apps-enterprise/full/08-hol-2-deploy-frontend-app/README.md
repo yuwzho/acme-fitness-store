@@ -15,6 +15,8 @@ Below are the diffrent steps that we configure/create to successfully deploy the
 
 ## 1. Configure sampling rate for Application Insights
 
+This is a preliminary step that is not related to deploying the frontend app. But this is here to make sure that Application Insights is configured with all the required information before deploying any apps. More details about Application Insights will be discussed in section 14.
+
 Create a bash script with the key-vault environment varialbe by making a copy of the supplied template:
 
 ```shell
