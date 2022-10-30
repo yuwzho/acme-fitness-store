@@ -166,6 +166,6 @@ SSO provider. Learn more about API Authorization with API Portal [here](https://
 
 
 
-⬅️ Previous guide: [09 - Hands On Lab 3 - Spring Cloud Gateway Configuration](../09-hol-3-configure-spring-cloud-gateway/README.md)
+⬅️ Previous guide: [11 - Hands On Lab 3.3 - Configure Database and Cache](../11-hol-3.3-configure-database-cache/README.md)
 
-➡️ Next guide: [11 - Hands On Lab 5 - Configure Backing Services](../11-hol-5-configure-backing-services/README.md)
+➡️ Next guide: [13 - Hands On Lab 3.5 - Configure Azure KeyVault](../13-hol-3.5-configure-azure-keyvault/README.md)

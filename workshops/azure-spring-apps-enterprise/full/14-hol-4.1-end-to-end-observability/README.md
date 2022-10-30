@@ -74,6 +74,6 @@ Navigate to the `Live Metrics` blade - you can see live metrics on screen with l
 
 ![An image showing the live metrics of all applications](../../../../media/live-metrics.jpg)
 
-⬅️ Previous guide: [12 - Secrets Handling with KeyVault](../12-hol-6-secrets-handling-with-azure-keyvault/README.md)
+⬅️ Previous guide: [13 - Hands On Lab 3.5 - Configure Azure Key Vault](../13-hol-3.5-configure-azure-keyvault/README.md)
 
-➡️ Next guide: [14 - Logging](../14-logging/README.md)
+➡️ Next guide: [15 - Hands On Lab 4.2 - Logging](../15-hol-4.2-logging/README.md)

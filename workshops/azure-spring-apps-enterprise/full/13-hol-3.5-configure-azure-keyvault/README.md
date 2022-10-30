@@ -136,6 +136,6 @@ az spring app update --name ${CART_SERVICE_APP} \
 ## 8. Test the application
 Open the app, add items to the cart and submit the orders to make sure everything is working as expected.
 
-⬅️ Previous guide: [11 - Hands On Lab 5 - Configure Backing Services](../11-hol-5-configure-backing-services/README.md)
+⬅️ Previous guide: [12 - Hands On Lab 3.4 - Configure Single Sign On](../12-hol-3.4-configure-single-signon/README.md)
 
-➡️ Next guide: [13 - End-End Observability](../13-end-to-end-observability/README.md)
+➡️ Next guide: [14 - Hands On Lab 4.1 - End-End Observability](../14-hol-4.1-end-to-end-observability/README.md)

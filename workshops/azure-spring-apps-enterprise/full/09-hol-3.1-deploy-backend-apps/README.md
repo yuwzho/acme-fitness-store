@@ -77,6 +77,6 @@ az spring gateway route-config create \
 
 This conpletes successful deployments of all the backend apps and updating the rules for these apps in SCG.
 
-⬅️ Previous guide: [07 - ASA-E components Overview](../07-asa-e-components-overview/README.md)
+⬅️ Previous guide: [08 - Hands On Lab 2 - Deploy Frontend app](../08-hol-2-deploy-frontend-app/README.md)
 
-➡️ Next guide: [09 - Hands On Lab 3 - Spring Cloud Gateway Configuration](../09-hol-3-configure-spring-cloud-gateway/README.md)
+➡️ Next guide: [10 - Hands On Lab 3.2 - Bind Apps to ACS and Service Registry](../10-hol-3.2-bind-apps-to-acs-service-reg/README.md)

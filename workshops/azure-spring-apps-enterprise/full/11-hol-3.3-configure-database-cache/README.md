@@ -167,6 +167,6 @@ az spring app restart --name ${ORDER_SERVICE_APP}
 After restarting, revisit the URL for your placed orders and notice that they persisted. 
 
 
-⬅️ Previous guide: [10 - Hands On Lab 4 - Configure Single Sign On](../10-hol-4-configure-single-signon/README.md)
+⬅️ Previous guide: [10 - Hands On Lab 3.2 - Bind Apps to ACS and Service Registry](../10-hol-3.2-bind-apps-to-acs-service-reg/README.md)
 
-➡️ Next guide: [12 - Secrets Handling with Azure Key Vault](../12-hol-6-secrets-handling-with-azure-keyvault/README.md)
+➡️ Next guide: [12 - Hands On Lab 3.4 Configure Single Sign On](../12-hol-3.4-configure-single-signon/README.md)

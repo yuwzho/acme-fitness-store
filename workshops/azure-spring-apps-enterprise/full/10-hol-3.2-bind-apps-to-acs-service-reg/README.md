@@ -41,6 +41,6 @@ az spring service-registry bind --app ${CATALOG_SERVICE_APP}
 So far in this section we were able to successfully bind backend apps to Application Config Service and Service Registry. 
 
 
-⬅️ Previous guide: [07 - ASA-E components Overview](../07-asa-e-components-overview/README.md)
+⬅️ Previous guide: [09 - Hands On lab 3.1 - Deploy Backend apps](../09-hol-3.1-deploy-backend-apps/README.md)
 
-➡️ Next guide: [09 - Hands On Lab 3 - Spring Cloud Gateway Configuration](../09-hol-3-configure-spring-cloud-gateway/README.md)
+➡️ Next guide: [11 - Hands On Lab 3.3 - Configure Database and Cache](../11-hol-3.3-configure-database-cache/README.md)

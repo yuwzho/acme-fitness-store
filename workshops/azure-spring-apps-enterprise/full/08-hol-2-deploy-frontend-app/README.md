@@ -132,4 +132,4 @@ next section to configure Single Sign On to enable the rest of the functionality
 
 ⬅️ Previous guide: [07 - ASA-E components Overview](../07-asa-e-components-overview/README.md)
 
-➡️ Next guide: [09 - Hands On Lab 3 - Spring Cloud Gateway Configuration](../09-hol-3-configure-spring-cloud-gateway/README.md)
+➡️ Next guide: [09 - Hands On Lab 3.1 - Deploy backend apps](../09-hol-3.1-deploy-backend-apps/README.md)

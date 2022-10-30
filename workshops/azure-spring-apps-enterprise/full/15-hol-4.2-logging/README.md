@@ -93,6 +93,6 @@ Type and run the following Kusto query to see all the logs from Spring Cloud Ser
 
 ![An example output from service registry logs](../../../../media/service-registry-logs-in-log-analytics.jpg)
 
-⬅️ Previous guide: [13 - End-End Observability](../13-end-to-end-observability/README.md)
+⬅️ Previous guide: [14 - Hands On Lab 4.1 - End-End Observability](../14-hol-4.1-end-to-end-observability/README.md)
 
-➡️ Next guide: [15 - Conclusion](../15-Conclusion/README.md)
+➡️ Next guide: [16 - Conclusion](../16-Conclusion/README.md)
