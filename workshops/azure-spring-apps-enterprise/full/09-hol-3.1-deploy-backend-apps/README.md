@@ -21,14 +21,13 @@ az spring app create --name ${PAYMENT_SERVICE_APP} --instance-count 1 --memory 1
 az spring app create --name ${CATALOG_SERVICE_APP} --instance-count 1 --memory 1Gi &
 wait
 ```
+If the above step is successfully complete, you should see all the backend apps listed in your ASA-E instance as below..
 
-Next step is to provide config information for Payment Service and Catalog Service. Remaining services do not need config data stored separately. 
+![all-apps](./images/all-apps.png)
 
 ## 2. Deploy backend apps
 
-Now that all the required services are configured, the next step is to go ahead and deploy the services/apps. For this we need access to the source code for the services. 
-
-Now go ahead and create the apps.
+Now that all the required apps are created, the next step is to go ahead and deploy the services/apps. For this we need access to the source code for the services. 
 
 ```shell
 # Deploy Payment Service
