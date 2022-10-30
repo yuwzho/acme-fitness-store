@@ -116,6 +116,9 @@ Retrieve the URL for Spring Cloud Gateway and open it in a browser:
 echo "https://${GATEWAY_URL}"
 ```
 
+If you see acme-fitness home page displayed as below, then congratulations. Your frontend app and its corresponding route in SCG are configured correctly and deployed successfully.
+
+![acme-fitness home page](./images/acme-fitness-homepage.png)
 ## 5. Explore the API using API Portal
 
 Assign an endpoint to API Portal and open it in a browser:

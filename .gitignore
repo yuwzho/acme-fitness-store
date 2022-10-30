@@ -51,5 +51,6 @@ terraform.rc
 
 
 workshops/azure-spring-apps-enterprise/scripts/setup-env-variables.sh
+workshops/azure-spring-apps-enterprise/scripts/setup-keyvault-env-variables.sh
 
 hello-world/
