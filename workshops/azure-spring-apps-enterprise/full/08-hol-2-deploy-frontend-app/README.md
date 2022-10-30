@@ -116,7 +116,7 @@ Retrieve the URL for Spring Cloud Gateway and open it in a browser:
 echo "https://${GATEWAY_URL}"
 ```
 
-If you see acme-fitness home page displayed as below, then congratulations. Your frontend app and its corresponding route in SCG are configured correctly and deployed successfully.
+If you see acme-fitness home page displayed as below, then congratulations. Your frontend app and its corresponding route in SCG are configured correctly and deployed successfully. Explore the application, but notice that not everything is functioning yet. Continue on to next section to configure the rest of the functionality.
 
 ![acme-fitness home page](./images/acme-fitness-homepage.png)
 ## 5. Explore the API using API Portal
@@ -130,10 +130,6 @@ export PORTAL_URL=$(az spring api-portal show | jq -r '.properties.url')
 echo "https://${PORTAL_URL}"
 ```
 
-You should see the ACME Fitness Store Application:
-
-Explore the application, but notice that not everything is functioning yet. Continue on to
-next section to configure Single Sign On to enable the rest of the functionality.
 
 ⬅️ Previous guide: [07 - ASA-E components Overview](../07-asa-e-components-overview/README.md)
 
