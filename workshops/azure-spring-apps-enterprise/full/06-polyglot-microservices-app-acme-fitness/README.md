@@ -31,6 +31,6 @@ As you see from the above overview, in addition to the above services there are 
 The next section will introduce these services, their usage in this architecture. Following sections will discuss how they can be configured. 
 
 
-⬅️ Previous guide: [05 - Deploy Simple Hello World spring boot service](../05-hol-1-hello-world-spring-boot-microservice/README.md)
+⬅️ Previous guide: [05 - Deploy Simple Hello World spring boot app](../05-hol-1-hello-world-app/README.md)
 
 ➡️ Next guide: [07 - ASA-E components Overview](../07-asa-e-components-overview/README.md)

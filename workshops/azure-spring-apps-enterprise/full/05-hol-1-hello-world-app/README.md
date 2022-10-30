@@ -2,7 +2,7 @@ In the previous section you created an empty azure spring apps instance. In this
 
 ---
 
-## Create a Hello World Spring Boot microservice
+## Create a Hello World Spring Boot app
 
 A typical way to create Spring Boot applications is to use the Spring Initializer at  [https://start.spring.io/](https://start.spring.io/). 
 **For the purposes of this workshop, we will only invoke the Spring Initializer site via the `curl` command**.
@@ -132,7 +132,7 @@ az spring app delete --name hello-world
 ```
 ## Conclusion
 
-Congratulations, you have deployed your first Spring Boot microservice to Azure Spring Apps!
+Congratulations, you have deployed your first Spring Boot app to Azure Spring Apps!
 
 
 ---
