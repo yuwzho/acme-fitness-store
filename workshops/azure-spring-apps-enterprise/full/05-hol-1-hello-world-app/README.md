@@ -11,11 +11,11 @@ A typical way to create Spring Boot applications is to use the Spring Initialize
 
 In the same directory as this README execute the curl command line below:
 
-```bash
+```shell
 curl https://start.spring.io/starter.tgz -d dependencies=web -d baseDir=hello-world \ -d bootVersion=2.7.5 -d javaVersion=17 -d type=maven-project | tar -xzvf -
 ```
 
-> We force the Spring Boot version to be 2.7.0, and keep default settings that use the `com.example.demo` package.
+> We force the Spring Boot version to be 2.7.5, and keep default settings that use the `com.example.demo` package.
 
 ## Add a new Spring MVC Controller
 
