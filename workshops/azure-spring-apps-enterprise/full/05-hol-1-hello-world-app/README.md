@@ -125,7 +125,7 @@ az spring app scale -n hello-world --instance-count 3
 ```
 Once this command is successfully complete, you will find in Azure portal the Running Instance count updated from default 1 to 3.
 
-[Updated instance count](./images/instance-count.png)
+![Updated instance count](./images/instance-count.png)
 
 ## Delete the hello-world app
 Once you successfully test the hello-world app, please go ahead and delete the app to save on resources. To delete this app, use the below command.
