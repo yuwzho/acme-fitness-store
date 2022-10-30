@@ -1,7 +1,7 @@
 In this section we are going to deploy the backend apps for acme-fitness application. We also updates the rules for these backend apps in Spring Cloud Gateway.
 
 This diagram below shows the final result once this section is complete:
-![diagram](images/just-services.png)
+![diagram](images/scg-frontend-backend.png)
 
 Below are the diffrent steps that we configure/create to successfully deploy the services/apps
 - [1. Create backend apps](#1-create-backend-apps)

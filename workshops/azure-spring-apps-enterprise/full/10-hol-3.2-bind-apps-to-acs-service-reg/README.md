@@ -1,7 +1,5 @@
 In this section we are going to bind the backend apps that were deployed in the previous section to Application Config Service and Service Registry.
 
-This diagram below shows the final result once this section is complete:
-![diagram](images/just-services.png)
 
 Below are the diffrent steps to bind apps to Application Configuration Service and Service Registry.
 - [1. Create Application Configuration Service](#1-create-application-configuration-service)

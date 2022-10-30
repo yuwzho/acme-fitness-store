@@ -1,7 +1,7 @@
 In the previous section we deployed a simple hello-world service to asa-e instance. In this section we are going to deploy the frontend of acme-fitness, configure that with Spring Cloud Gateway and validate that we are able to access the frontend. 
 
 This diagram below shows the final result once this section is complete:
-![diagram](images/just-services.png)
+![diagram](images/frontend.png)
 
 Below are the diffrent steps that we configure/create to successfully deploy the services/apps
 - [1. Configure sampling rate for Application Insights](#1-configure-sampling-rate-for-application-insights)
