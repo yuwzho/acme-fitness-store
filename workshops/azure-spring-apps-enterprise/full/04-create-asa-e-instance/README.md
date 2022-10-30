@@ -95,4 +95,4 @@ After successfully completing the above steps you created an azure spring apps e
 
 ⬅️ Previous guide: [03 - Workshop Environment Setup](../03-workshop-environment-setup/README.md)
 
-➡️ Next guide: [05 - Deploy Simple Hello World spring boot service](../05-hol-1-hello-world-app/README.md)
+➡️ Next guide: [05 - Deploy Simple Hello World spring boot app](../05-hol-1-hello-world-app/README.md)
