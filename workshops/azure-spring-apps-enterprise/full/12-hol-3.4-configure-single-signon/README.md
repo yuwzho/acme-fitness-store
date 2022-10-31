@@ -164,7 +164,9 @@ echo "https://${PORTAL_URL}"
 To access the protected APIs, click Authorize and follow the steps that match your
 SSO provider. Learn more about API Authorization with API Portal [here](https://docs.vmware.com/en/API-portal-for-VMware-Tanzu/1.0/api-portal/GUID-api-viewer.html#api-authorization)
 
+## 5. Testing the app
 
+At this point, you are all ready to start testing the app and place orders. 
 
 ⬅️ Previous guide: [11 - Hands On Lab 3.3 - Configure Database and Cache](../11-hol-3.3-configure-database-cache/README.md)
 

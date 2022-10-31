@@ -164,8 +164,6 @@ Now restart the order service application:
 az spring app restart --name ${ORDER_SERVICE_APP}
 ```
 
-After restarting, revisit the URL for your placed orders and notice that they persisted. 
-
 
 ⬅️ Previous guide: [10 - Hands On Lab 3.2 - Bind Apps to ACS and Service Registry](../10-hol-3.2-bind-apps-to-acs-service-reg/README.md)
 
