@@ -1067,7 +1067,7 @@ The Application Insights Instrumentation Key must be provided for the non-java a
 Retrieve the Instrumentation Key for Application Insights and add to Key Vault
 
 ```shell
-export INSTRUMENTATION_KEY=$(az monitor app-insights component show --app ${SPRING_APPS_SERVICE} | jq -r '.connectionString')
+export INSTRUMENTATION_KEY=$(az monitor app-insights component show --app ${APPLICATION_INSIGHTS} | jq -r '.connectionString')
 
 az keyvault secret set --vault-name ${KEY_VAULT} \
     --name "ApplicationInsights--ConnectionString" --value ${INSTRUMENTATION_KEY}
