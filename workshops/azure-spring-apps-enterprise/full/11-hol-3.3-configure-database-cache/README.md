@@ -18,6 +18,8 @@ export AZURE_CACHE_NAME=acme-fitness-cache-CHANGE-ME                 #Unique nam
 export POSTGRES_SERVER=acme-fitness-db-CHANGE-ME                 # Unique name for Azure Database for PostgreSQL Flexible Server. Replace CHANGE_ME with the 4 unique characters that were created as part of ARM template in Section 3.
 ```
 
+The values for the above variables can be looked up by going to your Resource Group that was created as part of ARM template. That should list all the resources that are part of that resource group and the entries for database and cache will be visible there.
+
 Then, set the environment:
 
 ```shell
