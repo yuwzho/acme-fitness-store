@@ -194,7 +194,7 @@ Accept the legal terms and privacy statements for the Enterprise tier.
 
 ```shell
 az provider register --namespace Microsoft.SaaS
-az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan tanzu-asc-ent-mtr
+az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan asa-ent-hr-mtr
 ```
 
 Create an instance of Azure Spring Apps Enterprise.
@@ -1437,8 +1437,8 @@ Azure Spring Apps or VMware Tanzu components, go to:
 
 * [Azure Spring Apps](https://azure.microsoft.com/en-us/services/spring-cloud/)
 * [Azure Spring Apps docs](https://docs.microsoft.com/en-us/azure/spring-cloud/quickstart-provision-service-instance-enterprise?tabs=azure-portal)
-* [Deploy Spring microservices from scratch](https://github.com/microsoft/azure-spring-cloud-training)
-* [Deploy existing Spring microservices](https://github.com/Azure-Samples/azure-spring-cloud)
+* [Deploy Spring Apps from scratch](https://github.com/microsoft/azure-spring-cloud-training)
+* [Deploy existing Spring Apps](https://github.com/Azure-Samples/azure-spring-cloud)
 * [Azure for Java Cloud Developers](https://docs.microsoft.com/en-us/azure/java/)
 * [Spring Cloud Azure](https://cloud.spring.io/spring-cloud-azure/)
 * [Spring Cloud](https://spring.io/projects/spring-cloud)

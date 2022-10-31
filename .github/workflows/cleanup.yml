@@ -12,20 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Credentials and Terraform Backend
-        run: |
-          credentials=$(cat <<EOF
-          ${{ secrets.AZURE_CREDENTIALS }}
-          EOF
-          )
-          echo "ARM_CLIENT_ID=$(echo $credentials | jq -r '.clientId')" >> $GITHUB_ENV
-          echo "ARM_CLIENT_SECRET=$(echo $credentials | jq -r '.clientSecret')" >> $GITHUB_ENV
-          echo "ARM_SUBSCRIPTION_ID=$(echo $credentials | jq -r '.subscriptionId')" >> $GITHUB_ENV
-          echo "ARM_TENANT_ID=$(echo $credentials | jq -r '.tenantId')" >> $GITHUB_ENV
-
-          # Prepare Backend Config
-          cat <<EOF > azurerm.tfbackend
-          ${{ secrets.TF_BACKEND_CONFIG }}
-          EOF
+        run: ../.github/scripts/prepare-configs.sh
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          BACKEND_CONFIG: ${{ secrets.TF_BACKEND_CONFIG }}
       - name: Terraform Init
         run: terraform init -backend-config=azurerm.tfbackend
       - name: Terraform Validate
@@ -37,7 +27,10 @@ jobs:
           terraform plan -destroy -input=false \
             -var "project_name=${{ secrets.TF_PROJECT_NAME}}" \
             -var "resource_group_location=${{ secrets.AZURE_LOCATION }}" \
-            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}"
+            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}" \
+            -var "sso-client-id=${{ secrets.OIDC_CLIENT_ID }}" \
+            -var "sso-client-secret=${{ secrets.OIDC_CLIENT_SECRET }}" \
+            -var "sso-issuer-uri=${{ secrets.OIDC_ISSUER_URI }}"
       - name: Terraform Apply
         if: steps.first-plan.outcome == 'success'
         id: first-apply
@@ -46,7 +39,10 @@ jobs:
           terraform apply -destroy -auto-approve -input=false \
             -var "project_name=${{ secrets.TF_PROJECT_NAME}}" \
             -var "resource_group_location=${{ secrets.AZURE_LOCATION }}" \
-            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}"
+            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}" \
+            -var "sso-client-id=${{ secrets.OIDC_CLIENT_ID }}" \
+            -var "sso-client-secret=${{ secrets.OIDC_CLIENT_SECRET }}" \
+            -var "sso-issuer-uri=${{ secrets.OIDC_ISSUER_URI }}"
       - name: Terraform Plan (Second Attempt, if the first one failed)
         if: steps.first-apply.outcome != 'success'
         id: second-plan
@@ -55,7 +51,10 @@ jobs:
           terraform plan -destroy -input=false \
             -var "project_name=${{ secrets.TF_PROJECT_NAME}}" \
             -var "resource_group_location=${{ secrets.AZURE_LOCATION }}" \
-            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}"
+            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}" \
+            -var "sso-client-id=${{ secrets.OIDC_CLIENT_ID }}" \
+            -var "sso-client-secret=${{ secrets.OIDC_CLIENT_SECRET }}" \
+            -var "sso-issuer-uri=${{ secrets.OIDC_ISSUER_URI }}"
       - name: Terraform Apply (Second Attempt, if the first one failed)
         if: steps.second-plan.outcome == 'success'
         id: second-apply
@@ -64,7 +63,10 @@ jobs:
           terraform apply -destroy -auto-approve -input=false \
             -var "project_name=${{ secrets.TF_PROJECT_NAME}}" \
             -var "resource_group_location=${{ secrets.AZURE_LOCATION }}" \
-            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}"
+            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}" \
+            -var "sso-client-id=${{ secrets.OIDC_CLIENT_ID }}" \
+            -var "sso-client-secret=${{ secrets.OIDC_CLIENT_SECRET }}" \
+            -var "sso-issuer-uri=${{ secrets.OIDC_ISSUER_URI }}"
       - name: Terraform Plan (Third Attempt, if the first one and second one failed)
         if: steps.first-apply.outcome != 'success' && steps.second-apply.outcome != 'success'
         id: third-plan
@@ -72,11 +74,18 @@ jobs:
           terraform plan -destroy -input=false \
             -var "project_name=${{ secrets.TF_PROJECT_NAME}}" \
             -var "resource_group_location=${{ secrets.AZURE_LOCATION }}" \
-            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}"
+            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}" \
+            -var "sso-client-id=${{ secrets.OIDC_CLIENT_ID }}" \
+            -var "sso-client-secret=${{ secrets.OIDC_CLIENT_SECRET }}" \
+            -var "sso-issuer-uri=${{ secrets.OIDC_ISSUER_URI }}"
       - name: Terraform Apply (Third Attempt, if the first one and second one failed)
         if: steps.third-plan.outcome == 'success'
         run: |
           terraform apply -destroy -auto-approve -input=false \
             -var "project_name=${{ secrets.TF_PROJECT_NAME}}" \
             -var "resource_group_location=${{ secrets.AZURE_LOCATION }}" \
-            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}"
+            -var "sso-jwk-uri=${{ secrets.OIDC_JWK_SET_URI }}" \
+            -var "sso-client-id=${{ secrets.OIDC_CLIENT_ID }}" \
+            -var "sso-client-secret=${{ secrets.OIDC_CLIENT_SECRET }}" \
+            -var "sso-issuer-uri=${{ secrets.OIDC_ISSUER_URI }}"
+

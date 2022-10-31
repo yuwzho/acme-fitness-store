@@ -11,9 +11,6 @@ set -xuo pipefail
 : "${CATALOG_SERVICE_APP:?'must be set'}"
 : "${FRONTEND_APP:?'must be set'}"
 : "${CLIENT_ID:?'must be set'}"
-: "${CLIENT_SECRET:?'must be set'}"
-: "${SCOPE:?'must be set'}"
-: "${ISSUER_URI:?'must be set'}"
 : "${KEY_VAULT:?'must be set'}"
 
 set_keyvault_policy() {
@@ -39,13 +36,7 @@ main() {
 
   az ad app update \
     --id "$CLIENT_ID" \
-    --reply-urls "https://$gateway_url/login/oauth2/code/sso" "https://$portal_url/oauth2-redirect.html" "https://$portal_url/login/oauth2/code/sso"
-
-  az spring api-portal update \
-    --client-id "$CLIENT_ID" \
-    --client-secret "$CLIENT_SECRET"\
-    --scope "openid,profile,email" \
-    --issuer-uri "$ISSUER_URI"
+    --web-redirect-uris "https://$gateway_url/login/oauth2/code/sso" "https://$portal_url/oauth2-redirect.html" "https://$portal_url/login/oauth2/code/sso"
 
   set_keyvault_policy "$IDENTITY_SERVICE_APP"
   set_keyvault_policy "$CART_SERVICE_APP"
@@ -54,3 +45,4 @@ main() {
 }
 
 main
+
