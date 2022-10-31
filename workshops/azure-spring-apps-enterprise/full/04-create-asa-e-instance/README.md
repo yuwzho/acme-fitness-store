@@ -22,6 +22,8 @@ az spring create --name ${SPRING_APPS_SERVICE} \
 ```
 > Note: The service instance will take around 10-15 minutes to deploy. You will notice in the above command have arguments to enable application-configuration-service, service-registry, gateway and api-portal. The significance of these services will be discussed in later sections when we introduce a demo microservices application. For now please go ahead and run the above command.
 
+Please wait till the above command is complete before you start running any of the below commands.
+
 Set your default resource group name and cluster name using the following commands:
 
 ```shell
