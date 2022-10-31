@@ -36,12 +36,6 @@ After successful completion of this step verify that the resource group and all 
 
 [Resource Group](images/arm-resourcegroup.png)
 
-Another optional step is to create ASA-E instance using ARM template. While the step before is processing, we can use the below ARM template to provision ASA-E instance. Please choose the Resource Group that was created as part of the above step. If you were using all the default values, the resource group name should be acme-fitness-rg.
-
-[![Deploy to Azure](images/deploybutton.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3a%2f%2fraw.githubusercontent.com%2fAzure-Samples%2facme-fitness-store%2fAzure%2fworkshops%2fazure-spring-apps-enterprise%2ffull%2f03-workshop-environment-setup%2fasae.json)
-
-The above template takes 15-20 mins to complete.
-
 ## Launch Github Codspaces
 This workshop leverages Github Codespaces to provide a development environment for running the instructions. Certainly you can run these instruction from a shell. But for people trying to get familiar with ASA-E for the first time, to rule out any environment related issues we recommend using Github Codespaces.
 
@@ -65,10 +59,6 @@ This step should be completed only after the successful completion of the above 
 This and following steps should be completed from within the terminal of your VS Code in Github Codespaces.
 
 Create a bash script with environment variables by making a copy of the supplied template:
-
-```shell
-cp ./scripts/setup-env-variables-template.sh ./scripts/setup-env-variables.sh
-```
 
 Open `./scripts/setup-env-variables.sh` and update the following variables:
 
