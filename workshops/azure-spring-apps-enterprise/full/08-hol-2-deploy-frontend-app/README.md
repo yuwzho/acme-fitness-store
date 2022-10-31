@@ -46,6 +46,8 @@ az keyvault secret set --vault-name ${KEY_VAULT} \
 
 ### 1.1. Update Sampling Rate
 
+Before you run the below command, please make sure that there are no existing running applications. These running application causes a conflict updating the buildpacks builder. If you have existing applications, they can be deleted from Azure Portal, going to Azure Spring Apps Instance and going to Apps section. 
+
 Increase the sampling rate for the Application Insights binding.
 
 ```shell
