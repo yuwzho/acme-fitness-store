@@ -67,7 +67,8 @@ The above step ensures that the hello-world app is up and running locally withou
 
 In order to create the app instance graphically, you can use [the Azure portal](https://portal.azure.com/):
 
-- Go to the resource group that was created before as part of your ARM template
+- In the azure portal home, under Azure Services, Click on the resource group.
+- Click on the resource group that was created before as part of your ARM template, that starts with acme-fitness.
 - In the resource group, identify the resource of type Azure Spring Apps and click on it.
 - On the left hand side, under "Settings" click on the "Apps" link.
 - Click on "Create App" link at the top of the Apps page.
