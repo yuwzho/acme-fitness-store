@@ -12,4 +12,4 @@ After completing this section, you have a high level understanding of these diff
 
 ⬅️ Previous guide: [06 - Acme Fitness Micorservices App Introduction](../06-polyglot-microservices-app-acme-fitness/README.md)
 
-➡️ Next guide: [08 - HandsOnLab-2 Deploy Acme Fitness](../08-hol-2-deploy-acme-fitness/README.md)
+➡️ Next guide: [08 - HandsOnLab-2 Deploy Frontend App](../08-hol-2-deploy-frontend-app/README.md)

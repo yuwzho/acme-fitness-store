@@ -106,14 +106,6 @@ az provider register --namespace Microsoft.SaaS
 az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan asa-ent-hr-mtr
 ```
 
-Set your default resource group name and cluster name using the following commands:
-
-```shell
-az configure --defaults \
-    group=${RESOURCE_GROUP} \
-    location=${REGION} \
-    spring=${SPRING_APPS_SERVICE}
-```
 
 If you completed all the steps till here, you have successfully created/installed the following resources
 * Accessing a dev environment via Github Codespaces

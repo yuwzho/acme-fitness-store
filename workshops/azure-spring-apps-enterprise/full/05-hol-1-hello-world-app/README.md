@@ -11,11 +11,11 @@ A typical way to create Spring Boot applications is to use the Spring Initialize
 
 In the same directory as this README execute the curl command line below:
 
-```bash
+```shell
 curl https://start.spring.io/starter.tgz -d dependencies=web -d baseDir=hello-world \ -d bootVersion=2.7.5 -d javaVersion=17 -d type=maven-project | tar -xzvf -
 ```
 
-> We force the Spring Boot version to be 2.7.0, and keep default settings that use the `com.example.demo` package.
+> We force the Spring Boot version to be 2.7.5, and keep default settings that use the `com.example.demo` package.
 
 ## Add a new Spring MVC Controller
 
@@ -123,6 +123,9 @@ az spring app logs -s ${SPRING_APPS_SERVICE} -g ${RESOURCE_GROUP} -n hello-world
 ```shell
 az spring app scale -n hello-world --instance-count 3
 ```
+Once this command is successfully complete, you will find in Azure portal the Running Instance count updated from default 1 to 3.
+
+![Updated instance count](./images/instance-count.png)
 
 ## Delete the hello-world app
 Once you successfully test the hello-world app, please go ahead and delete the app to save on resources. To delete this app, use the below command.
