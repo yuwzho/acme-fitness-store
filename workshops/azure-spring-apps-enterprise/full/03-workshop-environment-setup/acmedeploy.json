@@ -316,9 +316,6 @@
                                     "delegatedSubnetResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), json(format('{0}/subnets/{1}', parameters('virtualNetworkExternalId'), parameters('subnetName'))))]",
                                     "privateDnsZoneArmResourceId": "[if(empty(parameters('virtualNetworkExternalId')), json('null'), parameters('privateDnsZoneArmResourceId'))]"
                                 },
-                                "highAvailability": {
-                                    "mode": "[parameters('haMode')]"
-                                },
                                 "storage": {
                                     "storageSizeGB": "[parameters('skuSizeGB')]"
                                 },
