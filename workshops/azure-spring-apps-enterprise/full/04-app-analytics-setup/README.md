@@ -1,38 +1,3 @@
-## Create ASA-E instance
-
-In this section we are going to create an ASA-E instance using azure cli.
-
-
-Prepare a name for your Azure Spring Apps service.  The name must be between 4 and 32 characters long and can contain only lowercase letters, numbers, and hyphens.  The first character of the service name must be a letter and the last character must be either a letter or a number. 
-
-This name is stored as an environment variable, SPRING_APPS_SERVICE in ```./scripts/setup-env-variables.sh```. It is defaulted to acme-fitness. It is recommended to leave the default value for this workshop purpose. If you are changing the default name, please note that the name cannot exceed 32 characters.
-
-### Create an instance of Azure Spring Apps Enterprise.
-
-```shell
-az spring create --name ${SPRING_APPS_SERVICE} \
-    --resource-group ${RESOURCE_GROUP} \
-    --location ${REGION} \
-    --sku Enterprise \
-    --enable-application-configuration-service \
-    --enable-service-registry \
-    --enable-gateway \
-    --enable-api-portal \
-    --build-pool-size S2 
-```
-> Note: The service instance will take around 10-15 minutes to deploy. You will notice in the above command have arguments to enable application-configuration-service, service-registry, gateway and api-portal. The significance of these services will be discussed in later sections when we introduce a demo microservices application. For now please go ahead and run the above command.
-
-Please wait till the above command is complete before you start running any of the below commands.
-
-Set your default resource group name and cluster name using the following commands:
-
-```shell
-az configure --defaults \
-    group=${RESOURCE_GROUP} \
-    location=${REGION} \
-    spring=${SPRING_APPS_SERVICE}
-```
-
 ### Configure Log Analytics workspace
 
 Retrieve the resource ID for the recently create Azure Spring Apps Service and Log Analytics Workspace:
