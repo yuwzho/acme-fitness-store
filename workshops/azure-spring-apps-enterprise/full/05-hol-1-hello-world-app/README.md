@@ -131,6 +131,6 @@ Congratulations, you have deployed your first Spring Boot app to Azure Spring Ap
 
 ---
 
-⬅️ Previous guide: [04 - Create an Azure Spring Apps instance](../04-create-asa-e-instance/README.md)
+⬅️ Previous guide: [04 - Log Analytics Setup](../04-log-analytics-setup/README.md)
 
 ➡️ Next guide: [06 - Acme Fitness Micorservices App Introduction](../06-polyglot-microservices-app-acme-fitness/README.md)
