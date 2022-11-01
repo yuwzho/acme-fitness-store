@@ -139,4 +139,4 @@ If you completed all the steps till here, you have successfully created/installe
 
 ⬅️ Previous guide: [02 - ASA-E Introduction](../02-asa-e-introduction/README.md)
 
-➡️ Next guide: [04 - App Analytics Setup](../04-app-analytics-setup/README.md)
+➡️ Next guide: [04 - Log Analytics Setup](../04-log-analytics-setup/README.md)
