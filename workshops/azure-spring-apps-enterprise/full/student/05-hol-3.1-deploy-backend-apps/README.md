@@ -78,4 +78,4 @@ This completes successful deployments of all the backend apps and updating the r
 
 ⬅️ Previous guide: [04 - Deploy Acme Fitness frontend App](../04-hol-2-deploy-frontend-app/README.md)
 
-➡️ Next guide: [10 - Hands On Lab 3.2 - Bind Apps to ACS and Service Registry](../10-hol-3.2-bind-apps-to-acs-service-reg/README.md)
+➡️ Workshop Start: [01 - Workshop Environment Setup](../01-workshop-environment-setup/README.md)
