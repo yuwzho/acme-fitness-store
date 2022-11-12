@@ -16,25 +16,19 @@ This workshop leverages Github Codespaces to provide a development environment f
 
 ### Prepare your environment for deployments
 
-This step should be completed only after the successful completion of the above step 1. However as step 1 takes 25-30 minutes to fully complete, but some resources like resrouce-group and within that key-vault, log-analytics and opertational-insights should be completed within 4-5 mins. You can use these completed resources as a reference to complete the steps below.
-
 This and following steps should be completed from within the terminal of your VS Code in Github Codespaces.
-
-Create a bash script with environment variables by making a copy of the supplied template:
 
 Open `./scripts/setup-env-variables.sh` and update the following variables:
 
 ```shell
-export SUBSCRIPTION=CHANGE-ME                 # replace it with your subscription-id
-export RESOURCE_GROUP=acme-fitness-rg           # existing resource group or one that will be created in next steps
-export SPRING_APPS_SERVICE=acme-fitness-YOUR-UNIQUE-USERNAME   # A unique name of the service that will be created in the next steps
-export LOG_ANALYTICS_WORKSPACE=acme-fitness-la-CHANGE-ME   # existing workspace or one that will be created in next steps
+export SUBSCRIPTION=CHANGEME                 # replace it with your subscription-id
+export RESOURCE_GROUP=CHANGEME           # existing resource group or one that will be created in next steps
+export SPRING_APPS_SERVICE=CHANGEME   # A unique name of the service that will be created in the next steps
 ```
 
 - To get the Subscription ID, go to Azure portal, in search bar type subscriptions. The results should display your subscription and its id.
 - RESOURCE_GROUP name will be provided by your workshop moderator
 - SPRING_APPS_SERVICE name will be provided by your workshop moderator
-- LOG_ANALYTICS_WORKSPACE name will be provided by your workshop moderator
 
 This env file comes with default values that were provided as part of arm template. It is recommended to leave the values as-is for the purpose of this workshop. If for any reason you updated these default values in the arm template, those values need to be entereted in here.
 
@@ -54,15 +48,6 @@ az account list -o table
 az account set --subscription ${SUBSCRIPTION}
 ```
 
-Accept the legal terms and privacy statements for the Enterprise tier.
-
-> Note: This step is necessary only if your subscription has never been used to create an Enterprise tier instance of Azure Spring Apps.
-
-```shell
-az provider register --namespace Microsoft.SaaS
-az term accept --publisher vmware-inc --product azure-spring-cloud-vmware-tanzu-2 --plan asa-ent-hr-mtr
-```
-
 Set your default resource group name and cluster name using the following commands:
 
 ```shell
@@ -72,7 +57,7 @@ az configure --defaults \
     spring=${SPRING_APPS_SERVICE}
 ```
 
-If you completed all the steps till here, you have successfully created/installed the following resources
+If you completed all the steps till here, you have successfully completed the following steps
 * Accessing a dev environment via Github Codespaces
 * Required az cli extensions are added and default subscription is set
 

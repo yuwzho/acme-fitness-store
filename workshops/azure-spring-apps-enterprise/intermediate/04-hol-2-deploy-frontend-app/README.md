@@ -10,7 +10,6 @@ Below are the diffrent steps that we configure/create to successfully deploy the
 - [3. Configure Spring Cloud Gateway](#3-configure-spring-cloud-gateway)
   - [3.1. Create  routing rules for the applications:](#31-create--routing-rules-for-the-applications)
 - [4. Access the Application through Spring Cloud Gateway](#4-access-the-application-through-spring-cloud-gateway)
-- [5. Explore the API using API Portal](#5-explore-the-api-using-api-portal)
 
 
 ## 1. Configure sampling rate for Application Insights
@@ -120,16 +119,6 @@ echo "https://${GATEWAY_URL}"
 If you see acme-fitness home page displayed as below, then congratulations. Your frontend app and its corresponding route in SCG are configured correctly and deployed successfully. Explore the application, but notice that not everything is functioning yet. Continue on to next section to configure the rest of the functionality.
 
 ![acme-fitness home page](./images/acme-fitness-homepage.png)
-## 5. Explore the API using API Portal
-
-Assign an endpoint to API Portal and open it in a browser:
-
-```shell
-az spring api-portal update --assign-endpoint true
-export PORTAL_URL=$(az spring api-portal show | jq -r '.properties.url')
-
-echo "https://${PORTAL_URL}"
-```
 
 
 ⬅️ Previous guide: [03 - Deploy Hello World app](../03-hol-1-hello-world-app/README.md)

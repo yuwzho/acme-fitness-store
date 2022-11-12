@@ -7,6 +7,8 @@ Below are the diffrent steps that we configure/create to successfully deploy the
 - [1. Create backend apps](#1-create-backend-apps)
 - [2. Deploy backend apps](#2-deploy-backend-apps)
 - [3. Create  routing rules for the backend apps:](#3-create--routing-rules-for-the-backend-apps)
+- [4. Test the Application](#4-test-the-application)
+- [5. Explore the API using API Portal](#5-explore-the-api-using-api-portal)
 
 
 
@@ -75,6 +77,20 @@ az spring gateway route-config create \
 ```
 
 This completes successful deployments of all the backend apps and updating the rules for these apps in SCG.
+
+## 4. Test the Application
+
+## 5. Explore the API using API Portal
+
+Assign an endpoint to API Portal and open it in a browser:
+
+```shell
+az spring api-portal update --assign-endpoint true
+export PORTAL_URL=$(az spring api-portal show | jq -r '.properties.url')
+
+echo "https://${PORTAL_URL}"
+```
+
 
 ⬅️ Previous guide: [04 - Deploy Acme Fitness frontend App](../04-hol-2-deploy-frontend-app/README.md)
 

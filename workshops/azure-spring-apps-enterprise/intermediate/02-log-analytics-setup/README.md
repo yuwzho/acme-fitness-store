@@ -56,10 +56,6 @@ az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analy
        ]'
 ```
 
-
-After successfully completing the above steps you created an azure spring apps enterprise instance. This instance acts as a container to which all the services/apps will be deployed to in the following sections.
-
-
 ⬅️ Previous guide: [01 - Workshop Environment Setup](../01-workshop-environment-setup/README.md)
 
 ➡️ Next guide: [03 - Deploy Hello World app](../03-hol-1-hello-world-app/README.md)
