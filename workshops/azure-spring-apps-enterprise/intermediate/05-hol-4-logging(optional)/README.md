@@ -1,4 +1,6 @@
-### Configure Log Analytics workspace
+This is an optional exercise for the students. 
+
+In this exercise we will enable spring apps instance to automatically send the logs the pre-provisioned Log Analytics Workspace.
 
 Retrieve the resource ID for the recently create Azure Spring Apps Service and Log Analytics Workspace:
 
@@ -56,6 +58,7 @@ az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analy
        ]'
 ```
 
-⬅️ Previous guide: [01 - Workshop Environment Setup](../01-workshop-environment-setup/README.md)
 
-➡️ Next guide: [03 - Deploy Hello World app](../03-hol-1-hello-world-app/README.md)
+⬅️ Previous guide: [04 - Hands On Lab 3 - Deploy backend apps](../04-hol-3-deploy-backend-apps/README.md)
+
+➡️ Workshop Start: [01 - Workshop Environment Setup](../01-workshop-environment-setup/README.md)

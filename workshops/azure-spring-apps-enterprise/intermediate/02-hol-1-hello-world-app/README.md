@@ -131,6 +131,6 @@ Congratulations, you have deployed your first Spring Boot app to Azure Spring Ap
 
 ---
 
-⬅️ Previous guide: [02 - Log Analytics Setup](../02-log-analytics-setup/README.md)
+⬅️ Previous guide: [02 - HOL 1 Hello World App](../02-hol-1-hello-world-app/README.md)
 
-➡️ Next guide: [04 - Deploy Acme Fitness frontend App](../04-hol-2-deploy-frontend-app/README.md)
+➡️ Next guide: [03 - HOL 2 - Deploy Acme Fitness frontend App](../03-hol-2-deploy-frontend-app/README.md)

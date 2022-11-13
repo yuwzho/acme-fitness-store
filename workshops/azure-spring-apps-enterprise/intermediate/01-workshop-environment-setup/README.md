@@ -61,6 +61,4 @@ If you completed all the steps till here, you have successfully completed the fo
 * Accessing a dev environment via Github Codespaces
 * Required az cli extensions are added and default subscription is set
 
-⬅️ Previous guide: [02 - ASA-E Introduction](../02-asa-e-introduction/README.md)
-
-➡️ Next guide: [02 - Log Analytics Setup](../02-log-analytics-setup/README.md)
+➡️ Next guide: [02 - HOL 1 Hello World App](../02-hol-1-hello-world-app/README.md)

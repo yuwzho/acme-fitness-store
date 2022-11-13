@@ -92,6 +92,6 @@ echo "https://${PORTAL_URL}"
 ```
 
 
-⬅️ Previous guide: [04 - Deploy Acme Fitness frontend App](../04-hol-2-deploy-frontend-app/README.md)
+⬅️ Previous guide: [03 - HOL 2 - Deploy Acme Fitness frontend App](../04-hol-2-deploy-frontend-app/README.md)
 
-➡️ Workshop Start: [01 - Workshop Environment Setup](../01-workshop-environment-setup/README.md)
+➡️ Workshop Start: [05 - Optional Logging Setup](../05-hol-4-logging(optional)/README.md)

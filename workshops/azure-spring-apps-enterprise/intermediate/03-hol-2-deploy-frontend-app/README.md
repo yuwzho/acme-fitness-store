@@ -121,6 +121,6 @@ If you see acme-fitness home page displayed as below, then congratulations. Your
 ![acme-fitness home page](./images/acme-fitness-homepage.png)
 
 
-⬅️ Previous guide: [03 - Deploy Hello World app](../03-hol-1-hello-world-app/README.md)
+⬅️ Previous guide: [02 - HOL 1- Deploy Hello World app](../01-workshop-environment-setup/README.md)
 
-➡️ Next guide: [05 - Hands On Lab 3.1 - Deploy backend apps](../05-hol-3.1-deploy-backend-apps/README.md)
+➡️ Next guide: [04 - Hands On Lab 3 - Deploy backend apps](../04-hol-3-deploy-backend-apps/README.md)
