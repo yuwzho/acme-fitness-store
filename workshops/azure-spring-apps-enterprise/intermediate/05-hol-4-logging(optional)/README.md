@@ -1,62 +1,74 @@
 This is an optional exercise for the students. 
 
-In this exercise we will enable spring apps instance to automatically send the logs the pre-provisioned Log Analytics Workspace.
+Open the Log Analytics that you created - you can find the Log Analytics in the same
+Resource Group where you created an Azure Spring Apps service instance.
 
-Retrieve the resource ID for the recently create Azure Spring Apps Service and Log Analytics Workspace:
+In the Log Analytics page, selects `Logs` blade and run any of the sample queries supplied below
+for Azure Spring Apps.
 
-```shell
-export LOG_ANALYTICS_RESOURCE_ID=$(az monitor log-analytics workspace show \
-    --resource-group ${RESOURCE_GROUP} \
-    --workspace-name ${LOG_ANALYTICS_WORKSPACE} | jq -r '.id')
+Type and run the following Kusto query to see application logs:
 
-export SPRING_APPS_RESOURCE_ID=$(az spring show \
-    --name ${SPRING_APPS_SERVICE} \
-    --resource-group ${RESOURCE_GROUP} | jq -r '.id')
+```sql
+    AppPlatformLogsforSpring 
+    | where TimeGenerated > ago(24h) 
+    | limit 500
+    | sort by TimeGenerated
+    | project TimeGenerated, AppName, Log
 ```
 
-Configure diagnostic settings for the Azure Spring Apps Service:
+![Example output from all application logs query](../../../../media/all-app-logs-in-log-analytics.jpg)
 
-```shell
-az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analytics" \
-    --resource ${SPRING_APPS_RESOURCE_ID} \
-    --workspace ${LOG_ANALYTICS_RESOURCE_ID} \
-    --logs '[
-         {
-           "category": "ApplicationConsole",
-           "enabled": true,
-           "retentionPolicy": {
-             "enabled": false,
-             "days": 0
-           }
-         },
-         {
-            "category": "SystemLogs",
-            "enabled": true,
-            "retentionPolicy": {
-              "enabled": false,
-              "days": 0
-            }
-          },
-         {
-            "category": "IngressLogs",
-            "enabled": true,
-            "retentionPolicy": {
-              "enabled": false,
-              "days": 0
-             }
-           }
-       ]' \
-       --metrics '[
-         {
-           "category": "AllMetrics",
-           "enabled": true,
-           "retentionPolicy": {
-             "enabled": false,
-             "days": 0
-           }
-         }
-       ]'
+Type and run the following Kusto query to see `catalog-service` application logs:
+
+```sql
+    AppPlatformLogsforSpring 
+    | where AppName has "catalog-service"
+    | limit 500
+    | sort by TimeGenerated
+    | project TimeGenerated, AppName, Log
 ```
+
+![Example output from catalog service logs](../../../../media/catalog-app-logs-in-log-analytics.jpg)
+
+Type and run the following Kusto query to see errors and exceptions thrown by each app:
+```sql
+    AppPlatformLogsforSpring 
+    | where Log contains "error" or Log contains "exception"
+    | extend FullAppName = strcat(ServiceName, "/", AppName)
+    | summarize count_per_app = count() by FullAppName, ServiceName, AppName, _ResourceId
+    | sort by count_per_app desc 
+    | render piechart
+```
+
+![An example output from the Ingress Logs](../../../../media/ingress-logs-in-log-analytics.jpg)
+
+Type and run the following Kusto query to see all in the inbound calls into Azure Spring Apps:
+
+```sql
+    AppPlatformIngressLogs
+    | project TimeGenerated, RemoteAddr, Host, Request, Status, BodyBytesSent, RequestTime, ReqId, RequestHeaders
+    | sort by TimeGenerated
+```
+
+Type and run the following Kusto query to see all the logs from Spring Cloud Gateway managed by Azure Spring Apps:
+
+```sql
+    AppPlatformSystemLogs
+    | where LogType contains "SpringCloudGateway"
+    | project TimeGenerated,Log
+```
+
+![An example out from the Spring Cloud Gateway Logs](../../../../media/spring-cloud-gateway-logs-in-log-analytics.jpg)
+
+Type and run the following Kusto query to see all the logs from Spring Cloud Service Registry managed by Azure Spring Apps:
+
+```sql
+    AppPlatformSystemLogs
+    | where LogType contains "ServiceRegistry"
+    | project TimeGenerated, Log
+```
+
+![An example output from service registry logs](../../../../media/service-registry-logs-in-log-analytics.jpg)
 
 
 ⬅️ Previous guide: [04 - Hands On Lab 3 - Deploy backend apps](../04-hol-3-deploy-backend-apps/README.md)
