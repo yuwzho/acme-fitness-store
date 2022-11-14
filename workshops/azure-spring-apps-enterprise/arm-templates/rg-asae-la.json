@@ -22,7 +22,7 @@
         "springAppInstanceName": "[concat(parameters('projectName'),'-asae-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
         "appInsightsName": "[concat(parameters('projectName'),'-insights-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
         "laWorkspaceName": "[concat(parameters('projectName'),'-la-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
-        "laWorkspaceId": "[concat('/subscriptions/', subscription().id,'/resourceGroups/',variables('resourceGroupName'),'/providers/Microsoft.OperationalInsights/workspaces/',variables('laWorkspaceName'))]"
+        "laWorkspaceId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/',variables('resourceGroupName'),'/providers/Microsoft.OperationalInsights/workspaces/',variables('laWorkspaceName'))]"
     },
     "resources": [
         {
@@ -166,6 +166,32 @@
                                         "retentionPolicy": {
                                             "days": 30,
                                             "enabled": false
+                                        }
+                                    },
+                                    {
+                                        "category": "SystemLogs",
+                                        "enabled": true,
+                                        "retentionPolicy": {
+                                            "enabled": false,
+                                            "days": 0
+                                        }
+                                    },
+                                    {
+                                        "category": "IngressLogs",
+                                        "enabled": true,
+                                        "retentionPolicy": {
+                                            "enabled": false,
+                                            "days": 0
+                                        }
+                                    }
+                                ],
+                                "metrics": [
+                                    {
+                                        "category": "AllMetrics",
+                                        "enabled": true,
+                                        "retentionPolicy": {
+                                            "enabled": false,
+                                            "days": 0
                                         }
                                     }
                                 ]
