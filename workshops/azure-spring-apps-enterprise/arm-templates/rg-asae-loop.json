@@ -21,7 +21,8 @@
         "resourceGroupName": "[concat(parameters('projectName'), '-rg')]",
         "springAppInstanceName": "[concat(parameters('projectName'),'-asae-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
         "appInsightsName": "[concat(parameters('projectName'),'-insights-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
-        "logAnalyticsWorkspaceName": "[concat(parameters('projectName'),'-la-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]"
+        "logAnalyticsWorkspaceName": "[concat(parameters('projectName'),'-la-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
+        "logAnalyticsWorkspaceId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/',variables('resourceGroupName'),'/providers/Microsoft.OperationalInsights/workspaces/',variables('logAnalyticsWorkspaceName'))]"
     },
     "resources": [
         {
@@ -150,6 +151,54 @@
                                     "name": "PerGB2018"
                                 },
                                 "retentionInDays": 30
+                            }
+                        },
+                        {
+                            "type": "Microsoft.AppPlatform/Spring/providers/diagnosticSettings",
+                            "name": "[concat(variables('springAppInstanceName'),'-',copyIndex(1), '/Microsoft.Insights/monitoring')]",
+                            "dependsOn": [
+                                "[concat(variables('springAppInstanceName'),'-',copyIndex(1))]"
+                            ],
+                            "apiVersion": "2017-05-01-preview",
+                            "properties": {
+                                "name": "monitoring",
+                                "workspaceId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/',variables('resourceGroupName'),'-',copyIndex(1),'/providers/Microsoft.OperationalInsights/workspaces/',variables('logAnalyticsWorkspaceName'),'-',copyIndex(1))]",
+                                "logs": [
+                                    {
+                                        "category": "ApplicationConsole",
+                                        "enabled": true,
+                                        "retentionPolicy": {
+                                            "days": 30,
+                                            "enabled": false
+                                        }
+                                    },
+                                    {
+                                        "category": "SystemLogs",
+                                        "enabled": true,
+                                        "retentionPolicy": {
+                                            "enabled": false,
+                                            "days": 0
+                                        }
+                                    },
+                                    {
+                                        "category": "IngressLogs",
+                                        "enabled": true,
+                                        "retentionPolicy": {
+                                            "enabled": false,
+                                            "days": 0
+                                        }
+                                    }
+                                ],
+                                "metrics": [
+                                    {
+                                        "category": "AllMetrics",
+                                        "enabled": true,
+                                        "retentionPolicy": {
+                                            "enabled": false,
+                                            "days": 0
+                                        }
+                                    }
+                                ]
                             }
                         }
                     ]
