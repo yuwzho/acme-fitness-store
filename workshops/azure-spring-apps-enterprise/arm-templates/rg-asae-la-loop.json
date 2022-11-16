@@ -15,14 +15,20 @@
             "metadata": {
                 "description": "Specifies the Azure location where the key vault should be created."
             }
+        },
+        "resourceCount": {
+            "type": "int",
+            "defaultValue": 25,
+            "metadata": {
+                "description": "Specifies the count of the number of resource groups that needs to be created."
+            }
         }
     },
     "variables": {
         "resourceGroupName": "[concat(parameters('projectName'), '-rg')]",
         "springAppInstanceName": "[concat(parameters('projectName'),'-asae-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
         "appInsightsName": "[concat(parameters('projectName'),'-insights-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
-        "logAnalyticsWorkspaceName": "[concat(parameters('projectName'),'-la-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]",
-        "logAnalyticsWorkspaceId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/',variables('resourceGroupName'),'/providers/Microsoft.OperationalInsights/workspaces/',variables('logAnalyticsWorkspaceName'))]"
+        "logAnalyticsWorkspaceName": "[concat(parameters('projectName'),'-la-',substring(uniqueString(subscription().id, parameters('projectName')),0,4))]"
     },
     "resources": [
         {
@@ -33,7 +39,7 @@
             "properties": {},
             "copy": {
                 "name": "rgCount",
-                "count": 2
+                "count": "[parameters('resourceCount')]"
             }
         },
         {
@@ -206,7 +212,7 @@
             },
             "copy": {
                 "name": "deploymentCount",
-                "count": 2
+                "count": "[parameters('resourceCount')]"
             }
         }
     ]
