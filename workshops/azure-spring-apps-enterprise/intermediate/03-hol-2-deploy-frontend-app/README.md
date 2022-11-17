@@ -5,9 +5,11 @@ This diagram below shows the final result once this section is complete:
 
 Below are the diffrent steps that we configure/create to successfully deploy the services/apps
 - [1. Create and Deploy frontend application in Azure Spring Apps](#1-create-and-deploy-frontend-application-in-azure-spring-apps)
-- [2. Configure Spring Cloud Gateway](#2-configure-spring-cloud-gateway)
-  - [2.1. Create  routing rules for the applications:](#21-create--routing-rules-for-the-applications)
-- [3. Access the Application through Spring Cloud Gateway](#3-access-the-application-through-spring-cloud-gateway)
+- [2. Configure apps to Application Configuration Service](#2-configure-apps-to-application-configuration-service)
+- [3. Bind apps to Service Registry](#3-bind-apps-to-service-registry)
+- [4. Configure Spring Cloud Gateway](#4-configure-spring-cloud-gateway)
+  - [4.1. Create  routing rules for the applications:](#41-create--routing-rules-for-the-applications)
+- [5. Access the Application through Spring Cloud Gateway](#5-access-the-application-through-spring-cloud-gateway)
 
 
 
@@ -29,7 +31,29 @@ az spring app deploy --name ${FRONTEND_APP} \
     --source-path ./apps/acme-shopping 
 ```
 
-## 2. Configure Spring Cloud Gateway
+## 2. Configure apps to Application Configuration Service
+
+Now the next step is to bind the above created application configuration service instance to the azure apps that use this external config:
+
+
+```shell
+az spring application-configuration-service bind --app ${PAYMENT_SERVICE_APP} &
+az spring application-configuration-service bind --app ${CATALOG_SERVICE_APP} &
+wait
+```
+
+## 3. Bind apps to Service Registry
+
+Applications need to communicate with each other. As we learnt in [section before](../07-asa-e-components-overview/service-registry/README.md) ASA-E internally uses Tanzu Service Registry for dynamic service discovery. To achieve this, required services/apps need to be bound to the service registry using the commands below: 
+
+```shell
+az spring service-registry bind --app ${PAYMENT_SERVICE_APP}
+az spring service-registry bind --app ${CATALOG_SERVICE_APP}
+```
+
+So far in this section we were able to successfully bind backend apps to Application Config Service and Service Registry. 
+
+## 4. Configure Spring Cloud Gateway
 
 Assign a public endpoint and update the Spring Cloud Gateway configuration with API
 information:
@@ -50,7 +74,7 @@ az spring gateway update \
     --no-wait
 ```
 
-### 2.1. Create  routing rules for the applications:
+### 4.1. Create  routing rules for the applications:
 
 Routing rules bind endpoints in the request to the backend applications. In the step below we are creating a rule in SCG to the frontend app.
 
@@ -63,7 +87,7 @@ az spring gateway route-config create \
 
 ```
 
-## 3. Access the Application through Spring Cloud Gateway
+## 5. Access the Application through Spring Cloud Gateway
 
 Retrieve the URL for Spring Cloud Gateway and open it in a browser:
 
