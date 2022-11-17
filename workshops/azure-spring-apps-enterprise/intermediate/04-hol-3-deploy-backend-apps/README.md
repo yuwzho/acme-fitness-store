@@ -1,4 +1,4 @@
-In this section we are going to deploy the backend apps for acme-fitness application. We also updates the rules for these backend apps in Spring Cloud Gateway.
+In this section we are going to deploy the backend apps for acme-fitness application. We also updates the rules for these backend apps in Spring Cloud Gateway and configure these apps to talk to Application Config Service and Service Registry.
 
 This diagram below shows the final result once this section is complete:
 ![diagram](images/scg-frontend-backend.png)
@@ -120,6 +120,6 @@ echo "https://${PORTAL_URL}"
 ```
 
 
-⬅️ Previous guide: [03 - HOL 2 - Deploy Acme Fitness frontend App](../04-hol-2-deploy-frontend-app/README.md)
+⬅️ Previous guide: [03 - HOL 2 - Deploy Acme Fitness frontend App](../03-hol-2-deploy-frontend-app/README.md)
 
 ➡️ Workshop Start: [05 - Optional Logging/Monitoring Setup](../05-hol-4-logging-monitoring(optional)/README.md)
