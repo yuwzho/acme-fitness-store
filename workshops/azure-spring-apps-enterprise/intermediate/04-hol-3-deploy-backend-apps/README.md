@@ -131,4 +131,4 @@ echo "https://${PORTAL_URL}"
 
 ⬅️ Previous guide: [03 - HOL 2 - Deploy Acme Fitness frontend App](../03-hol-2-deploy-frontend-app/README.md)
 
-➡️ Workshop Start: [05 - Optional Logging/Monitoring Setup](../05-hol-4-logging-monitoring(optional)/README.md)
+➡️ Workshop Start: [05 - Optional Logging/Monitoring](../05-hol-4-logging-monitoring(optional)/README.md)
