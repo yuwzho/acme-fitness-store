@@ -16,7 +16,7 @@ repositories {
 
 ext {
 	set('springCloudVersion', "2021.0.1")
-	set('springCloudAzureVersion', "4.0.0")
+	set('springCloudAzureVersion', "4.5.0-beta.1")
 }
 
 dependencies {
@@ -28,6 +28,8 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
 	implementation 'com.azure.spring:spring-cloud-azure-starter-keyvault-secrets'
+	
+	runtimeOnly 'com.azure.spring:spring-cloud-azure-starter-jdbc-postgresql'
 
 	runtimeOnly 'org.postgresql:postgresql'
 	runtimeOnly 'com.h2database:h2'

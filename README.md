@@ -52,7 +52,7 @@ The following diagram shows the architecture of the ACME Fitness Store that will
 This application is composed of several services:
 
 * 3 Java Spring Boot applications:
-  * A catalog service for fetching available products
+  * A catalog service for fetching available products. This application will use Azure AD authentication to connect to PostgresSQL
   * A payment service for processing and approving payments for users' orders
   * An identity service for referencing the authenticated user
 
@@ -76,7 +76,7 @@ or sign up for a
 
 In addition, you will need the following:
 
-| [Azure CLI version 2.17.1 or higher](https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest)
+| [Azure CLI version 2.42.0 or higher](https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest)
 | [Git](https://git-scm.com/)
 | [`jq` utility](https://stedolan.github.io/jq/download/)
 |
@@ -751,13 +751,12 @@ az postgres flexible-server create --name ${POSTGRES_SERVER} \
     --location ${REGION} \
     --admin-user ${POSTGRES_SERVER_USER} \
     --admin-password ${POSTGRES_SERVER_PASSWORD} \
+    --public-access 0.0.0.0 \
+    --tier Burstable \
+    --sku-name Standard_B1ms \
+    --version 14 \
+    --storage-size 32
     --yes
-
-# Allow connections from other Azure Services
-az postgres flexible-server firewall-rule create --rule-name allAzureIPs \
-     --name ${POSTGRES_SERVER} \
-     --resource-group ${RESOURCE_GROUP} \
-     --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
      
 # Enable the uuid-ossp extension
 az postgres flexible-server parameter set \
@@ -788,8 +787,7 @@ az postgres flexible-server db create \
 
 ### Create Service Connectors
 
-The Order Service and Catalog Service use Azure Database for Postgres, create Service Connectors
-for those applications:
+The Order Service and Catalog Service use Azure Database for Postgres create Service Connectors for those applications:
 
 ```shell
 # Bind order service to Postgres
@@ -804,8 +802,10 @@ az spring connection create postgres-flexible \
     --database ${ORDER_SERVICE_DB} \
     --secret name=${POSTGRES_SERVER_USER} secret=${POSTGRES_SERVER_PASSWORD} \
     --client-type dotnet
-    
+```
 
+Catalog service uses Azure AD authentication to connect to Postgres, so it is not required to include the password
+```shell
 # Bind catalog service to Postgres
 az spring connection create postgres-flexible \
     --resource-group ${RESOURCE_GROUP} \
@@ -816,9 +816,11 @@ az spring connection create postgres-flexible \
     --tg ${RESOURCE_GROUP} \
     --server ${POSTGRES_SERVER} \
     --database ${CATALOG_SERVICE_DB} \
-    --secret name=${POSTGRES_SERVER_USER} secret=${POSTGRES_SERVER_PASSWORD} \
-    --client-type springboot
+    --client-type springboot \
+    --system-identity
 ```
+
+After executing above command, the Azure Spring App application enables System assigned managed identity, Postgres database user will be created and assigned to the managed identity and permissions will be granted to the user.
 
 The Cart Service requires a connection to Azure Cache for Redis, create the Service Connector:
 
@@ -832,12 +834,8 @@ az spring connection create redis \
     --tg ${RESOURCE_GROUP} \
     --server ${AZURE_CACHE_NAME} \
     --database 0 \
-    --client-type java 
+    --client-type python 
 ```
-
-> Note: Currently, the Azure Spring Apps CLI extension only allows for client types of java, springboot, or dotnet.
-> The cart service uses a client connection type of java because the connection strings are the same for python and java.
-> This will be changed when additional options become available in the CLI.
 
 ### Update Applications
 
