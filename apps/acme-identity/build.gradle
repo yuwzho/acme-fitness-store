@@ -1,20 +1,22 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.6'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'org.springframework.boot' version '3.0.0'
+	id 'io.spring.dependency-management' version '1.1.0'
 }
 
 group = 'com.vmware'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
 repositories {
 	mavenCentral()
+	maven { url 'https://artifactory-oss.prod.netflix.net/artifactory/maven-oss-candidates' }
+	maven { url 'https://repo.spring.io/milestone' }
 }
 
 ext {
-	set('springCloudAzureVersion', "4.0.0")
-	set('springCloudVersion', "2021.0.1")
+	set('springCloudAzureVersion', "6.0.0-beta.3")
+	set('springCloudVersion', "2022.0.0-RC2")
 }
 
 

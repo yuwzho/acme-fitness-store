@@ -3,9 +3,9 @@ package com.vmware.acme.catalog;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.actuate.metrics.AutoConfigureMetrics;
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
@@ -24,9 +24,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"management.endpoints.web.exposure.include=*",
-                "management.metrics.export.prometheus.step=2s"})
-@AutoConfigureMetrics
+        properties = {
+                "management.endpoints.web.exposure.include=*",
+                "management.prometheus.metrics.export.step=2s"})
+@AutoConfigureObservability
 @Testcontainers
 class CatalogApplicationTests {
 
@@ -54,12 +55,13 @@ class CatalogApplicationTests {
         org.testcontainers.Testcontainers.exposeHostPorts(this.serverPort);
         RestAssured.port = this.serverPort;
 
-        var config = String.format("scrape_configs:\n" +
-                "  - job_name: \"prometheus\"\n" +
-                "    scrape_interval: 2s\n" +
-                "    metrics_path: \"/actuator/prometheus\"\n" +
-                "    static_configs:\n" +
-                "      - targets: ['host.testcontainers.internal:%s']", this.serverPort);
+        var config = String.format("""
+                scrape_configs:
+                  - job_name: "prometheus"
+                    scrape_interval: 2s
+                    metrics_path: "/actuator/prometheus"
+                    static_configs:
+                      - targets: ['host.testcontainers.internal:%s']""", this.serverPort);
         prometheus.copyFileToContainer(Transferable.of(config), "/etc/prometheus/prometheus.yml");
 
         // Reload config
@@ -75,7 +77,7 @@ class CatalogApplicationTests {
                 .then()
                 .assertThat()
                 .body("data.size()", equalTo(8));
-        checkMetric("/products");
+        checkMetric("getProducts");
     }
 
     @Test
@@ -85,25 +87,23 @@ class CatalogApplicationTests {
                 .then()
                 .assertThat()
                 .body("data.description", equalTo("Magic Yoga Mat!"));
-        checkMetric("/products/{id}");
+        checkMetric("getProduct");
     }
 
-    private void checkMetric(String path) {
-        var query = String.format("store_products_seconds_count{uri=\"%s\"}", path);
+    private void checkMetric(String method) {
+        var query = String.format("store_products_seconds_count{method=\"%s\"}", method);
         Awaitility.given().pollInterval(Duration.ofSeconds(2))
                 .atMost(Duration.ofSeconds(15))
                 .ignoreExceptions()
-                .untilAsserted(() -> {
-                    given().baseUri("http://" + prometheus.getHost())
-                            .port(prometheus.getMappedPort(9090))
-                            .queryParams(Map.of("query", query))
-                            .get("/api/v1/query")
-                            .prettyPeek()
-                            .then()
-                            .assertThat()
-                            .statusCode(200)
-                            .body("data.result[0].value", hasItem("1"));
-                });
+                .untilAsserted(() -> given().baseUri("http://" + prometheus.getHost())
+                                        .port(prometheus.getMappedPort(9090))
+                                        .queryParams(Map.of("query", query))
+                                        .get("/api/v1/query")
+                                        .prettyPeek()
+                                        .then()
+                                        .assertThat()
+                                        .statusCode(200)
+                                        .body("data.result[0].value", hasItem("1")));
     }
 
 }
