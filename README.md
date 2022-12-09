@@ -401,12 +401,14 @@ Deploy and build each application, specifying its required parameters
 # Deploy Payment Service
 az spring app deploy --name ${PAYMENT_SERVICE_APP} \
     --config-file-pattern payment/default \
-    --source-path apps/acme-payment 
+    --source-path apps/acme-payment \
+    --build-env BP_JVM_VERSION=17
 
 # Deploy Catalog Service
 az spring app deploy --name ${CATALOG_SERVICE_APP} \
     --config-file-pattern catalog/default \
-    --source-path apps/acme-catalog 
+    --source-path apps/acme-catalog \
+    --build-env BP_JVM_VERSION=17
 
 # Deploy Order Service
 az spring app deploy --name ${ORDER_SERVICE_APP} \
@@ -625,7 +627,8 @@ Deploy the Identity Service:
 az spring app deploy --name ${IDENTITY_SERVICE_APP} \
     --env "JWK_URI=${JWK_SET_URI}" \
     --config-file-pattern identity/default \
-    --source-path apps/acme-identity
+    --source-path apps/acme-identity \
+    --build-env BP_JVM_VERSION=17
 ```
 
 > Note: The application will take around 3-5 minutes to deploy.
