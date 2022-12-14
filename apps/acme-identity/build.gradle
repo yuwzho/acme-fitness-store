@@ -19,6 +19,15 @@ ext {
 	set('springCloudVersion', "2022.0.0-RC2")
 }
 
+springBoot {
+	buildInfo {
+		properties {
+			additional = [
+				'spring.boot.version': '3.0.0'
+			]
+		}
+	}
+}
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'

@@ -21,6 +21,16 @@ ext {
 	set('testcontainersVersion', "1.17.6")
 }
 
+springBoot {
+	buildInfo {
+		properties {
+			additional = [
+				'spring.boot.version': '3.0.0'
+			]
+		}
+	}
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
