@@ -50,6 +50,7 @@ spec:
   type: service
   lifecycle: production
   owner: default-team
+  system: fitness-store  
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component

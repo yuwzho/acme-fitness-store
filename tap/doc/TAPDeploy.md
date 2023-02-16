@@ -34,6 +34,23 @@ Make a note of this URL as you will need it through various steps of the followi
 It is assumed that you have cloned the Acme Fitness Store Git repository to your workstation.  All of the `ytt` commands below should be run from the
 `tap` directory in the cloned repository.
 
+### Testing Pipeline Deployment
+
+If you have a supply chain configured that includes testing, you will need to install the testing pipeline used when a build is performed.  Run the following command 
+to install the pipeline replacing the following placeholder:
+
+- **<workloadNamespace>** – Namespace where the application will be deployed
+
+```
+kubectl apply -f testingPipeline.yaml -n <workloadNamespace>
+```
+
+For example:
+
+```
+kubectl apply -f testingPipeline.yaml -n workloads
+```
+
 ### AppSSO Deployment
 
 ACME requires the use of an AppSSO authorization server and client registration resource. 
@@ -96,17 +113,20 @@ ytt -f redis.yaml -v workloadNamespace=workloads -v redisPassword=fitness | kube
 
 ### Workload Build And Deployment
 
-To build the application services, execute the following command to apply the workload resources to your cluster. Modify the `<workloadNamespace>` placeholder with the namespace where the application will be deployed, and the <appSSOIssuerURI> placeholder for the URL of the AppSSO authorization server that you will deployed in the `AppSSO Deployment` step; you will use the
-Issuer URI that you saved off in that step.
+To build the application services, execute the following command to apply the workload resources to your cluster while replacing these placeholders: Modify the `<workloadNamespace>` placeholder with the namespace where the application will be deployed, and the <appSSOIssuerURI> placeholder for the URL of the AppSSO authorization server that you deployed in the `AppSSO Deployment` step; you will use the Issuer URI that you saved off in that step.
+
+- **<workloadNamespace>** – Namespace where the application will be deployed
+- **<appSSOIssuerURI>** – The URL of the AppSSO authorization server that you deployed in the `AppSSO Deployment` step; you will use the Issuer URI that you saved off in that step
+- **<appDomainName>** – The application’s DNS domain (the domain name you chose at the beginning of these install steps).
 
 ```
-ytt -f workloads.yaml -v workloadNamespace=<workloadNamespace> -v appSSOIssuerURI=<appSSOIssuerURL> | kubectl apply -f-
+ytt -f workloads.yaml -v workloadNamespace=<workloadNamespace> -v appSSOIssuerURI=<appSSOIssuerURL> -v appDomainName=<appDomainName>  | kubectl apply -f-
 ```
 
 For example:
 
 ```
-ytt -f workloads.yaml -v workloadNamespace=workloads -v appSSOIssuerURI=http://appsso-acme-fitness.workloads.perfect300rock.com | kubectl apply -f-
+ytt -f workloads.yaml -v workloadNamespace=workloads -v appSSOIssuerURI=http://appsso-acme-fitness.workloads.perfect300rock.com  -v appDomainName=perfect300rock.com | kubectl apply -f-
 ```
 
 
@@ -134,8 +154,7 @@ ytt -f scgRoutes.yaml -v workloadNamespace=workloads | kubectl apply -f-
 ### Ingress Deployment
 
 The Ingress resources utilizes Contour and will route traffic to the Spring Cloud Gateway.  Run the following command to create the Istio ingress resources replacing 
-`<workloadNamespace>` and `<appDomain>` placeholders with the namespace where the application will be deployed and the application’s DNS domain (the domain name you chose at the beginning
-of these steps).  This will create an Ingress object that uses the full URL of the application (again, the URL you chose at the beginning of these steps).
+`<workloadNamespace>` and `<appDomain>` placeholders with the namespace where the application will be deployed and the application’s DNS domain (the domain name you chose at the beginning of these steps).  This will create an Ingress object that uses the full URL of the application (again, the URL you chose at the beginning of these steps).
 
 ```
 ytt -f ingress.yaml -v workloadNamespace=<workloadNamespace> -v appDomainName=<appDomain> | kubectl apply -f-
@@ -145,4 +164,13 @@ For example:
 
 ```
 ytt -f ingress.yaml -v workloadNamespace=workloads -v appDomainName=perfect300rock.com | kubectl apply -f-
+```
+
+## Application Catalog
+
+To view the runtime resources and application live view, you will need to install the catalog-info.yaml file that contains catalog info for each component.  
+To install the catalog, navigate to the TAP GUI home page and click the `Register Entity` button.  In the URL, enter in the URL of the catalog file.  For example:
+
+```
+https://github.com/gm2552-commercial/acme-fitness-store/blob/Azure/tap/catalog-info.yaml
 ```
