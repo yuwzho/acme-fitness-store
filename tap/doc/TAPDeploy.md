@@ -75,7 +75,8 @@ Next, obtain the appSSO issuerURI by running the following command replacing <wo
 kubectl get authserver -n <workloadNamespace>
 ```
 
-Save the Issuer URI as you will need it in the `workload build` section.
+Save the Issuer URI as you will need it in the `workload build` section.  Also, you may need to create a new entry in your DNS registrar for this URL; this will likely be
+necessary if you are NOT using wildcard records in your DNS registrar.
 
 
 ### Redis Deployment
