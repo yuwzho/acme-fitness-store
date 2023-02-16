@@ -1,0 +1,17 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: acme-fitness-ingress
+  namespace: #@ data.values.workloadNamespace
+spec:
+  virtualhost:
+    fqdn: #@ 'acme-fitness.' + data.values.appDomainName
+  routes:
+    - conditions:
+        - prefix: /
+      services:
+        - name: acme-fitness-gateway
+          port: 80
