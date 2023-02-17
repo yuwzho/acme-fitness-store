@@ -60,7 +60,7 @@ metadata:
 spec:
   env:
   - name: AcmeServiceSettings__AuthUrl
-    value: #@ 'http://acme-fitness.' + data.values.appDomainName
+    value: #@ 'https://acme-fitness.' + data.values.appDomainName
   - name: PAYMENT_SERVICE_SERVICE_HOST
     value: acme-payment
   params:

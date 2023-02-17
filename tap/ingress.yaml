@@ -9,9 +9,24 @@ metadata:
 spec:
   virtualhost:
     fqdn: #@ 'acme-fitness.' + data.values.appDomainName
+    tls:
+      secretName: acme-fitness-cert
   routes:
     - conditions:
         - prefix: /
       services:
         - name: acme-fitness-gateway
           port: 80
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: acme-fitness-cert
+spec:
+  commonName:  #@ 'acme-fitness.' + data.values.appDomainName
+  dnsNames:
+  -  #@ 'acme-fitness.' + data.values.appDomainName
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  secretName: acme-fitness-cert
