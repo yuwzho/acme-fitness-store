@@ -35,7 +35,9 @@ metadata:
     sso.apps.tanzu.vmware.com/allow-unsafe-issuer-uri: ""
 spec:
   tls:
-    disabled: true
+    issuerRef:
+      name: letsencrypt-acme-prod
+      kind: ClusterIssuer
   tokenSignature:
     signAndVerifyKeyRef:
       name: #@ 'appsso-acme-fitness' +"-signing-key"

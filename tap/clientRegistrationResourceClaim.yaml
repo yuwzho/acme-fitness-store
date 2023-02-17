@@ -10,7 +10,8 @@ spec:
       matchLabels:
          name: appsso-acme-fitness
    redirectURIs: 
-     - #@ data.values.appSSORedirectURI
+     - #@ 'http://' + data.values.appSSORedirectURI
+     - #@ 'https://' + data.values.appSSORedirectURI
    requireUserConsent: false
    clientAuthenticationMethod: basic
    authorizationGrantTypes:

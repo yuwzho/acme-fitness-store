@@ -17,6 +17,7 @@ These instructions assume that you have a TAP 1.4.x or greater `full` profile cl
 * Tanzu Out of the Box Templates
 * Tanzu Source Controller
 * Tanzu AppSSO
+* Certificate Manager
 * [Spring Cloud Gateway For Kubernetes](https://docs.vmware.com/en/VMware-Spring-Cloud-Gateway-for-Kubernetes/1.2/scg-k8s/GUID-index.html)
 
 ## Installation/Deployment Process
@@ -51,6 +52,25 @@ For example:
 kubectl apply -f testingPipeline.yaml -n workloads
 ```
 
+### Let's Encrypt CA Issuer
+
+Acme Fitness Store enables TLS connections for security and reliable transport and utilizes the Let's Encrypt production CA. Install the Let's Encrypt
+CA issuer into your cluster by running the following command and replacing the following place holder:
+
+- **<email>** – The email address of the subject responsible for the issued certificates.
+ 
+```
+ytt -f caIssuer.yaml -v email=<email> | kubectl apply -f-
+```
+
+For example:
+
+```
+ytt -f caIssuer.yaml -v email=joe@joesgarage.com | kubectl apply -f-
+```
+
+
+
 ### AppSSO Deployment
 
 ACME requires the use of an AppSSO authorization server and client registration resource. 
@@ -83,7 +103,7 @@ ytt -f clientRegistrationResourceClaim.yaml.yaml -v workloadNamespace=<workloadN
 For example:
 
 ```
-ytt -f clientRegistrationResourceClaim.yaml -v workloadNamespace=workloads -v appSSORedirectURI=http://acme-fitness.perfect300rock.com/login/oauth2/code/sso | kubectl apply -f-
+ytt -f clientRegistrationResourceClaim.yaml -v workloadNamespace=workloads -v appSSORedirectURI=acme-fitness.perfect300rock.com/login/oauth2/code/sso | kubectl apply -f-
 ```
 
 Next, obtain the appSSO issuerURI by running the following command replacing <workloadNamespace> with the name of the namespace where the application will be deployed:
@@ -128,7 +148,7 @@ ytt -f workloads.yaml -v workloadNamespace=<workloadNamespace> -v appSSOIssuerUR
 For example:
 
 ```
-ytt -f workloads.yaml -v workloadNamespace=workloads -v appSSOIssuerURI=http://appsso-acme-fitness.workloads.perfect300rock.com  -v appDomainName=perfect300rock.com -v sourceRepo=https://github.com/gm2552-commercial/acme-fitness-store -v sourceRepoBranch=Azure  | kubectl apply -f-
+ytt -f workloads.yaml -v workloadNamespace=workloads -v appSSOIssuerURI=https://appsso-acme-fitness.workloads.perfect300rock.com  -v appDomainName=perfect300rock.com -v sourceRepo=https://github.com/gm2552-commercial/acme-fitness-store -v sourceRepoBranch=Azure  | kubectl apply -f-
 ```
 
 
