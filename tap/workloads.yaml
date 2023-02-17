@@ -42,9 +42,9 @@ spec:
   source:
     subPath: apps/acme-cart
     git:
-      url: https://github.com/gm2552-commercial/acme-fitness-store
+      url: #@ data.values.sourceRepo
       ref:
-        branch: Azure
+        branch: #@ data.values.sourceRepoBranch
 ---
 apiVersion: carto.run/v1alpha1
 kind: Workload
@@ -78,9 +78,9 @@ spec:
   source:
     subPath: apps/acme-order
     git:
-      url: https://github.com/gm2552-commercial/acme-fitness-store
+      url: #@ data.values.sourceRepo
       ref:
-        branch: Azure
+        branch: #@ data.values.sourceRepoBranch
 ---
 apiVersion: carto.run/v1alpha1
 kind: Workload
@@ -120,9 +120,9 @@ spec:
   source:
     subPath: apps/acme-shopping
     git:
-      url: https://github.com/gm2552-commercial/acme-fitness-store
+      url: #@ data.values.sourceRepo
       ref:
-        branch: Azure
+        branch: #@ data.values.sourceRepoBranch
 ---
 apiVersion: carto.run/v1alpha1
 kind: Workload
@@ -159,9 +159,9 @@ spec:
   source:
     subPath: apps/acme-identity
     git:
-      url: https://github.com/gm2552-commercial/acme-fitness-store
+      url: #@ data.values.sourceRepo
       ref:
-        branch: Azure
+        branch: #@ data.values.sourceRepoBranch
 ---
 apiVersion: carto.run/v1alpha1
 kind: Workload
@@ -203,9 +203,9 @@ spec:
   source:
     subPath: apps/acme-catalog
     git:
-      url: https://github.com/gm2552-commercial/acme-fitness-store
+      url: #@ data.values.sourceRepo
       ref:
-        branch: Azure
+        branch: #@ data.values.sourceRepoBranch
 ---
 apiVersion: carto.run/v1alpha1
 kind: Workload
@@ -240,6 +240,6 @@ spec:
   source:
     subPath: apps/acme-payment
     git:
-      url: https://github.com/gm2552-commercial/acme-fitness-store
+      url: #@ data.values.sourceRepo
       ref:
-        branch: Azure
+        branch: #@ data.values.sourceRepoBranch

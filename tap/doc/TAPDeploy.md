@@ -118,15 +118,17 @@ To build the application services, execute the following command to apply the wo
 - **<workloadNamespace>** – Namespace where the application will be deployed
 - **<appSSOIssuerURI>** – The URL of the AppSSO authorization server that you deployed in the `AppSSO Deployment` step; you will use the Issuer URI that you saved off in that step
 - **<appDomainName>** – The application’s DNS domain (the domain name you chose at the beginning of these install steps).
+- **<sourceRepo>** – The Git repository of the Acme Fitness source.  This will likely be the same repository that you cloned at the beginning of these install steps.
+- **<sourceRepoBranch>** – The Git repository branch. 
 
 ```
-ytt -f workloads.yaml -v workloadNamespace=<workloadNamespace> -v appSSOIssuerURI=<appSSOIssuerURL> -v appDomainName=<appDomainName>  | kubectl apply -f-
+ytt -f workloads.yaml -v workloadNamespace=<workloadNamespace> -v appSSOIssuerURI=<appSSOIssuerURL> -v appDomainName=<appDomainName> -v sourceRepo=<sourceRepo> -sourceRepoBranch=<sourceRepoBranch> | kubectl apply -f-
 ```
 
 For example:
 
 ```
-ytt -f workloads.yaml -v workloadNamespace=workloads -v appSSOIssuerURI=http://appsso-acme-fitness.workloads.perfect300rock.com  -v appDomainName=perfect300rock.com | kubectl apply -f-
+ytt -f workloads.yaml -v workloadNamespace=workloads -v appSSOIssuerURI=http://appsso-acme-fitness.workloads.perfect300rock.com  -v appDomainName=perfect300rock.com -v sourceRepo=https://github.com/gm2552-commercial/acme-fitness-store -v sourceRepoBranch=Azure  | kubectl apply -f-
 ```
 
 
