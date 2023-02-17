@@ -8,7 +8,7 @@ metadata:
   namespace: #@ data.values.workloadNamespace
   labels:
     apps.tanzu.vmware.com/workload-type: server
-    app.kubernetes.io/part-of: acme-fitness-store
+    app.kubernetes.io/part-of: acme-cart
     apps.tanzu.vmware.com/has-tests: "true"
 spec:
   env:
@@ -31,6 +31,9 @@ spec:
   - name: annotations
     value:
       autoscaling.knative.dev/minScale: "1"
+  - name: testing_pipeline_matching_labels
+    value:
+        apps.tanzu.vmware.com/pipeline: acme-fitness-generic-test      
   - name: ports
     value:
     - port: 80
@@ -50,20 +53,23 @@ metadata:
   namespace: #@ data.values.workloadNamespace
   labels:
     apps.tanzu.vmware.com/workload-type: server
-    app.kubernetes.io/part-of: acme-fitness-store
+    app.kubernetes.io/part-of: acme-order
     networking.knative.dev/visibility: cluster-local
     apps.tanzu.vmware.com/has-tests: "true"
     apps.tanzu.vmware.com/auto-configure-actuators: "true"
 spec:
   env:
   - name: AcmeServiceSettings__AuthUrl
-    value: #@ data.values.appSSOIssuerURI
+    value: #@ 'http://acme-fitness.' + data.values.appDomainName
   - name: PAYMENT_SERVICE_SERVICE_HOST
     value: acme-payment
   params:
   - name: annotations
     value:
       autoscaling.knative.dev/minScale: "1"
+  - name: testing_pipeline_matching_labels
+    value:
+        apps.tanzu.vmware.com/pipeline: acme-fitness-generic-test         
   - name: ports
     value:
     - port: 80
@@ -83,7 +89,7 @@ metadata:
   namespace: #@ data.values.workloadNamespace
   labels:
     apps.tanzu.vmware.com/workload-type: server
-    app.kubernetes.io/part-of: acme-fitness-store
+    app.kubernetes.io/part-of: acme-shopping
     apps.tanzu.vmware.com/has-tests: "true"
 spec:
   env:
@@ -103,6 +109,9 @@ spec:
   - name: annotations
     value:
       autoscaling.knative.dev/minScale: "1"
+  - name: testing_pipeline_matching_labels
+    value:
+        apps.tanzu.vmware.com/pipeline: acme-fitness-generic-test   
   - name: ports
     value:
     - port: 80
@@ -122,7 +131,7 @@ metadata:
   namespace: #@ data.values.workloadNamespace
   labels:
     apps.tanzu.vmware.com/workload-type: server
-    app.kubernetes.io/part-of: acme-fitness-store
+    app.kubernetes.io/part-of: acme-identity
     apps.tanzu.vmware.com/has-tests: "true"
     apps.tanzu.vmware.com/auto-configure-actuators: "true"
 spec:
@@ -139,6 +148,9 @@ spec:
   - name: annotations
     value:
       autoscaling.knative.dev/minScale: "1"
+  - name: testing_pipeline_matching_labels
+    value:
+        apps.tanzu.vmware.com/pipeline: acme-fitness-generic-test  
   - name: ports
     value:
     - port: 80
@@ -158,8 +170,7 @@ metadata:
   namespace: #@ data.values.workloadNamespace
   labels:
     apps.tanzu.vmware.com/workload-type: server
-    apps.tanzu.vmware.com/has-tests: "false"
-    app.kubernetes.io/part-of: acme-fitness-store
+    app.kubernetes.io/part-of: acme-catalog
     apps.tanzu.vmware.com/has-tests: "true"
     apps.tanzu.vmware.com/auto-configure-actuators: "true"
 spec:
@@ -178,6 +189,12 @@ spec:
   - name: annotations
     value:
       autoscaling.knative.dev/minScale: "1"
+  - name: testing_pipeline_matching_labels
+    value:
+       apps.tanzu.vmware.com/pipeline: acme-fitness-java-subpath-test  
+  - name: testing_pipeline_params
+    value:
+      subpath: "apps/acme-catalog"
   - name: ports
     value:
     - port: 80
@@ -197,7 +214,7 @@ metadata:
   namespace: #@ data.values.workloadNamespace
   labels:
     apps.tanzu.vmware.com/workload-type: server
-    app.kubernetes.io/part-of: acme-fitness-store
+    app.kubernetes.io/part-of: acme-payment
     apps.tanzu.vmware.com/has-tests: "true"
     apps.tanzu.vmware.com/auto-configure-actuators: "true"
 spec:
@@ -209,6 +226,12 @@ spec:
   - name: annotations
     value:
       autoscaling.knative.dev/minScale: "1"
+  - name: testing_pipeline_matching_labels
+    value:
+       apps.tanzu.vmware.com/pipeline: acme-fitness-java-subpath-test  
+  - name: testing_pipeline_params
+    value:
+      subpath: "apps/acme-payment"
   - name: ports
     value:
     - port: 80
