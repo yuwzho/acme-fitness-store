@@ -113,7 +113,7 @@ kubectl get authserver -n <workloadNamespace>
 ```
 
 Save the Issuer URI as you will need it in the `workload build` section.  Also, you may need to create a new entry in your DNS registrar for this URL; this will likely be
-necessary if you are NOT using wildcard records in your DNS registrar.
+necessary if you are NOT using wildcard records in your DNS registrar.  DNS is also required in order for the TLS certificate to be issued for the auth server.
 
 
 ### Redis Deployment
