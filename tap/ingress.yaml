@@ -1,5 +1,4 @@
 #@ load("@ytt:data", "data")
-
 ---
 apiVersion: projectcontour.io/v1
 kind: HTTPProxy
@@ -23,10 +22,10 @@ kind: Certificate
 metadata:
   name: acme-fitness-cert
 spec:
-  commonName:  #@ 'acme-fitness.' + data.values.appDomainName
+  commonName: #@ 'acme-fitness.' + data.values.appDomainName
   dnsNames:
-  -  #@ 'acme-fitness.' + data.values.appDomainName
+    -  #@ 'acme-fitness.' + data.values.appDomainName
   issuerRef:
-    name: letsencrypt-prod
+    name: letsencrypt-acme-prod
     kind: ClusterIssuer
   secretName: acme-fitness-cert
