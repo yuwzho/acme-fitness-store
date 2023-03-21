@@ -208,6 +208,8 @@ az spring create --name ${SPRING_APPS_SERVICE} \
     --enable-service-registry \
     --enable-gateway \
     --enable-api-portal \
+    --enable-alv \
+    --enable-app-acc \
     --build-pool-size S2 
 ```
 
@@ -1295,6 +1297,51 @@ echo "https://${GATEWAY_URL}/products"
 ```
 
 Make several requests to the URL for `/products` within a five second period to see requests fail with a status `429 Too Many Requests`.
+
+### Monitor your applications using Application Live View
+
+[Application Live View for VMware Tanzu](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.2/tap/GUID-app-live-view-about-app-live-view.html) is a lightweight insights and troubleshooting tool that helps app developers and app operators look inside running apps.
+
+Application Live View only supports Spring Boot applications.
+
+#### Access Application Live View
+
+```shell
+az spring dev-tool update \
+    --resource-group ${RESOURCE_GROUP} \
+    --service ${SPRING_APPS_SERVICE} \
+    --assign-endpoint
+
+export SPRING_DEV_TOOL=$(az spring dev-tool show \
+    --resource-group ${RESOURCE_GROUP} \
+    --service ${SPRING_APPS_SERVICE} | jq -r '.properties.url')
+
+open "https://${SPRING_DEV_TOOL}/app-live-view"
+```
+If using Azure Cloud Shell or Windows, open the output from the following command in a browser:
+
+```shell
+echo "https://${SPRING_DEV_TOOL}/app-live-view"
+```
+
+#### Use Application Live View to monitor your apps
+
+Click on any of the running applications and select the desired instance to view the real time metrics.
+
+#### Health page
+
+To navigate to the Health page, select the Health option from the Information Category drop-down.
+
+![An example output from app live view health](media/health.png)
+
+#### Memory page
+To navigate to the Memory page, select the Memory option from the Information Category drop-down.
+
+![An example output from app live view memory](media/memory.png)
+
+#### Threads page
+To navigate to the Threads page, select the Threads option from the Information Category drop-down.
+![An example output from app live view threads](media/threads.png)
 
 ## Unit 7 - Automate from idea to production
 
