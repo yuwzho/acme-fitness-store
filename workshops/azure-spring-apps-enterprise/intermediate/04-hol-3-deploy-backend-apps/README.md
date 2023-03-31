@@ -92,12 +92,14 @@ Now that all the required apps are created, the next step is to go ahead and dep
 # Deploy Payment Service
 az spring app deploy --name ${PAYMENT_SERVICE_APP} \
     --config-file-pattern payment/default \
-    --source-path ./apps/acme-payment 
+    --source-path ./apps/acme-payment \
+    --build-env BP_JVM_VERSION=17
 
 # Deploy Catalog Service
 az spring app deploy --name ${CATALOG_SERVICE_APP} \
     --config-file-pattern catalog/default \
-    --source-path ./apps/acme-catalog 
+    --source-path ./apps/acme-catalog \
+    --build-env BP_JVM_VERSION=17
 
 # Deploy Order Service
 az spring app deploy --name ${ORDER_SERVICE_APP} \
