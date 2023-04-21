@@ -15,8 +15,8 @@ repositories {
 }
 
 ext {
-	set('springCloudAzureVersion', "6.0.0-beta.3")
-	set('springCloudVersion', "2022.0.0-RC2")
+	set('springCloudAzureVersion', "5.0.0")
+	set('springCloudVersion', "2022.0.0")
 }
 
 springBoot {
