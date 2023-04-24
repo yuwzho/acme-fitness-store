@@ -3,7 +3,7 @@ This workshop leverages Github Codespaces to provide a development environment f
 
 1. The first step in getting access to github codespaces option for [Azure Samples](https://github.com/Azure-Samples/) is to share your github id with the workshop co-ordinator. They will add you to the organization and assign you permissions that makes the Codespaces option visible.
 
-2. Upon getting the confirmation that you are added to the Org, navigate to https://github.com/Azure-Samples/acme-fitness-store/tree/Azure, click "Code" button. You should be able to "Codespaces" as an option listed. If you do not see that option listed, most probably you are not added to [Azure-Samples](https://github.com/Azure-Samples/) org or your github id is still not active in this org. Please discuss this issue with your workshop co-ordinator.
+2. Upon getting the confirmation that you are added to the Org, navigate to https://github.com/Azure-Samples/acme-fitness-store/tree/Azure, click "Code" button. You should be able to "Codespaces" as an option listed. If you do not see that option listed, most probably you are not added to [Azure-Samples](https://github.com/Azure-Samples/) org or your github id is still not active in this org. Please discuss this issue with your workshop co-ordinator. If invitation was sent but it is not in your mailbox, you can visit https://github.com/Azure-Samples/acme-fitness-store/invitations to accept it directly.
 
 3. Assuming the above steps are succesful, you should be able to open a terminal inside VS Code that opens up in Codespaces. Refer to this link to understand more about [Codespaces](https://github.com/CodeSpaces). This Codespace comes installed with the following software:
    1. * [JDK 17](https://docs.microsoft.com/java/openjdk/download?WT.mc_id=azurespringcloud-github-judubois#openjdk-17)
@@ -21,9 +21,9 @@ This and following steps should be completed from within the terminal of your VS
 Open [`/scripts/setup-env-variables.sh`](../../scripts/setup-env-variables.sh) and update the following variables:
 
 ```shell
-export SUBSCRIPTION=CHANGEME                 # replace it with your subscription-id
-export RESOURCE_GROUP=CHANGEME           # existing resource group or one that will be created in next steps
-export SPRING_APPS_SERVICE=CHANGEME   # A unique name of the service that will be created in the next steps
+export SUBSCRIPTION=CHANGEME                 # replace it with your subscription-id (quote is not required)
+export RESOURCE_GROUP=CHANGEME           # existing resource group that will be provided by your workshop moderator
+export SPRING_APPS_SERVICE=CHANGEME   # A unique name of the service that will be provided by your workshop moderator
 ```
 
 - To get the Subscription ID, go to Azure portal, in search bar type subscriptions. The results should display your subscription and its id.
@@ -42,7 +42,7 @@ source ./scripts/setup-env-variables.sh
 
 ### Login to Azure
 
-Login to the Azure CLI and choose your active subscription. In the terminal of VS Code in Codespace, run the below commands
+Login to the Azure CLI and choose your active subscription. In the terminal of VS Code in Codespace, run the below commands. `--use-device-code` parameter for login is mandatory in Codespaces environment.
 
 ```shell
 az login --use-device-code
