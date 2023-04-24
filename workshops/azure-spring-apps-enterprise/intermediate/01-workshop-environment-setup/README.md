@@ -59,7 +59,7 @@ az configure --defaults \
     spring=${SPRING_APPS_SERVICE}
 ```
 
-Verify you are successfully log in with Azure CLI and set the correct environment variables:
+Verify you are successfully logged in with Azure CLI and set the correct environment variables:
 
 ```shell
 az spring show -n $SPRING_APPS_SERVICE -g $RESOURCE_GROUP --query id
