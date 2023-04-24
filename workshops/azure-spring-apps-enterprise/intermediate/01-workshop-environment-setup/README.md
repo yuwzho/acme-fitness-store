@@ -18,7 +18,7 @@ This workshop leverages Github Codespaces to provide a development environment f
 
 This and following steps should be completed from within the terminal of your VS Code in Github Codespaces.
 
-Open `./scripts/setup-env-variables.sh` and update the following variables:
+Open [`/scripts/setup-env-variables.sh`](../../../../scripts/setup-env-variables.sh) and update the following variables:
 
 ```shell
 export SUBSCRIPTION=CHANGEME                 # replace it with your subscription-id (quote is not required)
@@ -38,6 +38,8 @@ Now, set the environment:
 source ./scripts/setup-env-variables.sh
 ``` 
 
+> If you exit your Codespaces and reconnect in, you need to re-run the command `source ./scripts/setup-env-variables.sh` to setup the environment.
+
 ### Login to Azure
 
 Login to the Azure CLI and choose your active subscription. In the terminal of VS Code in Codespace, run the below commands. `--use-device-code` parameter for login is mandatory in Codespaces environment.
@@ -55,6 +57,12 @@ az configure --defaults \
     group=${RESOURCE_GROUP} \
     location=${REGION} \
     spring=${SPRING_APPS_SERVICE}
+```
+
+Verify you are successfully logged in with Azure CLI and set the correct environment variables:
+
+```shell
+az spring show -n $SPRING_APPS_SERVICE -g $RESOURCE_GROUP --query id
 ```
 
 If you completed all the steps till here, you have successfully completed the following steps

@@ -126,7 +126,7 @@ Create API portal and assign an endpoint to API Portal and open it in a browser:
 ```shell
 az spring api-portal create
 az spring api-portal update --assign-endpoint true
-export PORTAL_URL=$(az spring api-portal show | jq -r '.properties.url')
+export PORTAL_URL=$(az spring api-portal show --query properties.url --output tsv)
 
 echo "https://${PORTAL_URL}"
 ```

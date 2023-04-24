@@ -36,7 +36,7 @@ information:
 
 ```shell
 az spring gateway update --assign-endpoint true
-export GATEWAY_URL=$(az spring gateway show | jq -r '.properties.url')
+export GATEWAY_URL=$(az spring gateway show --query properties.url --output tsv)
 ```
 The assign-endpoint argument with a value of true creates a publicly accessible endpoint for the gateway.
 
