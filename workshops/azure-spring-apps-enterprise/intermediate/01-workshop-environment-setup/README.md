@@ -38,6 +38,8 @@ Now, set the environment:
 source ./scripts/setup-env-variables.sh
 ``` 
 
+> If you exit your codespace and reconnect in, you need to re-run the command `source ./scripts/setup-env-variables.sh` to setup the environment.
+
 ### Login to Azure
 
 Login to the Azure CLI and choose your active subscription. In the terminal of VS Code in Codespace, run the below commands
@@ -55,6 +57,12 @@ az configure --defaults \
     group=${RESOURCE_GROUP} \
     location=${REGION} \
     spring=${SPRING_APPS_SERVICE}
+```
+
+Verify you are successfully log in with Azure CLI and set the correct environment variables:
+
+```shell
+az spring show -n $SPRING_APPS_SERVICE -g $RESOURCE_GROUP --query id
 ```
 
 If you completed all the steps till here, you have successfully completed the following steps
