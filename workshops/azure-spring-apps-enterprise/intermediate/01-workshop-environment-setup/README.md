@@ -18,7 +18,7 @@ This workshop leverages Github Codespaces to provide a development environment f
 
 This and following steps should be completed from within the terminal of your VS Code in Github Codespaces.
 
-Open [`/scripts/setup-env-variables.sh`](../../scripts/setup-env-variables.sh) and update the following variables:
+Open [`/scripts/setup-env-variables.sh`](../../../scripts/setup-env-variables.sh) and update the following variables:
 
 ```shell
 export SUBSCRIPTION=CHANGEME                 # replace it with your subscription-id (quote is not required)
