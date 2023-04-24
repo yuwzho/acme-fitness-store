@@ -38,7 +38,7 @@ Now, set the environment:
 source ./scripts/setup-env-variables.sh
 ``` 
 
-> If you exit your codespace and reconnect in, you need to re-run the command `source ./scripts/setup-env-variables.sh` to setup the environment.
+> If you exit your Codespaces and reconnect in, you need to re-run the command `source ./scripts/setup-env-variables.sh` to setup the environment.
 
 ### Login to Azure
 
