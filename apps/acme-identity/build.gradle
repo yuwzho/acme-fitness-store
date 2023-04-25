@@ -14,11 +14,6 @@ repositories {
 	maven { url 'https://repo.spring.io/milestone' }
 }
 
-ext {
-	set('springCloudAzureVersion', "5.0.0")
-	set('springCloudVersion', "2022.0.0")
-}
-
 springBoot {
 	buildInfo {
 		properties {
