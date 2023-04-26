@@ -117,7 +117,7 @@ So far in this section we were able to successfully create and deploy the apps i
 
 Now that all the required apps are deployed, you should be able to open the home page and access through the app. You should be able to browse through the catalog and view the different products.
 
-You will not be able to submit any orders at this point as SSO is not enabled. To 
+**You will not be able to submit any orders at this point as SSO is not enabled.**
 
 ## 8. Explore the API using API Portal
 
