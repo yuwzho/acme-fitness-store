@@ -1,7 +1,7 @@
 #### There are multiple options to work through this workshop.
-- GitHub Codespaces
-- Cloud Shell
-- Git Bash
+- [GitHub Codespaces](#github-codespaces)
+- [Cloud Shell](#cloud-shell)
+- [Git Bash](#git-bash)
 
 Follow the instructions based on the option you choose.
 
@@ -38,7 +38,7 @@ Make sure you have Bash Shell selected form the shell type dropdown
 3. Install GIT: [Git (git-scm.com)](https://git-scm.com/)
 4. Install jq utility: [Download jq (jqlang.github.io)](https://jqlang.github.io/jq/download/)
  Please note that you will have to rename jq-win64.exe to jq.exe and add it to PATH.
-5. Install Java 17: [Red Hat build of OpenJDK Download | Red Hat Developer](https://developers.redhat.com/products/openjdk/download?sc_cid=701f2000000RWTnAAO)
+5. Install Java 17: [Download Microsoft build of OpenJDK](https://learn.microsoft.com/en-us/java/openjdk/download#openjdk-17)
 6. The environment variable **JAVA_HOME** should be set to the path of the JDK installation. The directory specified by this path should have bin, jre and lib among its subdirectories. Further, ensure your **PATH** variable contains the directory `${JAVA_HOME}/bin`. To test, type which `javac` into bash shell ensure the resulting path points to a file inside `${JAVA_HOME}/bin`.
 7. Install maven: [Maven – Installing Apache Maven](https://maven.apache.org/install.html)
 8. Create a folder by any name for this lab, eg: `ase-lab`
