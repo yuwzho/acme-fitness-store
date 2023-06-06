@@ -269,9 +269,9 @@ az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analy
 
        ]' 
 
- 
-
+ export MSYS_NO_PATHCONV=0
 ```
+
 If you completed all the steps till here, you have successfully completed the following steps
 * Accessing a dev environment via Github Codespaces
 * Required az cli extensions are added and default subscription is set
