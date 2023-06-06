@@ -81,6 +81,7 @@ code ./scripts/setup-env-variables.sh # Use the editor of your choice
 export SUBSCRIPTION=CHANGEME               # replace it with your subscription-id (quote is not required)
 export RESOURCE_GROUP=CHANGEME             # choose a unique name if the moderator doesn't provide it
 export SPRING_APPS_SERVICE=CHANGEME        # choose a unique name if the moderator doesn't provide it
+export LOG_ANALYTICS_WORKSPACE=CHANGEME
 export REGION=CHANGEME                     # The region where you are running this workshop
 ```
 
