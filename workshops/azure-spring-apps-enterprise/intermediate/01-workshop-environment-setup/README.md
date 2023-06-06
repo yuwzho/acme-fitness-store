@@ -47,13 +47,17 @@ Make sure you have Bash Shell selected form the shell type dropdown
 
 ![Alt text](../../../../media/gitbash.png?raw=true "Git Bash in VS Code Terminal")
 
-11. Execute the following command from your GitBash to clone the repo for the lab 
+### Prepare your environment (Codespaces/Cloud Shell/Git Bash) for deployments
+
+These steps should be completed from within the terminal of your VS Code in Github Codespaces or bash shell if you are using Cloud Shell or Git Bash
+
+Execute the following command to clone the repo for the lab 
 
 ```shell
 Git clone https://github.com/Azure-Samples/acme-fitness-store.git 
 ```
 
-### Install the Azure CLI extension (Codespaces/Cloud Shell/Git Bash)
+### Install the Azure CLI Spring Extension
 
 Install the Azure Spring Apps extension for the Azure CLI using the following command
 
@@ -67,11 +71,11 @@ If the extension is already installed, update it with the following command
 az extension update --name spring
 ```
 
-### Prepare your environment (Codespaces/Cloud Shell/Git Bash) for deployments
-
-This step should be completed from within the terminal of your VS Code in Github Codespaces or bash shell if you are using Cloud Shell
-
-Open [`/scripts/setup-env-variables.sh`](../../../../scripts/setup-env-variables.sh) and update the following variables:
+Update Environment Variables
+```shell
+cd acme-fitness-app
+code ./scripts/setup-env-variables.sh # In Cloud Shell
+```
 
 ```shell
 export SUBSCRIPTION=CHANGEME               # replace it with your subscription-id (quote is not required)
@@ -89,13 +93,12 @@ This env file comes with default values that were provided as part of arm templa
 Now, set the environment:
 
 ```shell
-cd acme-fitness-store
 source ./scripts/setup-env-variables.sh
 ``` 
 
 Verify environment variables are set 
 ```shell
-echo $SUBSCRIPTION 
+echo $SUBSCRIPTION
 echo $RESOURCE_GROUP 
 echo $SPRING_APPS_SERVICE 
 echo $REGION 
@@ -112,7 +115,7 @@ echo $FRONTEND_APP
 Login to Azure and set subscription
 
 ```shell
-az login --use-device-code 
+az login --use-device-code # Only for Codespaces and Git Bash
 az account list -o table
 az account set --subscription ${SUBSCRIPTION}
 ```
@@ -268,9 +271,6 @@ az monitor diagnostic-settings create --name "send-logs-and-metrics-to-log-analy
 
  
 
-# revert 
-
-export MSYS_NO_PATHCONV=0 
 ```
 If you completed all the steps till here, you have successfully completed the following steps
 * Accessing a dev environment via Github Codespaces
