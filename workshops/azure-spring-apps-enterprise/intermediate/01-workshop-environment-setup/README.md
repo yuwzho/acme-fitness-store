@@ -73,7 +73,7 @@ az extension update --name spring
 
 Update Environment Variables
 ```shell
-cd acme-fitness-app
+cd acme-fitness-store
 code ./scripts/setup-env-variables.sh # Use the editor of your choice
 ```
 
