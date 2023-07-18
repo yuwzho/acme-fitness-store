@@ -1,6 +1,6 @@
 # ACMEFIT K8s
 
-This repo contains a Polyglot demo application comprised of (presently) 6 microservices and 4 datastores.
+This repo contains a Polyglot demo application comprised of (presently) 6 apps and 4 datastores.
 
 The contents here are the necessary YAML files to deploy the ACMEFIT application in a kubernetes cluster.
 
@@ -29,7 +29,7 @@ kubectl apply -f kubernetes-manifests/api-portal-ingress.yaml
 
 ## Datastore Dependent Services
 
-This section covers the deployment of the datastore dependent microservices. It is recommended to deploy these services first.
+This section covers the deployment of the datastore dependent apps. It is recommended to deploy these services first.
 
 ### Cart Service
 
