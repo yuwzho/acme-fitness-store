@@ -150,23 +150,6 @@ az spring app update \
     --env "CART_PORT=8080" "REDIS_CONNECTIONSTRING=${REDIS_CONN_STR}" "AUTH_URL=https://${GATEWAY_URL}"
 ```
 
-## 5. View Persisted Data
-
-Verify order data is now persisted in a PostgreSQL Database by placing an order. View your placed orders with the following URL:
-
-```text
-echo https://${GATEWAY_URL}/order/${USER_ID}
-```
-
-Your USER_ID is your username as a URL encoded string. For example: John Smith is John%20Smith.
-
-Now restart the order service application:
-
-```shell
-az spring app restart --name ${ORDER_SERVICE_APP}
-```
-
-
 ⬅️ Previous guide: [10 - Hands On Lab 3.2 - Bind Apps to ACS and Service Registry](../10-hol-3.2-bind-apps-to-acs-service-reg/README.md)
 
 ➡️ Next guide: [12 - Hands On Lab 3.4 Configure Single Sign On](../12-hol-3.4-configure-single-signon/README.md)

@@ -168,6 +168,26 @@ SSO provider. Learn more about API Authorization with API Portal [here](https://
 
 At this point, you are all ready to start testing the app and place orders. 
 
+## 6. View Persisted Data
+
+Verify order data is now persisted in a PostgreSQL Database by placing an order. View your placed orders with the following URL:
+
+```text
+echo https://${GATEWAY_URL}/order/${USER_ID}
+```
+
+Your USER_ID is your username as a URL encoded string. For example: John Smith is John%20Smith.
+
+When logged in, you can find your user id by clicking on the `Log In / Logout` button.
+
+![userid](images/user-id.png) 
+
+Now restart the order service application:
+
+```shell
+az spring app restart --name ${ORDER_SERVICE_APP}
+```
+
 ⬅️ Previous guide: [11 - Hands On Lab 3.3 - Configure Database and Cache](../11-hol-3.3-configure-database-cache/README.md)
 
 ➡️ Next guide: [13 - Hands On Lab 3.5 - Configure Azure KeyVault](../13-hol-3.5-configure-azure-keyvault/README.md)
