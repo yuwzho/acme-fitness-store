@@ -173,25 +173,17 @@
     <!-- *** FOOTER END ***-->
     <!-- *** AI CHAT ***-->
     <div id="aiChat">
-      <div id="aiChatTitle"><i class="fa fa-lightbulb-o"></i>AI assistant
+      <div id="aiChatTitle"><i class="fa fa-lightbulb-o"></i>FitAssist
         <input type="checkbox" id="aiChatToggle" checked>
+        <button id="aiChatTitleClearButton"><i class="fa fa-undo" aria-hidden="true"></i></button>
         <label for="aiChatToggle" id="aiChatTitleCloseArea"><i class="fa fa-times"></i></label>
         <label for="aiChatToggle" id="aiChatTitleOpenArea"></label>
       </div>
       <div id="aiChatContainer">
-        <div id="aiChatHistory">
-          <div class="message ai">
-            <div>Welcome to our e-bike website! Looking for the perfect e-bike? I'm here to assist you. To
-              get started, I can suggest some popular e-bike models based on your preferences. Just let me
-              know your riding style, desired speed, and approximate range, and we'll find the ideal match
-              for you.</div>
-          </div>
-        </div>
+        <div id="aiChatHistory"></div>
         <div id="aiChatInputboxOuter">
-          <div id="aiChatInputboxBuiltInQuestions" style="display: none;">
-            <button id="aiChatInputboxBuiltInQuestionsRefresh"><i class="fa fa-refresh"></i></button>
-          </div>
-          <div id="aiChatInputboxTyping">AI assistant is typing...</div>
+          <div id="aiChatInputboxBuiltInQuestions" style="display: none;"></div>
+          <div id="aiChatInputboxTyping">FitAssist is typing...</div>
           <div id="aiChatInputboxInner">
             <textarea id="aiChatInputbox" placeholder="Ask anyting about our bikes..."></textarea>
             <button id="aiChatInputboxSendButton"><i class="fa fa-paper-plane-o"></i></button>
@@ -258,7 +250,7 @@
                                 </td>\
                                 <td>' + item.price + '</td>\
                                 <td>$0.00</td>\
-                                <td>' + (item.price * item.quantity).toFixed(2) + '</td>\
+                                <td>' + Number((item.price.replaceAll(',', '') * item.quantity).toFixed(2)).toLocaleString("en-US") + '</td>\
                                 <td>\
                                   <a href="#"><i class="fa fa-trash-o"></i></a>\
                                 </td>\
