@@ -164,10 +164,10 @@ function changeChatToggle() {
 function aiChatToggleOpen() {
   $('#aiChatToggle').prop('checked', false);
   localStorage.chatToggleClosed = false;
+  $('#aiChatHistory').scrollTop($('#aiChatHistory').prop('scrollHeight'));
 }
 
 function init() {
-  $('body').append($('<script />', { src: 'https://cdn.jsdelivr.net/npm/marked/marked.min.js' }));
   $('#aiChatInputboxSendButton').click(sendMessage);
   $('#aiChatInputbox').keypress(function (e) {
     if (e.which == 13) {
@@ -181,7 +181,13 @@ function init() {
   $('#aiChatToggle').prop('checked', localStorage.chatToggleClosed !== 'false');
   $('body').delegate('#aiChatAskBtn', 'click', aiChatToggleOpen);
   
-  initConversation();
+  let markedReadyWatcher;
+  markedReadyWatcher = setInterval(() => {
+    if (marked) {
+      clearInterval(markedReadyWatcher);
+      initConversation();
+    }
+  }, 100);
 }
 
 init();
