@@ -1,10 +1,5 @@
 package com.azure.acme.assist.openai;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,10 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Simple in-memory implementation of the vector store. 
- * Support saving to and loading from a json file. Used for demo purposes only.
+ * Simple in-memory implementation of the vector store. Support saving to and
+ * loading from a json file. Used for demo purposes only.
  */
 public class SimpleMemoryVectorStore implements VectorStore {
 
@@ -58,14 +54,12 @@ public class SimpleMemoryVectorStore implements VectorStore {
 
     @Override
     public List<RecordEntry> searchTopKNearest(List<Double> embedding, int k, double cutOff) {
-        var similarities = data.store.values().stream().map(entry -> new Similarity(
-                        entry.getId(),
+        var similarities = data.store.values().stream()
+                .map(entry -> new Similarity(entry.getId(),
                         EmbeddingMath.cosineSimilarity(embedding, entry.getEmbedding())))
                 .filter(s -> s.similarity >= cutOff)
-                .sorted(Comparator.<Similarity>comparingDouble(s -> s.similarity).reversed())
-                .limit(k)
-                .map(s -> data.store.get(s.key))
-                .toList();
+                .sorted(Comparator.<Similarity>comparingDouble(s -> s.similarity).reversed()).limit(k)
+                .map(s -> data.store.get(s.key)).toList();
         return similarities;
     }
 
@@ -88,15 +82,31 @@ public class SimpleMemoryVectorStore implements VectorStore {
         }
     }
 
-    @AllArgsConstructor
-    private static class Similarity {
+    public static class Similarity {
         private String key;
         private double similarity;
+
+        public Similarity(String key, double similarity) {
+            this.key = key;
+            this.similarity = similarity;
+        }
     }
 
-    @Setter
-    @Getter
-    private static class VectorStoreData {
+    public static class VectorStoreData {
         private Map<String, RecordEntry> store = new ConcurrentHashMap<>();
+
+        /**
+         * @return the store
+         */
+        public Map<String, RecordEntry> getStore() {
+            return store;
+        }
+
+        /**
+         * @param store the store to set
+         */
+        public void setStore(Map<String, RecordEntry> store) {
+            this.store = store;
+        }
     }
 }

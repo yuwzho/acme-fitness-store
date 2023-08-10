@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -22,11 +24,10 @@ import com.azure.acme.assist.openai.VectorStore;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
 public class VectorStoreService {
+
+    private static final Logger log = LoggerFactory.getLogger(VectorStoreService.class);
 
     @Autowired
     private AcmeAzureOpenAIClient client;
@@ -73,8 +74,13 @@ public class VectorStoreService {
                     var response = client.getEmbeddings(List.of(chunk));
                     var embedding = response.getData().get(0).getEmbedding();
                     String key = UUID.randomUUID().toString();
-                    vectorStore.saveRecord(RecordEntry.builder().id(key).docId(product.getId())
-                            .docTitle(product.getName()).embedding(embedding).text(chunk).build());
+                    RecordEntry entry = new RecordEntry();
+                    entry.setId(key);
+                    entry.setDocId(product.getId());
+                    entry.setDocTitle(product.getName());
+                    entry.setEmbedding(embedding);
+                    entry.setText(chunk);
+                    vectorStore.saveRecord(entry);
 
                     try {
                         Thread.sleep(1000);

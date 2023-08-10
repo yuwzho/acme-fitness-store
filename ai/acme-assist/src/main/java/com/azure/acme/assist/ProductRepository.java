@@ -3,6 +3,8 @@ package com.azure.acme.assist;
 import java.util.List;
 
 import org.apache.logging.log4j.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +17,14 @@ import com.azure.acme.assist.model.CatalogProductResponse;
 import com.azure.acme.assist.model.Product;
 
 import jakarta.annotation.PostConstruct;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 @Repository
 @Configuration
-@Slf4j
 public class ProductRepository {
 
+    private static final Logger log = LoggerFactory.getLogger(ProductRepository.class);
+
     @Value("${catalogService:http://catalog-service}")
-    @Getter
     private String catalogService;
 
     public Product getProductById(String id) {
