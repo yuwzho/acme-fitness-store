@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.azure.ai.openai.models.ChatRole;
 
-public class ChatRequest {
+public class AcmeChatRequest {
 
 	/**
 	 * (Optional) Name of the request page. Used as the context for the

@@ -12,13 +12,13 @@ import com.azure.ai.openai.models.ChatMessage;
 import com.azure.ai.openai.models.Embeddings;
 import com.azure.ai.openai.models.EmbeddingsOptions;
 
-public class AzureOpenAIClient {
+public class AcmeAzureOpenAIClient {
 
-	private static final Logger log = LoggerFactory.getLogger(AzureOpenAIClient.class);
+	private static final Logger log = LoggerFactory.getLogger(AcmeAzureOpenAIClient.class);
 
 	private static final double TEMPERATURE = 0.7;
 
-	public AzureOpenAIClient(OpenAIClient client, String embeddingDeploymentId, String chatDeploymentId) {
+	public AcmeAzureOpenAIClient(OpenAIClient client, String embeddingDeploymentId, String chatDeploymentId) {
 		this.client = client;
 		this.embeddingDeploymentId = embeddingDeploymentId;
 		this.chatDeploymentId = chatDeploymentId;

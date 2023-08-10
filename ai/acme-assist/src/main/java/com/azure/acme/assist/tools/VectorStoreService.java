@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.azure.acme.assist.model.Product;
-import com.azure.acme.assist.openai.AzureOpenAIClient;
+import com.azure.acme.assist.openai.AcmeAzureOpenAIClient;
 import com.azure.acme.assist.openai.RecordEntry;
 import com.azure.acme.assist.openai.SimpleMemoryVectorStore;
 import com.azure.acme.assist.openai.TextSplitter;
@@ -30,7 +30,7 @@ public class VectorStoreService {
 	private static final Logger log = LoggerFactory.getLogger(VectorStoreService.class);
 
 	@Autowired
-	private AzureOpenAIClient client;
+    private AcmeAzureOpenAIClient client;
 
 	@Autowired
 	private VectorStore vectorStore;

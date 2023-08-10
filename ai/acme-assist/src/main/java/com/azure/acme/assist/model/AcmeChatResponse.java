@@ -2,7 +2,7 @@ package com.azure.acme.assist.model;
 
 import java.util.List;
 
-public class ChatResponse {
+public class AcmeChatResponse {
 
 	/**
 	 * The candidate answers for the chat. Only one is provided for now.
