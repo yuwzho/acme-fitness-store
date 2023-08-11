@@ -14,12 +14,6 @@ urlFragment: "acme-fitness-store"
 
 ACME Fitness store is a fictional online retailer selling sporting goods. This repo contains the source code and deployment scripts for the ACME Fitness store application.
 
-| Directory                                                        | Purpose |
-| ---------------------------------------------------------------- | ------------- |
-| [apps/](./apps)                                                   | source code for the services  |
-| [azure-spring-apps-enterprise/](./azure-spring-apps-enterprise)   | documentaion and scripts for deploying to Azure Spring Apps Enterprise |
-| [tanzu-application-platform/](./tanzu-application-platform)       | documentation and scripts for deploying to Tanzu Application Platform|
-
 ## High Level Architecture
 ![An image showing the services involved in the ACME Fitness Store. It depicts the applications and their dependencies](./azure-spring-apps-enterprise/media/architecture.jpg)
 
@@ -41,6 +35,14 @@ This application is composed of several services:
 
 The sample can be deployed to Azure Spring Apps Enterprise or Tanzu Application
 Platform. 
+
+## Repo Organization
+
+| Directory                                                        | Purpose |
+| ---------------------------------------------------------------- | ------------- |
+| [apps/](./apps)                                                   | source code for the services  |
+| [azure-spring-apps-enterprise/](./azure-spring-apps-enterprise)   | documentaion and scripts for deploying to Azure Spring Apps Enterprise |
+| [tanzu-application-platform/](./tanzu-application-platform)       | documentation and scripts for deploying to Tanzu Application Platform|
 
 ## Deploy Apps to Azure Spring Apps Enterprise (ASA-E)
 
