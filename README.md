@@ -41,9 +41,9 @@ Platform.
 
 | Directory                                                        | Purpose |
 | ---------------------------------------------------------------- | ------------- |
-| [apps](./apps)                                                   | source code for the services  |
-| [azure-spring-apps-enterprise](./azure-spring-apps-enterprise)   | documentaion and scripts for deploying to Azure Spring Apps Enterprise |
-| [tanzu-application-platform](./tanzu-application-platform)       | documentation and scripts for deploying to Tanzu Application Platform|
+| [apps/](./apps)                                                   | source code for the services  |
+| [azure-spring-apps-enterprise/](./azure-spring-apps-enterprise)   | documentaion and scripts for deploying to Azure Spring Apps Enterprise |
+| [tanzu-application-platform/](./tanzu-application-platform)       | documentation and scripts for deploying to Tanzu Application Platform|
 
 ## Deploy Apps to Azure Spring Apps Enterprise (ASA-E)
 
