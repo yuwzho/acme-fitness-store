@@ -39,16 +39,13 @@ Platform.
 
 ## Repo organization 
 
-This repo contains the following folders:
-
-
 | Directory                                                        | Purpose |
 | ---------------------------------------------------------------- | ------------- |
 | [apps](./apps)                                                   | source code for the services  |
 | [azure-spring-apps-enterprise](./azure-spring-apps-enterprise)   | documentaion and scripts for deploying to Azure Spring Apps Enterprise |
 | [tanzu-application-platform](./tanzu-application-platform)       | documentation and scripts for deploying to Tanzu Application Platform|
 
-## Deploy Spring Boot Apps to Azure Spring Apps Enterprise
+## Deploy Apps to Azure Spring Apps Enterprise (ASA-E)
 
 Azure Spring Apps Enterprise enables you to easily run Spring Boot and 
 polyglot applications on Azure. The quickstart guide in 
