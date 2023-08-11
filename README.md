@@ -48,22 +48,33 @@ This repo contains the following folders:
 | [azure-spring-apps-enterprise](./azure-spring-apps-enterprise)   | documentaion and scripts for deploying to Azure Spring Apps Enterprise |
 | [tanzu-application-platform](./tanzu-application-platform)       | documentation and scripts for deploying to Tanzu Application Platform|
 
-# Deploy Spring Boot Apps to Azure Spring Apps Enterprise
+## Deploy Spring Boot Apps to Azure Spring Apps Enterprise
 
 Azure Spring Apps Enterprise enables you to easily run Spring Boot and 
-polyglot applications on Azure. Follow the instructions in 
+polyglot applications on Azure. The quickstart guide in 
 [azure-spring-apps-enterprise/README.md](./azure-spring-apps-enterprise/README.md) 
-to deploy the ACME Fitness store application to Azure Spring Apps Enterprise.
+shows you how to deploy the ACME Fitness store application to Azure Spring Apps
+ Enterprise.
 
-The 
+* [Deploy Applications to Azure Spring Apps](./azure-spring-apps-enterprise/README.md#deploy-spring-boot-apps-to-azure)
+  * [What will you experience](./azure-spring-apps-enterprise/#what-will-you-experience)
+  * [What you will need](./azure-spring-apps-enterprise/#what-you-will-need)
+  * [Install the Azure CLI extension](./azure-spring-apps-enterprise/#install-the-azure-cli-extension)
+  * [Clone the repo](./azure-spring-apps-enterprise/#clone-the-repo)
+  * [Unit 0 - Prepare Environment](./azure-spring-apps-enterprise/#unit-0---prepare-environment)  
+  * [Unit 1 - Deploy and Build Applications](./azure-spring-apps-enterprise/#unit-1---deploy-and-build-applications)
+  * [Unit 2 - Configure Single Sign On](./azure-spring-apps-enterprise/#unit-2---configure-single-sign-on)
+  * [Unit 3 - Integrate with Azure Database for PostgreSQL and Azure Cache for Redis](./azure-spring-apps-enterprise/#unit-3---integrate-with-azure-database-for-postgresql-and-azure-cache-for-redis)
+  * [Unit 4 - Securely Load Application Secrets](./azure-spring-apps-enterprise/#unit-4---securely-load-application-secrets)
+  * [Unit 5 - Monitor End-to-End](./azure-spring-apps-enterprise/#unit-5---monitor-end-to-end)
+  * [Unit 6 - Set Request Rate Limits](./azure-spring-apps-enterprise/#unit-6---set-request-rate-limits)
+  * [Unit 7 - Automate from idea to production](./azure-spring-apps-enterprise/#unit-7---automate-from-idea-to-production) 
 
+## Deploy Apps to Tanzu Application Platform (TAP)
 
-[acme-fitness-example](./azure-spring-apps-enterprise/README.md)
-
-# Deploy Apps to Tanzu Application Platform (TAP)
-
-Tanzu Application Platform enables you to easily build & run polyglot applications on CNCF Compliant Kubernetes clusters.
-
-[acme-fitness-example](./tanzu-application-platform/README.md)
+Tanzu Application Platform (TAP) enables you to easily build & run polyglot 
+applications on CNCF Compliant Kubernetes clusters. Follow the instructions
+in [tanzu-application-platform/README.md](./tanzu-application-platform/README.md)
+to deploy the application to TAP.
 
 
