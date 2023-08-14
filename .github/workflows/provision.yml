@@ -6,9 +6,9 @@ on:
     branches:
       - Azure
     paths:
-      - 'terraform/**'
-      - 'azure/builder.json'
-      - 'azure/routes/**'
+      - 'azure-spring-apps-enterprise/terraform/**'
+      - 'azure-spring-apps-enterprise/resources/json/tbs/builder.json'
+      - 'azure-spring-apps-enterprise/resources/json/routes/**'
 env:
   SPRING_APPS_SERVICE: ${{ secrets.TF_PROJECT_NAME }}-asa
   RESOURCE_GROUP: ${{ secrets.TF_PROJECT_NAME }}-grp
@@ -24,11 +24,11 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: terraform
+        working-directory: azure-spring-apps-enterprise/terraform
     steps:
       - uses: actions/checkout@v3
       - name: Set up Credentials and Terraform Backend
-        run: ../.github/scripts/prepare-configs.sh
+        run: ../../.github/scripts/prepare-configs.sh
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
           BACKEND_CONFIG: ${{ secrets.TF_BACKEND_CONFIG }}
@@ -68,8 +68,8 @@ jobs:
       - name: Set up Azure Spring Extension
         run: az extension add --name spring
       - name: Configure Spring Cloud Gateway
-        working-directory: azure/routes
-        run: ../../.github/scripts/gateway.sh
+        working-directory: azure-spring-apps-enterprise/resources/json/routes
+        run: ../../../../.github/scripts/gateway.sh
         env:
           RESOURCE_GROUP: ${{ env.RESOURCE_GROUP }}
           SPRING_APPS_SERVICE: ${{ env.SPRING_APPS_SERVICE }}
@@ -79,7 +79,7 @@ jobs:
           CATALOG_SERVICE_APP: ${{ env.CATALOG_SERVICE_APP }}
           FRONTEND_APP: ${{ env.FRONTEND_APP }}
       - name: Configure Identity Provider
-        run: ../.github/scripts/identity-provider.sh
+        run: ../../.github/scripts/identity-provider.sh
         env:
           RESOURCE_GROUP: ${{ env.RESOURCE_GROUP }}
           SPRING_APPS_SERVICE: ${{ env.SPRING_APPS_SERVICE }}
