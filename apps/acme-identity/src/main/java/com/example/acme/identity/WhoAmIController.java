@@ -1,4 +1,4 @@
-package com.vmware.identity;
+package com.example.acme.identity;
 
 import java.security.Principal;
 import java.util.Map;
