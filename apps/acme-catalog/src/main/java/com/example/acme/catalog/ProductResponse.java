@@ -1,4 +1,4 @@
-package com.vmware.acme.catalog;
+package com.example.acme.catalog;
 
 import java.util.ArrayList;
 import java.util.Arrays;

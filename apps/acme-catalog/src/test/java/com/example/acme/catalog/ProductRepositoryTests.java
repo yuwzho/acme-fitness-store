@@ -1,4 +1,4 @@
-package com.vmware.acme.catalog;
+package com.example.acme.catalog;
 
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;

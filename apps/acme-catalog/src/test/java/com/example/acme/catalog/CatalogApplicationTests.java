@@ -1,4 +1,4 @@
-package com.vmware.acme.catalog;
+package com.example.acme.catalog;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package com.vmware.acme.catalog;
+package com.example.acme.catalog;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

@@ -1,4 +1,4 @@
-package com.vmware.acme.catalog;
+package com.example.acme.catalog;
 
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
