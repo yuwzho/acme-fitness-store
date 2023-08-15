@@ -9,7 +9,7 @@
 		<version>3.1.2</version>
 	</parent>
 	<groupId>com.azure.acme</groupId>
-	<artifactId>assist-service</artifactId>
+	<artifactId>acme-assist</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>assist-service</name>
 	<description>AI backend for acme fitness store</description>
