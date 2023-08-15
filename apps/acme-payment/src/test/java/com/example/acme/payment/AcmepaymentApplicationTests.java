@@ -1,4 +1,4 @@
-package com.vmware.acme.payment;
+package com.example.acme.payment;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

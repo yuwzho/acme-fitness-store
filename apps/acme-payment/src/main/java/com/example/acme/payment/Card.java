@@ -1,4 +1,4 @@
-package com.vmware.acme.payment;
+package com.example.acme.payment;
 
 import java.time.LocalDate;
 
