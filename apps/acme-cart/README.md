@@ -1,6 +1,5 @@
 # Cart
 
-[![gcr.io](https://img.shields.io/badge/gcr.io-stable-orange?style=flat-square)](https://console.cloud.google.com/gcr/images/vmwarecloudadvocacy/GLOBAL/acmeshop-cart@sha256:96ca8cf4f2c538883c754dbacf488966b2113b904c0291a0b99c2c53f51a9233/details?tab=info)
 
 > A cart service, because what is a shop without a cart to put stuff in?
 
@@ -14,8 +13,7 @@ There are different dependencies based on whether you want to run a built contai
 
 * [Python 3.7.2 or higher](https://www.python.org/downloads/)
 * [Pip](https://pip.pypa.io/en/stable/installing/)
-* [Docker](https://www.docker.com/docker-community)
-
+* pyenv 
 ### Run
 
 * [Docker](https://www.docker.com/docker-community)
@@ -23,25 +21,14 @@ There are different dependencies based on whether you want to run a built contai
 
 ## Installation
 
-### Docker
-
-Use this command to pull the latest tagged version of the shipping service:
-
-```bash
-docker pull gcr.io/vmwarecloudadvocacy/acmeshop-cart:stable
-```
-
-To build a docker container, run `docker build . -t vmwarecloudadvocacy/acmeshop-cart:<tag>`.
-
-The images are tagged with:
-
-* `<Major>.<Minor>.<Bug>`, for example `1.1.0`
-* `stable`: denotes the currently recommended image appropriate for most situations
-* `latest`: denotes the most recently pushed image. It may not be appropriate for all use cases
-
 ### Source
 
+A pyenv `.python-version` configuration file is provided. You can 
+configure a compatible environment using `pyenv` by running `pyenv install`.
+
 To build the app as a stand-alone executable, run `pip install -r requirements.txt` to install the Python libraries and run `python3 cart.py` after.
+
+By default, the app runs on port 5000 which is used by MacOS for airplay service. If you get a port conflict change the port to `5001` by setting the environment variable `CART_PORT=5001 ptthon3 cart.py`
 
 ## Usage
 
