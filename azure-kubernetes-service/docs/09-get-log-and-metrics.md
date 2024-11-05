@@ -5,5 +5,5 @@ Prerequisities:
 - Applications
 Output:
 - The log and be streamed to LA (not Jarvis)
-- Metrics (To be figure out)
+- Metrics (Container metrics only, no need for Java specific)
 ---

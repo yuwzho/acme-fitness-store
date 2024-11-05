@@ -10,7 +10,10 @@
 1. Create RG
 `az group create -n yuwzho-acme -l eastus2`
 1. Create ACR
-`az acr create -g yuwzho-acme -n yuwzhoacmeacr --sku Premium`
+`az acr create -g yuwzho-acme -n acmeacr --sku Premium`
+
+1. Enable 
+`az feature register --namespace Microsoft.Compute --name EncryptionAtHost`
 
 1. Create AKS
 
@@ -18,11 +21,11 @@
 az aks create \
     -g  yuwzho-acme \
     -n yuwzho-acme-aks \
-    --attach-acr yuwzhoacmeacr \
+    --attach-acr acmeacr \
     --enable-workload-identity  \
     --load-balancer-sku standard \
     --enable-cluster-autoscaler \
-    --max-count 8 \
+    --max-count 40 \
     --min-count 1  \
     --network-plugin azure \
     --no-ssh-key \
