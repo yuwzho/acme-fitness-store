@@ -1,6 +1,6 @@
 ---
-- Onwer: Yuwei
-  Output:
+Onwer: Yuwei
+Output:
   - Create ACR
   - Create AKS that connects to the ACR
   - Create Key Vault
