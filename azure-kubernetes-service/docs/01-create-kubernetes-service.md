@@ -12,15 +12,16 @@ Output:
 1. Create ACR
 `az acr create -g yuwzho-acme -n acmeacr --sku Premium`
 
-1. Enable 
+1. Enable `EncryptionAtHost`,  may take 10+ minutes to finish
 `az feature register --namespace Microsoft.Compute --name EncryptionAtHost`
+Run `az feature register --namespace Microsoft.Compute --name EncryptionAtHost` to wait it state to `Registered`.
 
 1. Create AKS
 
 ```
 az aks create \
     -g  yuwzho-acme \
-    -n yuwzho-acme-aks \
+    -n yuwzho-acme-k8s \
     --attach-acr acmeacr \
     --enable-workload-identity  \
     --load-balancer-sku standard \
@@ -42,7 +43,7 @@ az aks create \
 
 ```
 az aks nodepool add \
-    --cluster-name yuwzho-acme-aks \
+    --cluster-name yuwzho-acme-k8s \
     -g yuwzho-acme \
     -n nodepool2 \
     --enable-cluster-autoscaler \
@@ -57,7 +58,7 @@ az aks nodepool add \
     --node-count 1
 
 az aks nodepool add \
-    --cluster-name yuwzho-acme-aks \
+    --cluster-name yuwzho-acme-k8s \
     -g yuwzho-acme \
     -n nodepool3 \
     --enable-cluster-autoscaler \
@@ -72,8 +73,17 @@ az aks nodepool add \
     --node-count 1
 ```
 
+
 1. Retrieve access token
 
 ```
-az aks get-credentials --resource-group yuwzho-acme --name yuwzho-acme-aks --overwrite-existing
+az aks get-credentials --resource-group yuwzho-acme --name yuwzho-acme-k8s --overwrite-existing --admin
 ```
+
+> For more access management, see https://learn.microsoft.com/en-us/azure/aks/azure-ad-rbac?tabs=portal
+
+1. Install or update the kubectl CLI
+```
+az aks install-cli
+```
+
