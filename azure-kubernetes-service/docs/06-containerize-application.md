@@ -44,21 +44,15 @@ pack build ${CONTAINER_REGISTRY}/${IDENTITY_SERVICE_APP} --path apps/acme-identi
 pack build ${CONTAINER_REGISTRY}/${PAYMENT_SERVICE_APP} --path apps/acme-payment \
     --builder paketobuildpacks/builder-jammy-base \
     -e BP_JVM_VERSION=17
-
 # Build Order Service
 pack build ${CONTAINER_REGISTRY}/${ORDER_SERVICE_APP} --path apps/acme-order \
-    --builder paketobuildpacks/builder-jammy-base \
-    --buildpack paketo-buildpacks/dotnet-core
-
+    --builder paketobuildpacks/builder-jammy-base
 # Build Cart Service
 pack build ${CONTAINER_REGISTRY}/${CART_SERVICE_APP} --path apps/acme-cart \
-    --builder paketobuildpacks/builder-jammy-base \
-    --buildpack paketo-buildpacks/python
-
+    --builder paketobuildpacks/builder-jammy-base
 # Build Frontend App
 pack build ${CONTAINER_REGISTRY}/${FRONTEND_APP} --path apps/acme-shopping \
-    --builder paketobuildpacks/builder-jammy-base \
-    --buildpack paketo-buildpacks/nodejs
+    --builder paketobuildpacks/builder-jammy-base
 
 # Push Docker images to container registry
 docker push ${CONTAINER_REGISTRY}/${AI_APP}
