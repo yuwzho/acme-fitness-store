@@ -11,11 +11,7 @@
    ```bash
    git clone https://github.com/spring-guides/gs-service-registration-and-discovery.git
    ```
-
-1. **Copy the Dockerfile**
-
-   Navigate to the `resources/eureka` directory and copy the `Dockerfile` to the `eureka-server` directory in your cloned project `gs-service-registration-and-discovery`.
-
+   
 1. **Package the Eureka Server**
 
    Build the eureka server package:
@@ -23,6 +19,11 @@
    ```bash
    mvn clean package -DskipTests
    ```
+   
+1. **Copy the Dockerfile**
+
+   Copy the `Dockerfile` under `resources/eureka` to the `eureka-server` directory in your cloned project `gs-service-registration-and-discovery`.
+
 
 1. **(Optional) Login to Container Registry**
 
@@ -32,7 +33,6 @@
    az login
    az acr login --name <your-registry>
    ```
-  
 
 1. **Build and Push the Docker Image**
 
