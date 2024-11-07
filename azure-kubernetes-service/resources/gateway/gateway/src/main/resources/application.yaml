@@ -1,0 +1,191 @@
+management:
+  server:
+    port: 8090
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+      - id: frontend-get
+        uri: http://frontend
+        predicates:
+        - Path=/**
+        - Method=GET
+        order: 1000
+        filters:
+        - StripPrefix=0
+        tags:
+        - frontend
+      - id: cart_add
+        uri: https://cart-service
+        predicates:
+        - Path=/cart/item/add/{userId}
+        - Method=POST
+        filters:
+        - StripPrefix=0
+        tags:
+        - cart
+      - id: cart_modify
+        uri: https://cart-service
+        predicates:
+        - Path=/cart/item/modify/{userId}
+        - Method=POST
+        filters:
+        - StripPrefix=0
+        tags:
+        - cart
+      - id: cart_get
+        uri: https://cart-service
+        predicates:
+        - Path=/cart/items/{userId}
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - cart
+      - id: cart_clear
+        uri: https://cart-service
+        predicates:
+        - Path=/cart/clear/{userId}
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - cart
+      - id: cart_total
+        uri: https://cart-service
+        predicates:
+        - Path=/cart/total/{userId}
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - cart
+      - id: catalog_list
+        uri: https://catalog-service
+        predicates:
+        - Path=/products
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - catalog
+      - id: catalog_get
+        uri: https://catalog-service
+        predicates:
+        - Path=/products/{productId}
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - catalog
+      - id: catalog_create
+        uri: https://catalog-service
+        predicates:
+        - Path=/products
+        - Method=POST
+        filters:
+        - StripPrefix=0
+        tags:
+        - catalog
+      - id: catalog_update
+        uri: https://catalog-service
+        predicates:
+        - Path=/products/{productId}
+        - Method=POST
+        filters:
+        - StripPrefix=0
+        tags:
+        - catalog
+      - id: catalog_liveness
+        uri: https://catalog-service
+        predicates:
+        - Path=/catalogliveness
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        - SetPath=/actuator/health/liveness
+        tags:
+        - catalog
+      - id: catalog_image
+        uri: https://catalog-service
+        predicates:
+        - Path=/static/images/{id}
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - catalog
+      - id: order_create
+        uri: https://order-service
+        predicates:
+        - Path=/order/add/{userId}
+        - Method=POST
+        filters:
+        - StripPrefix=0
+        tags:
+        - order
+      - id: order_get
+        uri: https://order-service
+        predicates:
+        - Path=/order/{userId}
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - order
+      - id: identity_login
+        uri: https://identity-service
+        predicates:
+        - Path=/acme-login
+        - Method=GET
+        filters:
+        - RedirectTo=302, /
+        tags:
+        - sso
+      - id: identity_userinfo
+        uri: https://identity-service
+        predicates:
+        - Path=/userinfo
+        - Method=GET
+        filters:
+        - RedirectTo=302, /whoami
+        - SetResponseHeader=Cache-Control, no-store
+        tags:
+        - users
+      - id: identity_noop
+        uri: no://op
+        predicates:
+        - Path=/verify-token
+        - Method=POST
+        tags:
+        - users
+      - id: identity_whoami
+        uri: https://identity-service
+        predicates:
+        - Path=/whoami
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - users
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            allowedHeaders:
+            - "*"
+            allowCredentials: true
+            maxAge: 3600
