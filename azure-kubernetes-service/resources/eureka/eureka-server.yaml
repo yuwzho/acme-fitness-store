@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eureka-server
+  labels:
+    app: eureka-server
+spec:
+  ports:
+  - port: 8761
+  selector:
+    app: eureka-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eureka-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eureka-server
+  template:
+    metadata:
+      labels:
+        app: eureka-server
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+    spec:
+      containers:
+      - name: eureka-server
+        image: "acmeacr.azurecr.io/eureka-server:spring-official-20241107" # image built from https://github.com/spring-guides/gs-service-registration-and-discovery/tree/main/eureka-server
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8761
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 500m
+          limits:
+            memory: 1Gi
+            cpu: 500m
+        lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/sh
+                - -c
+                - sleep 10
+        readinessProbe:
+          failureThreshold: 20
+          tcpSocket:
+            port: 8761
+          initialDelaySeconds: 60
+          periodSeconds: 5
+          timeoutSeconds: 2
+        livenessProbe:
+          failureThreshold: 10
+          tcpSocket:
+            port: 8761
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 2
