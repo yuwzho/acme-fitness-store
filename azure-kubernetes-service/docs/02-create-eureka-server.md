@@ -1,6 +1,7 @@
 ## Prerequisites
 
 - An existing Azure Kubernetes Service (AKS) cluster.
+- Maven, Docker and Azure Cli should be installed.
 
 ## Prepare the Eureka Server Image
  
@@ -34,20 +35,26 @@
 
 1. **Get AKS Access Credential**
 
-   Run command in your local terminal or in [Azure Cloud Shell](https://azure.microsoft.com/en-us/get-started/azure-portal/cloud-shell).
+   Run this command in your terminal or in [Azure Cloud Shell](https://azure.microsoft.com/en-us/get-started/azure-portal/cloud-shell). Replace the placeholders accordingly:
    
    ```bash
    az login
    az aks get-credentials --resource-group $AKS_RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --subscription $AKS_SUBSCRIPTION_ID --admin
    ```
 
-1. **Locate the Kubernetes Resource File**
+1. **Edit the Kubernetes Resource File**
 
-   Find the `eureka-server.yaml` file in the `azure-kubernetes-service/resources/eureka` directory, replace the eureka-server image tag with the one you have just built and pushed.
+   Locate the eureka-server.yaml file in the azure-kubernetes-service/resources/eureka directory. Replace the image tag in the file with the image you just built and pushed.
+
+   ```yaml
+      containers:
+      - name: eureka-server
+        image: "<your-registry>.azurecr.io/eureka-server:<image-version>"
+   ```
 
 1. **Apply the Kubernetes Configuration**
 
-   Use `kubectl` to apply the configuration and create the eureka server:
+   Apply the configuration using kubectl to create the Eureka Server:
 
    ```bash
    kubectl apply -f eureka-server.yaml
@@ -55,17 +62,36 @@
 
 1. **Verify the Deployment**
 
-   Wait for the pod to start running. You can check the status with:
+   Use the following command to check the status of the Eureka Server pod:
 
    ```bash
    kubectl get pods
    ```
 
-   You should see output similar to:
+   If successful, you should see something like:
 
    ```
    NAME                                   READY   STATUS    RESTARTS   AGE
    eureka-server-867c8c97b6-nvqjx         1/1     Running   0          36m
    ```
 
-  Your Spring Cloud Eureka Server should now be up and running.
+  **Tip**: If the pod is not running, check for errors using:
+  
+  ```bash
+  kubectl describe pod <pod-name>
+  kubectl logs <pod-name>
+  ```
+  
+## Use the Eureka Server
+
+1. Prepare ConfigMap
+
+   To use the Eureka Server in your applications, apply the ConfigMap configuration. Find `eureka-server-config.yaml` in the `azure-kubernetes-service/resources/eureka` directory and apply it:
+
+   ```bash
+   kubectl apply -f eureka-server-config.yaml
+   ```
+
+2. Configure Application Deployment
+
+   Configure your applications to register with Eureka. [Here is a sample application deployment](#todo-add-link) with Eureka.
