@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
       - name: eureka-server
-        image: "acmeacr.azurecr.io/eureka-server:spring-official-20241107" # image built from https://github.com/spring-guides/gs-service-registration-and-discovery/tree/main/eureka-server
+        image: "acmeacr.azurecr.io/eureka-server:acme-20241107"
         imagePullPolicy: Always
         ports:
         - containerPort: 8761

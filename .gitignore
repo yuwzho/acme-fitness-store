@@ -58,3 +58,10 @@ hello-world/
 
 # vsCode
 .vscode
+
+**/.gradle
+**/.idea
+**/.vscode
+**/.classpath
+
+azure-kubernetes-service/resources/eureka/eureka-server/target

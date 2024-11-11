@@ -4,7 +4,7 @@
         * [Clone the repo](#clone-the-repo)
         * [Unit 0 - Prepare Environment](./docs/01-create-kubernetes-service.md)
         * [Unit 1 - Create Eureka Server](./docs/02-create-eureka-server.md)
-        * [Unit 2 - Create Spring Admin](./docs/03-create-spring-admin.md)
+        * [Unit 2 - Create Spring Boot Admin](./docs/03-create-spring-boot-admin.md)
         * [Unit 3 - Create Config Server](./docs/04-create-config-server.md)
         * [Unit 4 - Create Application Supporting Service](./docs/05-create-application-supporting-service.md)
         * [Unit 5 - Containerize Application](./docs/06-containerize-application.md)
