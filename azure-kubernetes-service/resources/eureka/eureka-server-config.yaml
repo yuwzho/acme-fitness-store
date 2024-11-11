@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: eureka-server-config
-data:
-  SPRING_EUREKA_SERVICE_URL: http://eureka-server.default.svc.cluster.local:8761/eureka/

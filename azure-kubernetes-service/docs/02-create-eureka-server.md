@@ -84,14 +84,4 @@
   
 ## Use the Eureka Server
 
-1. Prepare ConfigMap
-
-   To use the Eureka Server in your applications, apply the ConfigMap configuration. Find `eureka-server-config.yaml` in the `azure-kubernetes-service/resources/eureka` directory and apply it:
-
-   ```bash
-   kubectl apply -f eureka-server-config.yaml
-   ```
-
-2. Configure Application Deployment
-
    Configure your applications to register with Eureka. [Here is a sample application deployment](#todo-add-link) with Eureka.
