@@ -15,7 +15,7 @@
 
 1. **(Optional) Login to Container Registry**
 
-   If you have not logged into your container registry, you need to login to container registry before you can push image, for example, [login to acr](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-get-started-docker-cli?tabs=azure-cli#log-in-to-a-registry):
+   Log in to your Azure Container Registry (ACR) before pushing the image. Replace `<your-registry>` with the name of your ACR:
 
    ```bash
    az login
@@ -24,7 +24,7 @@
 
 1. **Build and Push the Docker Image**
 
-   Build the Docker image and push it to your container registry (replace <your-registry> with your actual registry name):
+   Build the Docker image and push it to your ACR. Replace `<your-registry>` and `<image-version>` with your registry name and desired version:
 
    ```bash
    docker build -t <your-registry>/eureka-server:<image-version> .
@@ -44,7 +44,7 @@
 
 1. **Edit the Kubernetes Resource File**
 
-   Locate the eureka-server.yaml file in the azure-kubernetes-service/resources/eureka directory. Replace the image tag in the file with the image you just built and pushed.
+   Locate the `eureka-server.yaml` file in the `azure-kubernetes-service/resources/eureka` directory. Replace the image tag in the file with the image you just built and pushed.
 
    ```yaml
       containers:
@@ -75,12 +75,12 @@
    eureka-server-867c8c97b6-nvqjx         1/1     Running   0          36m
    ```
 
-  **Tip**: If the pod is not running, check for errors using:
+   **Tip**: If the pod is not running, check for errors using:
   
-  ```bash
-  kubectl describe pod <pod-name>
-  kubectl logs <pod-name>
-  ```
+   ```bash
+   kubectl describe pod <pod-name>
+   kubectl logs <pod-name>
+   ```
   
 ## Use the Eureka Server
 
