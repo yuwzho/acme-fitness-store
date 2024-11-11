@@ -71,7 +71,14 @@ To create a Spring Boot Admin server, follow the [Getting Started documentation]
            app: spring-boot-admin
        spec:
          containers:
-         - image: acmeacr.azurecr.io/spring-boot-admin:latest
+         - env:
+             - name: JAVA_OPTS
+               value: -Deureka.client.service-url.defaultZone=$(SPRING_EUREKA_SERVICE_URL)
+           envFrom:
+           - configMapRef:
+               name: eureka-server-config
+               optional: true
+           image: acmeacr.azurecr.io/spring-boot-admin:latest
            imagePullPolicy: Always
            livenessProbe:
              failureThreshold: 3
