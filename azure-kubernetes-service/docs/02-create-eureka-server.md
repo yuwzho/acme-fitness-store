@@ -14,7 +14,7 @@
 
 1. **(Optional) Login to Container Registry**
 
-   You may need to login to container registry before you can push image, for example, [login to acr](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-get-started-docker-cli?tabs=azure-cli#log-in-to-a-registry):
+   If you have not logged into your container registry, you need to login to container registry before you can push image, for example, [login to acr](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-get-started-docker-cli?tabs=azure-cli#log-in-to-a-registry):
 
    ```bash
    az login
@@ -34,13 +34,16 @@
 
 1. **Get AKS Access Credential**
 
+   Run command in your local terminal or in [Azure Cloud Shell](https://azure.microsoft.com/en-us/get-started/azure-portal/cloud-shell).
+   
    ```bash
+   az login
    az aks get-credentials --resource-group $AKS_RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --subscription $AKS_SUBSCRIPTION_ID --admin
    ```
 
 1. **Locate the Kubernetes Resource File**
 
-   Find the `eureka-server.yaml` file in the `resources/eureka` directory, replace the eureka-server image tag accordingly.
+   Find the `eureka-server.yaml` file in the `azure-kubernetes-service/resources/eureka` directory, replace the eureka-server image tag accordingly.
 
 1. **Apply the Kubernetes Configuration**
 
