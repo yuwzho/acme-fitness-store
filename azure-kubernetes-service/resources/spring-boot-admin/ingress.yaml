@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.azure.com/tls-cert-keyvault-uri: https://yuwzho-acme-kv.vault.azure.net/certificates/acme-tls
+  name: spring-boot-admin-ingress
+  namespace: default
+spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
+  rules:
+  - host: spring-boot-admin.yuwzho-acme.asc-test.net
+    http:
+      paths:
+      - backend:
+          service:
+            name: spring-boot-admin
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - spring-boot-admin.yuwzho-acme.asc-test.net
+    # Secret name should be the in patthen "keyvault-<metadata.name>"
+    secretName: keyvault-spring-boot-admin-ingress
