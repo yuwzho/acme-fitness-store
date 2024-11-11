@@ -43,7 +43,7 @@
 
 1. **Locate the Kubernetes Resource File**
 
-   Find the `eureka-server.yaml` file in the `azure-kubernetes-service/resources/eureka` directory, replace the eureka-server image tag accordingly.
+   Find the `eureka-server.yaml` file in the `azure-kubernetes-service/resources/eureka` directory, replace the eureka-server image tag with the one you have just built and pushed.
 
 1. **Apply the Kubernetes Configuration**
 
