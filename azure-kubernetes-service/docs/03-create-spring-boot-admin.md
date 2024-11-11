@@ -34,3 +34,113 @@ To create a Spring Boot Admin server, follow the [Getting Started documentation]
    ```bash
    docker push ${CONTAINER_REGISTRY}/spring-boot-admin
    ```
+## Deploy the Spring Cloud Gateway Image in AKS
+
+. **Get AKS Access Credential**
+
+   ```bash
+   az aks get-credentials --resource-group $AKS_RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --subscription $AKS_SUBSCRIPTION_ID --admin
+   ```
+
+1. **Create the Kubernetes Resource File**
+
+   Save below content to springbootadmin.yaml:
+
+   ```yaml
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: spring-boot-admin
+   spec:
+     progressDeadlineSeconds: 600
+     replicas: 1
+     revisionHistoryLimit: 10
+     selector:
+       matchLabels:
+         app: spring-boot-admin
+     strategy:
+       rollingUpdate:
+         maxSurge: 55%
+         maxUnavailable: 25%
+       type: RollingUpdate
+     template:
+       metadata:
+         annotations:
+           cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+         labels:
+           app: spring-boot-admin
+       spec:
+         containers:
+         - image: acmeacr.azurecr.io/spring-boot-admin:latest
+           imagePullPolicy: Always
+           livenessProbe:
+             failureThreshold: 3
+             initialDelaySeconds: 300
+             periodSeconds: 10
+             successThreshold: 1
+             tcpSocket:
+               port: 8080
+             timeoutSeconds: 3
+           name: spring-boot-admin
+           ports:
+           - containerPort: 8080
+             name: app-port
+             protocol: TCP
+           readinessProbe:
+             failureThreshold: 3
+             periodSeconds: 5
+             successThreshold: 1
+             tcpSocket:
+               port: 8080
+             timeoutSeconds: 3
+           resources:
+             limits:
+               cpu: "1"
+               ephemeral-storage: 5000Mi
+               memory: 1Gi
+             requests:
+               cpu: "1"
+               ephemeral-storage: 5000Mi
+               memory: 1Gi
+           securityContext:
+             allowPrivilegeEscalation: false
+             capabilities:
+               add:
+               - NET_BIND_SERVICE
+               drop:
+               - NET_RAW
+             privileged: false
+             seccompProfile:
+               type: RuntimeDefault
+           terminationMessagePath: /dev/termination-log
+           terminationMessagePolicy: File
+         dnsPolicy: ClusterFirst
+         restartPolicy: Always
+         schedulerName: default-scheduler
+         terminationGracePeriodSeconds: 30
+   ```
+
+1. **Apply the Kubernetes Configuration**
+
+   Use `kubectl` to apply the configuration and create the eureka server:
+
+   ```bash
+   kubectl apply -f springbootadmin.yaml
+   ```
+
+   It creates Spring Boot Admin deployment.
+
+1. **Verify the Deployment**
+
+   Wait for the pod to start running. You can check the status with:
+
+   ```bash
+   kubectl get pods
+   ```
+
+   You should see output similar to:
+
+    ```
+   NAME                                   READY   STATUS    RESTARTS   AGE
+   spring-boot-admin-84f88cfb96-fqqws     1/1     Running   0          20s
+   ```
