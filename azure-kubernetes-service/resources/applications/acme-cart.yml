@@ -1,0 +1,113 @@
+
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      # Update to managed-identity client-id
+      azure.workload.identity/client-id: <client-id>
+    name: sa-account-redis-cart
+    namespace: default
+- apiVersion: v1
+  kind: ConfigMap 
+  metadata:
+    name: cart-config
+    namespace: default
+  data:
+    CART_PORT: '8080'
+    REDIS_HOST: <redis-hostname>
+    REDIS_USERNAME: <redis-access-policy-assignment-name>
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: cart
+    namespace: default
+  spec:
+    progressDeadlineSeconds: 900
+    replicas: 1
+    revisionHistoryLimit: 0
+    selector:
+      matchLabels:
+        app: cart
+    strategy:
+      rollingUpdate:
+        maxSurge: "0%"
+        maxUnavailable: "25%"
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          cluster-autoscaler.kubernetes.io/safe-to-evict: 'false'
+        labels:
+          azure.workload.identity/use: "true"
+          app: cart
+      spec:
+        automountServiceAccountToken: false
+        serviceAccountName: sa-account-redis-cart
+        containers:
+        - env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: APPLICATIONINSIGHTS_ROLE_NAME
+            value: cart
+          envFrom:
+          - configMapRef:
+              name: cart-config
+          image: acmeacr.azurecr.io/acme-cart:buildpack-1
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 300
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 8080
+            timeoutSeconds: 3
+          name: cart
+          ports:
+          - containerPort: 8080
+            name: app-port
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 0
+            periodSeconds: 5
+            successThreshold: 1
+            tcpSocket:
+              port: 8080
+            timeoutSeconds: 3
+          resources:
+            limits:
+              cpu: "2"
+              ephemeral-storage: "5000Mi"
+              memory: "4Gi"
+            requests:
+              cpu: "2"
+              ephemeral-storage: "5000Mi"
+              memory: "4Gi"
+          volumeMounts:
+          - mountPath: /tmp
+            name: temp
+        terminationGracePeriodSeconds: 90
+        volumes:
+        - emptyDir:
+            sizeLimit: "5Gi"
+          name: temp
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: cart
+    namespace: default
+  spec:
+    selector:
+      app: cart
+    ports:
+      - protocol: TCP
+        port: 80
+        targetPort: 8080
+    type: ClusterIP

@@ -26,40 +26,45 @@ export PAYMENT_SERVICE_APP=acme-payment
 export ORDER_SERVICE_APP=acme-order
 export CART_SERVICE_APP=acme-cart
 export FRONTEND_APP=acme-shopping
-export CONTAINER_REGISTRY=<input-here>   # e.g. myacr.azurecr.io/acme-fitness-store, myname/acme-fitness-store
+export CONTAINER_REGISTRY=acmeacr.azurecr.io   # e.g. myacr.azurecr.io/acme-fitness-store, myname/acme-fitness-store
+export IMAGE_TAG=buildpack-1
 
 # Build Assist app
-pack build ${CONTAINER_REGISTRY}/${AI_APP} --path apps/acme-assist \
+pack build ${CONTAINER_REGISTRY}/${AI_APP}:${IMAGE_TAG} --path apps/acme-assist \
     --builder paketobuildpacks/builder-jammy-base \
     -e BP_JVM_VERSION=17
 # Build Catalog Service
-pack build ${CONTAINER_REGISTRY}/${CATALOG_SERVICE_APP} --path apps/acme-catalog \
+pack build ${CONTAINER_REGISTRY}/${CATALOG_SERVICE_APP}:${IMAGE_TAG} --path apps/acme-catalog \
     --builder paketobuildpacks/builder-jammy-base \
     -e BP_JVM_VERSION=17
 # Build Identity Service
-pack build ${CONTAINER_REGISTRY}/${IDENTITY_SERVICE_APP} --path apps/acme-identity \
+pack build ${CONTAINER_REGISTRY}/${IDENTITY_SERVICE_APP}:${IMAGE_TAG} --path apps/acme-identity \
     --builder paketobuildpacks/builder-jammy-base \
     -e BP_JVM_VERSION=17
 # Build Payment Service
-pack build ${CONTAINER_REGISTRY}/${PAYMENT_SERVICE_APP} --path apps/acme-payment \
+pack build ${CONTAINER_REGISTRY}/${PAYMENT_SERVICE_APP}:${IMAGE_TAG} --path apps/acme-payment \
     --builder paketobuildpacks/builder-jammy-base \
     -e BP_JVM_VERSION=17
 # Build Order Service
-pack build ${CONTAINER_REGISTRY}/${ORDER_SERVICE_APP} --path apps/acme-order \
+pack build ${CONTAINER_REGISTRY}/${ORDER_SERVICE_APP}:${IMAGE_TAG} --path apps/acme-order \
     --builder paketobuildpacks/builder-jammy-base
 # Build Cart Service
-pack build ${CONTAINER_REGISTRY}/${CART_SERVICE_APP} --path apps/acme-cart \
+pack build ${CONTAINER_REGISTRY}/${CART_SERVICE_APP}:${IMAGE_TAG} --path apps/acme-cart \
     --builder paketobuildpacks/builder-jammy-base
 # Build Frontend App
-pack build ${CONTAINER_REGISTRY}/${FRONTEND_APP} --path apps/acme-shopping \
+pack build ${CONTAINER_REGISTRY}/${FRONTEND_APP}:${IMAGE_TAG} --path apps/acme-shopping \
     --builder paketobuildpacks/builder-jammy-base
 
+
+# Login the ACR
+az acr login -n acmeacr
+
 # Push Docker images to container registry
-docker push ${CONTAINER_REGISTRY}/${AI_APP}
-docker push ${CONTAINER_REGISTRY}/${CATALOG_SERVICE_APP}
-docker push ${CONTAINER_REGISTRY}/${IDENTITY_SERVICE_APP}
-docker push ${CONTAINER_REGISTRY}/${PAYMENT_SERVICE_APP}
-docker push ${CONTAINER_REGISTRY}/${ORDER_SERVICE_APP}
-docker push ${CONTAINER_REGISTRY}/${CART_SERVICE_APP}
-docker push ${CONTAINER_REGISTRY}/${FRONTEND_APP}
+docker push ${CONTAINER_REGISTRY}/${AI_APP}:${IMAGE_TAG}
+docker push ${CONTAINER_REGISTRY}/${CATALOG_SERVICE_APP}:${IMAGE_TAG}
+docker push ${CONTAINER_REGISTRY}/${IDENTITY_SERVICE_APP}:${IMAGE_TAG}
+docker push ${CONTAINER_REGISTRY}/${PAYMENT_SERVICE_APP}:${IMAGE_TAG}
+docker push ${CONTAINER_REGISTRY}/${ORDER_SERVICE_APP}:${IMAGE_TAG}
+docker push ${CONTAINER_REGISTRY}/${CART_SERVICE_APP}:${IMAGE_TAG}
+docker push ${CONTAINER_REGISTRY}/${FRONTEND_APP}:${IMAGE_TAG}
 ```

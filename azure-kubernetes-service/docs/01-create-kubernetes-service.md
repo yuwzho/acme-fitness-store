@@ -98,6 +98,7 @@ az aks install-cli
 kubectl get ns
 ```
 
+
 ## Create Azure Keyvault and cert
 
 1. Get AKS outbount IPs and note these IPs as `<AKS-outbound-ip>`
