@@ -30,16 +30,26 @@ echo "WORKSPACE_NAME=${WORKSPACE_NAME}"
 ```
 
 ### 2. Create Resource Group
-1. Create RG
-`az group create -n ${RESOURCE_GROUP} -l eastus2`
+1. Create resource group to host all the Azure resources.
+```bash
+az group create -n ${RESOURCE_GROUP} -l eastus2
+```
 
 ### 3. Create Azure Container Registry
-1. Create ACR
-`az acr create -g ${RESOURCE_GROUP} -n ${ACR_NAME} --sku Premium`
+Create Azure Container Registry (ACR). This ACR will be used:
+- Build application components
+- Store application images built by buildpack
+
+```bash
+az acr create -g ${RESOURCE_GROUP} -n ${ACR_NAME} --sku Premium
+```
 
 ### 4. Create AKS
 1. Enable `EncryptionAtHost`, may take 10+ minutes to finish
-`az feature register --namespace Microsoft.Compute --name EncryptionAtHost`
+```bash
+az feature register --namespace Microsoft.Compute --name EncryptionAtHost
+```
+
 Run `az feature register --namespace Microsoft.Compute --name EncryptionAtHost` to wait it state to `Registered`.
 
 1. Create workspace
@@ -48,7 +58,7 @@ az monitor log-analytics workspace create --resource-group ${RESOURCE_GROUP} --w
 ```
 
 1. Create AKS. 
-   Below commands guide you create the AKS. For more information on the features enabled in the AKS cluster, refer to the following Microsoft Learn documentation:
+   Below commands guide you create the AKS. For more information on the features enabled in the AKS cluster, refer to the following documentations:
 
     - [Attach Azure Container Registry to AKS](https://learn.microsoft.com/en-us/azure/aks/cluster-container-registry-integration)
     - [Enable Workload Identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview)
