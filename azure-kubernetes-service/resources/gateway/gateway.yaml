@@ -41,7 +41,7 @@ spec:
             --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED
         - name: logging.level.sun.net.www.protocol.http.HttpURLConnection
           value: INFO
-        image: acmeacr.azurecr.io/gateway:20241107
+        image: acmeacr.azurecr.io/gateway:20241111
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 10
@@ -133,3 +133,8 @@ spec:
               number: 80
         path: /
         pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - asc-scg-fitness.yuwzho-acme.asc-test.net
+    # Secret name should be the in patthen "keyvault-<metadata.name>"
+    secretName: keyvault-httprule-runtime-scg-default
