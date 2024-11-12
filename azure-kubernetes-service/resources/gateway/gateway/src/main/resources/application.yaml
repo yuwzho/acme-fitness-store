@@ -23,7 +23,7 @@ spring:
         tags:
         - frontend
       - id: cart_add
-        uri: https://cart-service
+        uri: http://cart-service
         predicates:
         - Path=/cart/item/add/{userId}
         - Method=POST
@@ -32,7 +32,7 @@ spring:
         tags:
         - cart
       - id: cart_modify
-        uri: https://cart-service
+        uri: http://cart-service
         predicates:
         - Path=/cart/item/modify/{userId}
         - Method=POST
@@ -41,7 +41,7 @@ spring:
         tags:
         - cart
       - id: cart_get
-        uri: https://cart-service
+        uri: http://cart-service
         predicates:
         - Path=/cart/items/{userId}
         - Method=GET
@@ -50,7 +50,7 @@ spring:
         tags:
         - cart
       - id: cart_clear
-        uri: https://cart-service
+        uri: http://cart-service
         predicates:
         - Path=/cart/clear/{userId}
         - Method=GET
@@ -59,7 +59,7 @@ spring:
         tags:
         - cart
       - id: cart_total
-        uri: https://cart-service
+        uri: http://cart-service
         predicates:
         - Path=/cart/total/{userId}
         - Method=GET
@@ -68,7 +68,7 @@ spring:
         tags:
         - cart
       - id: catalog_list
-        uri: https://catalog-service
+        uri: http://catalog-service
         predicates:
         - Path=/products
         - Method=GET
@@ -77,7 +77,7 @@ spring:
         tags:
         - catalog
       - id: catalog_get
-        uri: https://catalog-service
+        uri: http://catalog-service
         predicates:
         - Path=/products/{productId}
         - Method=GET
@@ -86,7 +86,7 @@ spring:
         tags:
         - catalog
       - id: catalog_create
-        uri: https://catalog-service
+        uri: http://catalog-service
         predicates:
         - Path=/products
         - Method=POST
@@ -95,7 +95,7 @@ spring:
         tags:
         - catalog
       - id: catalog_update
-        uri: https://catalog-service
+        uri: http://catalog-service
         predicates:
         - Path=/products/{productId}
         - Method=POST
@@ -104,7 +104,7 @@ spring:
         tags:
         - catalog
       - id: catalog_liveness
-        uri: https://catalog-service
+        uri: http://catalog-service
         predicates:
         - Path=/catalogliveness
         - Method=GET
@@ -114,7 +114,7 @@ spring:
         tags:
         - catalog
       - id: catalog_image
-        uri: https://catalog-service
+        uri: http://catalog-service
         predicates:
         - Path=/static/images/{id}
         - Method=GET
@@ -123,7 +123,7 @@ spring:
         tags:
         - catalog
       - id: order_create
-        uri: https://order-service
+        uri: http://order-service
         predicates:
         - Path=/order/add/{userId}
         - Method=POST
@@ -132,7 +132,7 @@ spring:
         tags:
         - order
       - id: order_get
-        uri: https://order-service
+        uri: http://order-service
         predicates:
         - Path=/order/{userId}
         - Method=GET
@@ -141,7 +141,7 @@ spring:
         tags:
         - order
       - id: identity_login
-        uri: https://identity-service
+        uri: http://identity-service
         predicates:
         - Path=/acme-login
         - Method=GET
@@ -150,7 +150,7 @@ spring:
         tags:
         - sso
       - id: identity_userinfo
-        uri: https://identity-service
+        uri: http://identity-service
         predicates:
         - Path=/userinfo
         - Method=GET
@@ -167,7 +167,7 @@ spring:
         tags:
         - users
       - id: identity_whoami
-        uri: https://identity-service
+        uri: http://identity-service
         predicates:
         - Path=/whoami
         - Method=GET
