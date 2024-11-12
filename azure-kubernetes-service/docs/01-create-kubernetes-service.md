@@ -21,7 +21,16 @@ Output:
 `az feature register --namespace Microsoft.Compute --name EncryptionAtHost`
 Run `az feature register --namespace Microsoft.Compute --name EncryptionAtHost` to wait it state to `Registered`.
 
+1. Create workspace
+```
+az monitor log-analytics workspace create --resource-group yuwzho-acme --workspace-name yuwzho-acme-workspace
+```
+
 1. Create AKS
+
+```
+WORKSPACE_ID=$(az monitor log-analytics workspace show --resource-group yuwzho-acme --workspace-name yuwzho-acme-workspace --query id -o tsv)
+```
 
 ```
 az aks create \
@@ -43,7 +52,10 @@ az aks create \
     --os-sku Mariner  \
     --node-osdisk-size 100 \
     --node-osdisk-type Ephemeral \
-    --node-vm-size Standard_D4as_v4
+    --node-vm-size Standard_D4as_v4 \
+    --enable-azure-monitor-metrics \
+    --enable-addons monitoring \
+    --workspace-resource-id ${WORKSPACE_ID}
 ```
 
 ```
