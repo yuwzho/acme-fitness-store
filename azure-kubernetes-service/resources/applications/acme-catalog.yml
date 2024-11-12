@@ -107,7 +107,7 @@ items:
 - apiVersion: v1
   kind: Service
   metadata:
-    name: catalog
+    name: catalog-service
     namespace: default
   spec:
     selector:

@@ -57,8 +57,9 @@ az identity federated-credential create \
 
 ### Update yaml for the credetial and Redis host
 ```
-CLIENT_ID=$(az identity show -n acme-cart-identity -g yuwzho-acme --query id -o tsv)
+CLIENT_ID=$(az identity show -n acme-cart-identity -g yuwzho-acme --query clientId -o tsv)
 echo client-id: ${CLIENT_ID}
+OBJECT_ID=$(az identity show -n acme-cart-identity -g yuwzho-acme --query principalId -o tsv)
 echo redis-access-policy-assignment-name: ${OBJECT_ID}
 REDIS_HOSTNAME=$(az redis show -n yuwzho-acme-redis -g yuwzho-acme --query hostName -o tsv)
 echo redis-hostname: ${REDIS_HOSTNAME}

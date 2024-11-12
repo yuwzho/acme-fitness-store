@@ -34,8 +34,8 @@ items:
           app: order
       spec:
         automountServiceAccountToken: false
-        # update to `sc-account-<client-id>`
-        serviceAccountName: sc-account-<client-id>
+        # az aks connection show --connection order_acme_postgres -g yuwzho-acme -n yuwzho-acme-k8s --query kubernetesResourceName
+        serviceAccountName: sc-account-f0e94657-c797-4229-8baa-f5d3e25149fb
         containers:
         - env:
           - name: POD_NAME
@@ -47,8 +47,8 @@ items:
             value: order
           envFrom:
           - secretRef:
-              # Update to `sc-<serviceconnection>-secret`
-              name: sc-<serviceconnection>-secret
+              # az aks connection show --connection order_acme_postgres -g yuwzho-acme -n yuwzho-acme-k8s --query kubernetesResourceName
+              name: sc-orderacmepostgres-secret
           - configMapRef:
               name: order-config
           image: acmeacr.azurecr.io/acme-order:buildpack
@@ -94,7 +94,7 @@ items:
 - apiVersion: v1
   kind: Service
   metadata:
-    name: order
+    name: order-service
     namespace: default
   spec:
     selector:
