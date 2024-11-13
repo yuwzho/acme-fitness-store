@@ -23,11 +23,9 @@ This document provides a step-by-step guide to create supporting services for th
 ## Steps
 
 ### 1. Set Variables
+Set up the variables used to create the PostgreSQL and Redis:
 ```
-RESOURCE_GROUP="yuwzho-acme"
-AKS_NAME="${RESOURCE_GROUP}-k8s"
-POSTGRESQL_NAME="${RESOURCE_GROUP}-postgres"
-REDIS_NAME="${RESOURCE_GROUP}-redis"
+source resources/var.sh
 
 echo "RESOURCE_GROUP=${RESOURCE_GROUP}"
 echo "AKS_NAME=${AKS_NAME}"

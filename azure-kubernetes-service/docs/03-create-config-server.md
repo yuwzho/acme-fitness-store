@@ -22,11 +22,7 @@ By the end of this guide, you will have a running Spring Cloud Config Server on 
    
    Set up the variables used to deploy the Config Server
    ```bash
-   RESOURCE_GROUP="yuwzho-acme"
-   AKS_NAME="${RESOURCE_GROUP}-k8s"
-   ACR_NAME="acmeacr"
-   CONFIGSERVER_IMAGE_TAG="acrbuild-config-server"
-
+   source resources/var.sh
    echo "RESOURCE_GROUP=${RESOURCE_GROUP}"
    echo "AKS_NAME=${AKS_NAME}"
    echo "ACR_NAME=${ACR_NAME}"

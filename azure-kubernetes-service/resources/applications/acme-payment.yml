@@ -58,7 +58,7 @@ items:
               optional: true
           - configMapRef:
               name: payment-config
-          image: acmeacr.azurecr.io/acme-payment:buildpack-1
+          image: <acr-name>.azurecr.io/acme-payment:<payment-service-app-image-tag>
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3

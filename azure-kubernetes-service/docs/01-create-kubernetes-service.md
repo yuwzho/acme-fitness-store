@@ -17,12 +17,10 @@ This document provides a step-by-step guide to create an Azure Kubernetes Servic
 ## Steps
 
 ### 1. Set Variables
+
+Update `resources/var.sh` and setup the variables to your environment.
 ```
-RESOURCE_GROUP="yuwzho-acme"
-AKS_NAME="${RESOURCE_GROUP}-k8s"
-ACR_NAME="acmeacr"
-KEYVAULT_NAME="${RESOURCE_GROUP}-kv"
-WORKSPACE_NAME="${RESOURCE_GROUP}-workspace"
+source resources/var.sh
 
 echo "RESOURCE_GROUP=${RESOURCE_GROUP}"
 echo "AKS_NAME=${AKS_NAME}"
