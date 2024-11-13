@@ -5,6 +5,8 @@ This document provides a step-by-step guide to create an Azure Kubernetes Servic
 - Azure CLI installed
 - Azure subscription
 - Sufficient permissions to create resources in the Azure subscription
+    - **Contributor** - Creates resource and all other Azure resources
+    - **User Access Administrator** - Assign ncessary 
 
 ## Outputs
 - Azure Container Registry (ACR)

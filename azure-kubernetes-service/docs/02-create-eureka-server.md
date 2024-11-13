@@ -1,55 +1,67 @@
+## Introduction
+
+In this guide, you will learn how to create and deploy a Eureka Server on Azure Kubernetes Service (AKS). Eureka Server is a service registry that allows microservices to register themselves and discover other registered services. See more details in [Service Discovery: Eureka Server](https://cloud.spring.io/spring-cloud-netflix/multi/multi_spring-cloud-eureka-server.html).
+
 ## Prerequisites
 
-- An existing Azure Kubernetes Service (AKS) cluster.
-- Maven, Docker and Azure Cli should be installed.
+- Follow [01-create-kubernetes-service](./01-create-kubernetes-service.md) to create Azure Kubernetes Service and Azure Container Registry.
+- Maven
+- Azure CLI
+- Docker
 
-## Prepare the Eureka Server Image
- 
+## Outputs
+
+By the end of this guide, you will have a running Eureka Server on your AKS cluster.
+
+## Steps
+
+### Prepare the Eureka Server Image
+
+1. **Setup variables**
+   
+   Set up the variables used to deploy Eureka Server
+   ```bash
+   RESOURCE_GROUP="yuwzho-acme"
+   AKS_NAME="${RESOURCE_GROUP}-k8s"
+   ACR_NAME="acmeacr"
+   EUREKA_IMAGE_TAG="acrbuild-eureka"
+
+   echo "RESOURCE_GROUP=${RESOURCE_GROUP}"
+   echo "AKS_NAME=${AKS_NAME}"
+   echo "ACR_NAME=${ACR_NAME}"
+   echo "EUREKA_IMAGE_TAG=${EUREKA_IMAGE_TAG}"
+   ```
+
 1. **Package the Eureka Server**
 
    Go to folder `azure-kubernetes-service/resources/eureka/eureka-server` in this project, build the eureka server package:
 
    ```bash
+   cd azure-kubernetes-service/resources/eureka/eureka-server
    mvn clean package -DskipTests
    ```
 
-1. **(Optional) Login to Container Registry**
+1. **Build the docker image**
+  
+   Use Azure Container Build to build the Eureka image. For more details of the ACR build, see [Automate container image builds and maintenance with Azure Container Registry tasks](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview).
 
-   Log in to your Azure Container Registry (ACR) before pushing the image. Replace `<your-registry>` with the name of your ACR:
-
-   ```bash
-   az login
-   az acr login --name <your-registry>
+   ```azurecli
+   az acr build --registry ${ACR_NAME} --image eureka-server:${EUREKA_IMAGE_TAG} target/docker
    ```
 
-1. **Build and Push the Docker Image**
-
-   Build the Docker image and push it to your ACR. Replace `<your-registry>` and `<image-version>` with your registry name and desired version:
-
-   ```bash
-   docker build -t <your-registry>/eureka-server:<image-version> .
-   docker push <your-registry>/eureka-server:<image-version>
-   ```
-
-## Deploy the Eureka Server
-
-1. **Get AKS Access Credential**
-
-   Run this command in your terminal or in [Azure Cloud Shell](https://azure.microsoft.com/en-us/get-started/azure-portal/cloud-shell). Replace the placeholders accordingly:
-   
-   ```bash
-   az login
-   az aks get-credentials --resource-group $AKS_RESOURCE_GROUP_NAME --name $AKS_CLUSTER_NAME --subscription $AKS_SUBSCRIPTION_ID --admin
-   ```
+### Deploy the Eureka Server
 
 1. **Edit the Kubernetes Resource File**
 
-   Locate the `eureka-server.yaml` file in the `azure-kubernetes-service/resources/eureka` directory. Replace the image tag in the file with the image you just built and pushed.
+   Locate the `eureka-server.yaml` file in the `azure-kubernetes-service/resources/eureka` directory. Edit the following code snippet.
+
+   - **`<eureka-image-tag>`**: Update to the value of `${EUREKA_IMAGE_TAG}`
+   - **`<acr-name>`**: Update to the value of `${ACR_NAME}`
 
    ```yaml
       containers:
       - name: eureka-server
-        image: "<your-registry>.azurecr.io/eureka-server:<image-version>"
+        image: "<acr-name>.azurecr.io/eureka-server:<eureka-image-tag>"
    ```
 
 1. **Apply the Kubernetes Configuration**
@@ -81,7 +93,4 @@
    kubectl describe pod <pod-name>
    kubectl logs <pod-name>
    ```
-  
-## Use the Eureka Server
 
-   Configure your applications to register with Eureka. [Here is a sample application deployment](#todo-add-link) with Eureka.

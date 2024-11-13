@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: config-server-default
+  name: config-server
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: config-server-default
+      app: config-server
   strategy:
     rollingUpdate:
       maxSurge: 55%
@@ -19,7 +19,7 @@ spec:
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
       labels:
-        app: config-server-default
+        app: config-server
     spec:
       containers:
       - env:
@@ -37,7 +37,7 @@ spec:
           value: "true"
         - name: spring.profiles.active
           value: test
-        image: acmeacr.azurecr.io/config-server:20241107
+        image: <acr-name>.azurecr.io/config-server:<config-server-image-tag>
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 10
@@ -47,7 +47,7 @@ spec:
           tcpSocket:
             port: 8888
           timeoutSeconds: 2
-        name: config-server-default
+        name: config-server
         ports:
         - containerPort: 8888
           protocol: TCP
@@ -73,3 +73,25 @@ spec:
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: config-server
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8888
+    targetPort: 8888
+    protocol: TCP
+  selector:
+    app: config-server
+---
+apiVersion: v1
+data:
+  SPRING_CLOUD_CONFIG_FAILFAST: "true"
+  SPRING_CLOUD_CONFIG_URI: https://config-server.default.svc.cluster.local:8888
+kind: ConfigMap
+metadata:
+  name: config-server-config
+  namespace: default

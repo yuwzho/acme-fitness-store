@@ -2,18 +2,18 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: asc-scg-default
+    app: gateway-deployment
     app.kubernetes.io/part-of: spring-cloud-gateway
-    gateway.name: asc-scg-default
+    gateway.name: gateway-deployment
     gateway.type: spring-cloud-gateway
-  name: asc-scg-default
+  name: gateway-deployment
 spec:
   minReadySeconds: 5
   replicas: 1
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: asc-scg-default
+      app: gateway-deployment
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -27,9 +27,9 @@ spec:
         prometheus.io/port: "8090"
         prometheus.io/scrape: "true"
       labels:
-        app: asc-scg-default
+        app: gateway-deployment
         app.kubernetes.io/part-of: spring-cloud-gateway
-        gateway.name: asc-scg-default
+        gateway.name: gateway-deployment
         gateway.type: spring-cloud-gateway
     spec:
       containers:
@@ -41,7 +41,7 @@ spec:
             --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED
         - name: logging.level.sun.net.www.protocol.http.HttpURLConnection
           value: INFO
-        image: acmeacr.azurecr.io/gateway:20241111
+        image: <acr-name>.azurecr.io/gateway:<gateway-image-tag>
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 10
@@ -94,11 +94,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: asc-scg-default
-    app.kubernetes.io/part-of: spring-cloud-gateway
-    gateway.name: asc-scg-default
-    gateway.type: spring-cloud-gateway
-  name: asc-scg-default
+    app: gateway-deployment
+  name: gateway-service
 spec:
   internalTrafficPolicy: Cluster
   ipFamilies:
@@ -110,7 +107,7 @@ spec:
     protocol: TCP
     targetPort: 8080
   selector:
-    app: asc-scg-default
+    app: gateway-deployment
   sessionAffinity: None
   type: ClusterIP
 ---
@@ -118,23 +115,23 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    kubernetes.azure.com/tls-cert-keyvault-uri: https://yuwzho-acme-kv.vault.azure.net/certificates/acme-tls
-  name: httprule-runtime-scg-default
+    kubernetes.azure.com/tls-cert-keyvault-uri: https://<keyvault-name>.vault.azure.net/certificates/<tls-cert-name>
+  name: spring-cloud-gateway-ingress
 spec:
   ingressClassName: webapprouting.kubernetes.azure.com
   rules:
-  - host: asc-scg-fitness.yuwzho-acme.asc-test.net
+  - host: <spring-cloud-gateway-host>
     http:
       paths:
       - backend:
           service:
-            name: asc-scg-default
+            name: gateway-service
             port:
               number: 80
         path: /
         pathType: ImplementationSpecific
   tls:
   - hosts:
-    - asc-scg-fitness.yuwzho-acme.asc-test.net
+    - <spring-cloud-gateway-host>
     # Secret name should be the in patthen "keyvault-<metadata.name>"
-    secretName: keyvault-httprule-runtime-scg-default
+    secretName: keyvault-spring-cloud-gateway-ingress

@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
       - name: eureka-server
-        image: "acmeacr.azurecr.io/eureka-server:acme-20241107"
+        image: <acr-name>.azurecr.io/eureka-server:<eureka-image-tag>
         imagePullPolicy: Always
         ports:
         - containerPort: 8761
