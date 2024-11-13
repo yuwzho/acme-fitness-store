@@ -1,68 +1,125 @@
----
-Onwer: Yuwei
-Prerequisities:
-- AKS
-- Redis
-- PostgreSQL
-Output:
-- Template to deploy the application to cluster
-- How to pull the image from ACR to cluster
-- Config service endpoint to find each other
----
+## Introduction
 
-## Catalog service
+In this guide, we will walk you through the process of deploying the Acme Catalog application to an Azure Kubernetes service and connecting it to a PostgreSQL database. To connect the application on AKS to the PostgreSQL, it uses the workload idenity feature on AKS, see details in https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster.
 
-### Create database for catalog and save to kubernetes
+## Prerequisites
 
-Will use Workload Identity for application to access other Postgresql passwordless. For more detial see https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster
+Before you begin, ensure you have the following:
 
-### Create managed identity
+- Follow [01-create-kubernetes-service](./01-create-kubernetes-service.md) to create Azure Kubernetes Service and Azure Container Registry.
+- Follow [07-containerize-application](./07-containerize-application.md) to build the image and push to the Azure Container Registry.
+- Follow [02-create-eureka-server](./02-create-eureka-server.md) to create the Eureka Server for service discovery.
+- Follow [03-create-config-server](./03-create-config-server.md) to create the Config Server for centralized configuration.
+- Follow [06-create-application-supporting-service](./06-create-application-supporting-service.md) to set up the PostgreSQL database.
 
-1. Create identity
+## Outputs
 
-```
-az identity create -n catalog-acme-identity -g yuwzho-acme --location eastus2 --subscription a4ab3025-1b32-4394-92e0-d07c1ebf3787
-```
+After completing this guide, you will have:
 
+- Deployed the Acme Catalog application to your Kubernetes cluster.
+- Configured the application to connect to PostgreSQL using Workload Identity.
+- Exposed the application within the cluster.
 
-###  Connect the managed identity to postgres
+## Steps
 
+1. **Set up the variables**
+   Set up the variables used for image and database:
+   ```bash
+   source resources/var.sh
 
-1. Create Database
-```
-az postgres flexible-server db create --database-name acme-catalog -g yuwzho-acme -s yuwzho-acme-postgre
-```
+   DATABASE_NAME=acme-catalog
+   IDENTITY_NAME=catalog-acme-identity
 
-1. Upgrade the extension
-```
-az extension add --name serviceconnector-passwordless --upgrade
-```
+   echo ACR_NAME=${ACR_NAME}
+   echo CATALOG_SERVICE_APP_IMAGE_TAG=${CATALOG_SERVICE_APP_IMAGE_TAG}
+   echo DATABASE_NAME=${DATABASE_NAME}
+   echo IDENTITY_NAME=${IDENTITY_NAME}
+   ```
 
-1. Create the connection
-```
-AKS_ID=$(az aks show --resource-group yuwzho-acme --name yuwzho-acme-k8s --query id -o tsv)
-DATABASE_ID=$(az postgres flexible-server db show --database-name acme-catalog -g yuwzho-acme -s yuwzho-acme-postgre --query id -o tsv)
-IDENTITY_ID=$(az identity show -n catalog-acme-identity -g yuwzho-acme --query id -o tsv)
-az aks connection create postgres-flexible --connection catalog_acme_postgres --source-id ${AKS_ID} --target-id ${DATABASE_ID} --client-type springboot --workload-identity ${IDENTITY_ID}
-```
+1. **Create managed identity**
 
-### Deploy the acme-catalog service
+   Create the managed identity for the catalog service:
+   ```bash
+   az identity create -n ${IDENTITY_NAME} -g ${RESOURCE_GROUP} --location ${LOCATION} --subscription ${SUBSCRIPTION}
+   ```
 
-1. Get the service account information created by service connection.
+1. **Connect the managed identity to PostgreSQL**
 
-```
-az aks connection show --connection catalog_acme_postgres -g yuwzho-acme -n yuwzho-acme-k8s --query kubernetesResourceName
-```
+   Create the database and set up the connection:
+   ```bash
+   az postgres flexible-server db create --database-name ${DATABASE_NAME} -g ${RESOURCE_GROUP} -s ${POSTGRESQL_NAME}
+   az extension add --name serviceconnector-passwordless --upgrade
+   AKS_ID=$(az aks show --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME} --query id -o tsv)
+   DATABASE_ID=$(az postgres flexible-server db show --database-name ${DATABASE_NAME} -g ${RESOURCE_GROUP} --query id -o tsv)
+   IDENTITY_ID=$(az identity show -n ${IDENTITY_NAME} -g ${RESOURCE_GROUP} --query id -o tsv)
+   az aks connection create postgres-flexible --connection catalog_acme_postgres --source-id ${AKS_ID} --target-id ${DATABASE_ID} --client-type springboot --workload-identity ${IDENTITY_ID}
+   ```
 
-Note there should be 2 resource created:
-- `sc-<connection-name>-secret`: Store the environment variables indicates the Postgresql instance, these value that can be read by PostgreSql Spring Boot Starter.
-- `sc-account-<client-id>`: Service Account that can be used by Kubernetes resource to auth the managed identity, then to get the access that the managed identity has.
+1. **Get the service account information**
 
-1. Update `resources/applications/acme-catalog.yml`
+   Retrieve the service account information created by the service connection:
+   ```bash
+   az aks connection show --connection catalog_acme_postgres -g ${RESOURCE_GROUP} -n ${AKS_NAME} --query kubernetesResourceName
+   ```
 
-Replace `sc-<connection-name>-secret` and `sc-account-<client-id>` to the value obtained from previous step.
+   Note there should be 2 resources created:
+   - `sc-<connection-name>-secret`: Stores the environment variables indicating the PostgreSQL instance.
+   - `sc-account-<client-id>`: Service Account used by Kubernetes resources to authenticate the managed identity.
 
-1. Apply the resource
-```
-kubectl apply -f resources/applications/acme-catalog.yml
-```
+1. **Edit the resource file**
+
+   Locate the `resources/applications/acme-catalog.yml` file and update the following placeholders:
+
+   - **`<acr-name>`**: Update to the name of your Azure Container Registry, should be the value of `${ACR_NAME}`.
+   - **`<catalog-service-app-image-tag>`**: Update to the tag of your application image, should be the value of `${CATALOG_SERVICE_APP_IMAGE_TAG}`.
+   - **`<service-connection-secrets>`**: Update to the value of `sc-<connection-name>-secret`.
+   - **`<service-connection-service-account>`**: Update to the value of `sc-account-<client-id>`.
+
+   This command will create the following Kubernetes resources:
+
+   1. **ConfigMap**: `catalog-config`
+      - Stores configuration data for the catalog service.
+      - Contains environment variables such as `EUREKA_CLIENT_ENABLED` and `SPRING_APPLICATION_NAME`.
+
+   2. **Deployment**: `catalog`
+      - Manages the deployment of the catalog application.
+      - Retrieves environment variables from the `config-server-config`, `eureka-server-config`, and `catalog-config` ConfigMaps.
+      - Uses the `sc-<connection-name>-secret` Secret for postgreSQL connection configuration.
+      - Uses the `<service-connection-service-account>` Service Account as identity to connect postgreSQL.
+      - Configures probes for liveness and readiness to ensure the application is running correctly.
+      - Specifies resource limits and requests for CPU, memory, and ephemeral storage.
+
+   3. **Service**: `catalog-service`
+      - Exposes the catalog application within the Kubernetes cluster.
+      - Uses a `ClusterIP` type to provide a stable internal IP address.
+      - Routes traffic on port 80 to the application's container port 8080.
+
+1. **Deploy the Application**
+
+   To deploy the application, use the following command:
+   ```sh
+   kubectl apply -f resources/applications/acme-catalog.yml
+   ```
+
+1. **Verify the deployment**
+
+   Wait for the pod to start running. You can check the status with:
+   ```bash
+   kubectl get pods
+   ```
+
+   You should see output similar to:
+   ```
+   NAME                        READY   STATUS    RESTARTS   AGE
+   catalog-7656c865bb-4db2p    1/1     Running   0          3m
+   ```
+
+   **Tip**: If the pod is not running, check for errors using:
+   ```bash
+   kubectl describe pod <pod-name>
+   kubectl logs <pod-name>
+   ```
+
+1. **View the application in Spring Boot Admin**
+
+   Open the hostname for your Spring Boot Admin, you should see the application.

@@ -6,7 +6,7 @@ items:
   metadata:
     annotations:
       # Update to managed-identity client-id
-      azure.workload.identity/client-id: 9c726d47-a2aa-4486-a8d2-99d76767cc73
+      azure.workload.identity/client-id: <client-id>
     name: sa-account-redis-cart
     namespace: default
 - apiVersion: v1
@@ -16,8 +16,8 @@ items:
     namespace: default
   data:
     CART_PORT: '8080'
-    REDIS_HOST: yuwzho-acme-redis.redis.cache.windows.net
-    REDIS_USERNAME: f10a8165-b073-4067-988f-c4c6863a2e2a
+    REDIS_HOST: <redis-host>
+    REDIS_USERNAME: <redis-user-name>
 - apiVersion: apps/v1
   kind: Deployment
   metadata:
@@ -57,7 +57,7 @@ items:
           envFrom:
           - configMapRef:
               name: cart-config
-          image: acmeacr.azurecr.io/acme-cart:buildpack-1
+          image: <acr-name>.azurecr.io/acme-cart:<cart-service-app-image-tag>
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3

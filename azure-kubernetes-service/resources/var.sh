@@ -1,4 +1,6 @@
 # Resource group and service names
+LOCATION="eastus2"
+SUBSCRIPTION="a4ab3025-1b32-4394-92e0-d07c1ebf3787"
 RESOURCE_GROUP="yuwzho-acme"
 AKS_NAME="${RESOURCE_GROUP}-k8s"
 ACR_NAME="acmeacr"

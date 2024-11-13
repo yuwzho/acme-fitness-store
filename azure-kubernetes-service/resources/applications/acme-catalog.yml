@@ -35,8 +35,7 @@ items:
           app: catalog
       spec:
         automountServiceAccountToken: false
-        # az aks connection show --connection catalog_acme_postgres -g yuwzho-acme -n yuwzho-acme-k8s --query kubernetesResourceName
-        serviceAccountName: sc-account-15b84cb5-44d1-41c0-ac5b-367a67b53ca0
+        serviceAccountName: <service-connection-service-account>
         containers:
         - env:
           - name: POD_NAME
@@ -54,8 +53,7 @@ items:
             value: catalog
           envFrom:
           - secretRef:
-              # az aks connection show --connection catalog_acme_postgres -g yuwzho-acme -n yuwzho-acme-k8s --query kubernetesResourceName
-              name: sc-catalogacmepostgres-secret
+              name: <service-connection-secrets>
           - configMapRef:
               name: config-server-config
               optional: true
@@ -64,7 +62,7 @@ items:
               optional: true
           - configMapRef:
               name: catalog-config
-          image: acmeacr.azurecr.io/acme-catalog:buildpack-1
+          image: <acr-name>.azurecr.io/acme-catalog:<catalog-service-app-image-tag>
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3

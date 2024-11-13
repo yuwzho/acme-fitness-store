@@ -1,68 +1,104 @@
----
-Owner: Yuwei
-Prerequisites:
-- AKS
-- Redis
-- PostgreSQL
-Output:
-- Template to deploy the application to cluster
-- How to pull the image from ACR to cluster
-- Config service endpoint to find each other
----
+## Introduction
 
-## Order Service
+In this guide, we will walk you through the process of deploying the Acme Order application to an Azure Kubernetes service and connecting it to a PostgreSQL database. To connect the application on AKS to the PostgreSQL, it uses the workload identity feature on AKS, see details in https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster.
 
-### Create database for order and save to Kubernetes
+## Prerequisites
 
-Will use Workload Identity for application to access PostgreSQL passwordlessly. For more details, see https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster
+Before you begin, ensure you have the following:
 
-### Create managed identity
+- Follow [01-create-kubernetes-service](./01-create-kubernetes-service.md) to create Azure Kubernetes Service and Azure Container Registry.
+- Follow [07-containerize-application](./07-containerize-application.md) to build the image and push to the Azure Container Registry.
+- Follow [06-create-application-supporting-service](./06-create-application-supporting-service.md) to set up the PostgreSQL database.
 
+## Outputs
 
-1. Create identity
+After completing this guide, you will have:
 
-```
-az identity create -n acme-order-identity -g yuwzho-acme --location eastus2 --subscription a4ab3025-1b32-4394-92e0-d07c1ebf3787
-```
+- Deployed the Acme Order application to your Kubernetes cluster.
+- Configured the application to connect to PostgreSQL using Workload Identity.
+- Exposed the application within the cluster.
 
-###  Connect the managed identity to postgres
+## Steps
 
+1. **Set up the variables**
+   Set up the variables used for image and database:
+   ```bash
+   source resources/var.sh
 
-1. Create Database
+   DATABASE_NAME=acme-order
+   IDENTITY_NAME=order-acme-identity
+
+   echo ACR_NAME=${ACR_NAME}
+   echo ORDER_SERVICE_APP_IMAGE_TAG=${ORDER_SERVICE_APP_IMAGE_TAG}
+   echo DATABASE_NAME=${DATABASE_NAME}
+   echo IDENTITY_NAME=${IDENTITY_NAME}
    ```
-   az postgres flexible-server db create --database-name acme-order -g yuwzho-acme -s yuwzho-acme-postgre
+
+1. **Create managed identity**
+
+   Create the managed identity for the order service:
+   ```bash
+   az identity create -n ${IDENTITY_NAME} -g ${RESOURCE_GROUP} --location ${LOCATION} --subscription ${SUBSCRIPTION}
    ```
 
-1. Upgrade the extension
-   ```
+1. **Connect the managed identity to PostgreSQL**
+
+   Create the database and set up the connection:
+   ```bash
+   az postgres flexible-server db create --database-name ${DATABASE_NAME} -g ${RESOURCE_GROUP} -s ${POSTGRESQL_NAME}
    az extension add --name serviceconnector-passwordless --upgrade
-   ```
-
-1. Create the  connection
-   ```
-   AKS_ID=$(az aks show --resource-group yuwzho-acme --name yuwzho-acme-k8s --query id -o tsv)
-   DATABASE_ID=$(az postgres flexible-server db show --database-name acme-order -g yuwzho-acme -s yuwzho-acme-postgre --query id -o tsv)
-   IDENTITY_ID=$(az identity show -n acme-order-identity -g yuwzho-acme --query id -o tsv)
+   AKS_ID=$(az aks show --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME} --query id -o tsv)
+   DATABASE_ID=$(az postgres flexible-server db show --database-name ${DATABASE_NAME} -g ${RESOURCE_GROUP} --query id -o tsv)
+   IDENTITY_ID=$(az identity show -n ${IDENTITY_NAME} -g ${RESOURCE_GROUP} --query id -o tsv)
    az aks connection create postgres-flexible --connection order_acme_postgres --source-id ${AKS_ID} --target-id ${DATABASE_ID} --client-type dotnet --workload-identity ${IDENTITY_ID}
    ```
 
-## Deploy the acme-order service
-1. Get the service account information created by service connection.
-   ```
-   az aks connection show --connection order_acme_postgres -g yuwzho-acme -n yuwzho-acme-k8s --query kubernetesResourceName
+1. **Get the service account information**
+
+   Retrieve the service account information created by the service connection:
+   ```bash
+   az aks connection show --connection order_acme_postgres -g ${RESOURCE_GROUP} -n ${AKS_NAME} --query kubernetesResourceName
    ```
 
    Note there should be 2 resources created:
-   - `sc-<connection-name>-secret`: Stores the environment variables indicating the PostgreSQL instance, these values can be read by the .NET application.
-   - `sc-account-<client-id>`: Service Account that can be used by Kubernetes resources to authenticate the managed identity, then to get the access that the managed identity has.
+   - `sc-<connection-name>-secret`: Stores the environment variables indicating the PostgreSQL instance.
+   - `sc-account-<client-id>`: Service Account used by Kubernetes resources to authenticate the managed identity.
 
-1. Update `resources/applications/acme-order.yml`
-Replace `sc-<connection-name>-secret` and `sc-account-<client-id>` with the values obtained from the previous step.
+1. **Edit the resource file**
 
-1. Update `resources/applications/acme-order.yml`
-Replace `sc-<connection-name>-secret` and `sc-account-<client-id>` with the values obtained from the previous step.
+   Locate the `resources/applications/acme-order.yml` file and update the following placeholders:
 
-1. Apply the resource
-  ```
-  kubectl apply -f resources/applications/acme-order.yml
-  ```
+   - **`<acr-name>`**: Update to the name of your Azure Container Registry, should be the value of `${ACR_NAME}`.
+   - **`<order-service-app-image-tag>`**: Update to the tag of your application image, should be the value of `${ORDER_SERVICE_APP_IMAGE_TAG}`.
+   - **`<service-connection-secret>`**: Update to the value of `sc-<connection-name>-secret`.
+   - **`<service-connection-service-account>`**: Update to the value of `sc-account-<client-id>`.
+
+1. **Deploy the Application**
+
+   To deploy the application, use the following command:
+   ```sh
+   kubectl apply -f resources/applications/acme-order.yml
+   ```
+
+1. **Verify the deployment**
+
+   Wait for the pod to start running. You can check the status with:
+   ```bash
+   kubectl get pods
+   ```
+
+   You should see output similar to:
+   ```
+   NAME                        READY   STATUS    RESTARTS   AGE
+   order-7656c865bb-4db2p      1/1     Running   0          3m
+   ```
+
+   **Tip**: If the pod is not running, check for errors using:
+   ```bash
+   kubectl describe pod <pod-name>
+   kubectl logs <pod-name>
+   ```
+
+1. **View the application in .NET Admin**
+
+   Open the hostname for your .NET Admin, you should see the application.
