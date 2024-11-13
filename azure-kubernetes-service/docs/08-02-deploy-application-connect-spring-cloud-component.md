@@ -24,7 +24,7 @@ After completing this guide, you will have:
 ## Steps
 
 1. **Set up the variables**
-   Set up the variables used to create the PostgreSQL and Redis:
+   Set up the variables used for image:
    ```bash
    source resources/var.sh
 
