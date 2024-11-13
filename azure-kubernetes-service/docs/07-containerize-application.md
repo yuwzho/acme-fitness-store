@@ -85,3 +85,7 @@ docker push ${CONTAINER_REGISTRY}/${ORDER_SERVICE_APP}:${ORDER_SERVICE_APP_IMAGE
 docker push ${CONTAINER_REGISTRY}/${CART_SERVICE_APP}:${CART_SERVICE_APP_IMAGE_TAG}
 docker push ${CONTAINER_REGISTRY}/${FRONTEND_APP}:${FRONTEND_APP_IMAGE_TAG}
 ```
+
+## Next Steps
+
+- Follow [08-01-deploy-frontend-application](./08-01-deploy-frontend-application.md) to deploy the Acme Frontend application and connect it to Spring Cloud Gateway.

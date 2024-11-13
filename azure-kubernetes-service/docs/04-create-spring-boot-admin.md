@@ -97,3 +97,7 @@ By the end of this guide, you will have a running Spring Boot Admin server on yo
 1. **Verify the hostname**
 
    Open the `<spring-boot-admin-host>` you configured in the `spring-boot-admin.yaml`, you should see the Spring Boot Admin dashboard.
+
+## Next Steps
+
+- Follow [05-create-application-gateway](./05-create-application-gateway.md) to create and deploy a Spring Cloud Gateway on Azure Kubernetes Service.

@@ -57,3 +57,7 @@ az postgres flexible-server ad-admin create --server-name ${POSTGRESQL_NAME} --r
 ```
 az redis create -n ${REDIS_NAME} -g ${RESOURCE_GROUP} --sku Basic --vm-size c0 -l eastus2
 ```
+
+## Next Steps
+
+- Follow [07-containerize-application](./07-containerize-application.md) to learn how to containerize your applications and push them to Azure Container Registry.

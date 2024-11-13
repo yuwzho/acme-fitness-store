@@ -94,3 +94,7 @@ After completing this guide, you will have:
 1. **View the application in Spring Boot Admin**
 
    Open the hostname for your Spring Boot Admin, you should see the application.
+
+## Next Steps
+
+- Follow [08-03-deploy-spring-boot-application-connect-postgresql](./08-03-deploy-spring-boot-application-connect-postgresql.md) to deploy the Acme Catalog application and connect it to PostgreSQL.

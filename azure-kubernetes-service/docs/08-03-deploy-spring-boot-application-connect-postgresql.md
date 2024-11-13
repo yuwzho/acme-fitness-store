@@ -123,3 +123,7 @@ After completing this guide, you will have:
 1. **View the application in Spring Boot Admin**
 
    Open the hostname for your Spring Boot Admin, you should see the application.
+
+## Next Steps
+
+- Follow [08-04-deploy-dotnet-application-connect-postgresql](./08-04-deploy-dotnet-application-connect-postgresql.md) to deploy the Acme Order application and connect it to PostgreSQL.

@@ -70,3 +70,7 @@ After completing this guide, you will have:
 1. **View the application through Spring Cloud Gateway**
 
     Open the hostname for your Spring Cloud Gateway, you should see the application.
+
+## Next Steps
+
+- Follow [08-02-deploy-application-connect-spring-cloud-component](./08-02-deploy-application-connect-spring-cloud-component.md) to deploy the Acme Payment application and connect it to Spring Cloud components.

@@ -141,3 +141,7 @@ After completing this guide, you will have:
 
 1. **Verify the whole application**
    Now, all the applications are deployed. Open the Spring Cloud Gateway hostname you should view the acme-fitness-store with full functionality.
+
+## Next Steps
+
+- Follow [09-get-log-and-metrics](./09-get-log-and-metrics.md) to view logs and metrics for your Azure Kubernetes Service (AKS) cluster.

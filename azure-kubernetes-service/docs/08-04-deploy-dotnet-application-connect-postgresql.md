@@ -121,3 +121,7 @@ After completing this guide, you will have:
 1. **View the application in .NET Admin**
 
    Open the hostname for your .NET Admin, you should see the application.
+
+## Next Steps
+
+- Follow [08-05-deploy-python-application-connect-with-redis](./08-05-deploy-python-application-connect-with-redis.md) to deploy the Acme Cart application and connect it to Redis.

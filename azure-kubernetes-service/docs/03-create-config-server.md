@@ -117,3 +117,7 @@ By the end of this guide, you will have a running Spring Cloud Config Server on 
    2024-11-11 06:24:53.679  INFO 1 --- [           main] c.c.c.ConfigServicePropertySourceLocator : Located environment: name=catalog, profiles=[default], label=null, version=d145f5aa2a5e856d0402a08d1725cec602bb89b0, state=null
    2024-11-11 06:24:53.680  INFO 1 --- [           main] b.c.PropertySourceBootstrapConfiguration : Located property source: [BootstrapPropertySource {name='bootstrapProperties-configClient'}, BootstrapPropertySource {name='bootstrapProperties-https://github.com/Azure-Samples/acme-fitness-store-config/Config resource 'file [/tmp/config-repo-203394081967964840/catalog.yml' via location '' (document #0)'}]
    ```
+
+## Next Steps
+
+- Follow [04-create-spring-boot-admin](./04-create-spring-boot-admin.md) to create and deploy a Spring Boot Admin server on Azure Kubernetes Service.

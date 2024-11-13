@@ -90,3 +90,7 @@ By the end of this guide, you will have a running Eureka Server on your AKS clus
    kubectl logs <pod-name>
    ```
 
+## Next Steps
+
+- Follow [03-create-config-server](./03-create-config-server.md) to create and deploy a Spring Cloud Config Server on Azure Kubernetes Service.
+

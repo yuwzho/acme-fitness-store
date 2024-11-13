@@ -99,3 +99,7 @@ By the end of this guide, you will have a running Spring Cloud Gateway on your A
 1. **Verify the hostname**
 
    Open the `<spring-cloud-gateway-host>` you configured in the `gateway.yaml`, you should see a 404 page. After deploying the backend application, this link will  show the application page.
+
+## Next Steps
+
+- Follow [06-create-application-supporting-service](./06-create-application-supporting-service.md) to set up the supporting services for your applications, including PostgreSQL and Redis Cache.

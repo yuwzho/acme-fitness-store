@@ -201,3 +201,7 @@ Below steps guide how to enable the Nginx as add-on in the AKS cluster. For more
 1. Go to your DNS zone to add record.
    - Add A record to point the domain in your TLS cert to the external IP you obtained. E.g. `demo.com` points to the IP address.
    - Add a wildcard CName record to the A record. E.g. `*.demo.com` points to the `demo.com`
+
+## Next Steps
+
+- Follow [02-create-eureka-server](./02-create-eureka-server.md) to create and deploy a Eureka Server on Azure Kubernetes Service.
