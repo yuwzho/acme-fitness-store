@@ -73,6 +73,25 @@ After completing this guide, you will have:
    - **`<service-connection-secret>`**: Update to the value of `sc-<connection-name>-secret`.
    - **`<service-connection-service-account>`**: Update to the value of `sc-account-<client-id>`.
 
+   This command will create the following Kubernetes resources:
+
+   1. **ConfigMap**: `order-config`
+      - Stores configuration data for the order service.
+      - Contains environment variables such as `FOO`.
+
+   2. **Deployment**: `order`
+      - Manages the deployment of the order application.
+      - Retrieves environment variables from the `order-config` ConfigMap.
+      - Uses the `sc-<connection-name>-secret` Secret for PostgreSQL connection configuration.
+      - Uses the `<service-connection-service-account>` Service Account as identity to connect PostgreSQL.
+      - Configures probes for liveness and readiness to ensure the application is running correctly.
+      - Specifies resource limits and requests for CPU, memory, and ephemeral storage.
+
+   3. **Service**: `order-service`
+      - Exposes the order application within the Kubernetes cluster.
+      - Uses a `ClusterIP` type to provide a stable internal IP address.
+      - Routes traffic on port 80 to the application's container port 8080.
+
 1. **Deploy the Application**
 
    To deploy the application, use the following command:
