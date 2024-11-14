@@ -1,13 +1,41 @@
-* [Deploy Applications to Azure Kubernetes]()
-    * [What will you experience](#what-will-you-experience)
-        * [Install the Azure CLI extension](#install-the-azure-cli-extension)
-        * [Clone the repo](#clone-the-repo)
-        * [Unit 0 - Prepare Environment](./docs/01-create-kubernetes-service.md)
-        * [Unit 1 - Create Eureka Server](./docs/02-create-eureka-server.md)
-        * [Unit 2 - Create Spring Boot Admin](./docs/03-create-spring-boot-admin.md)
-        * [Unit 3 - Create Config Server](./docs/04-create-config-server.md)
-        * [Unit 4 - Create Application Supporting Service](./docs/05-create-application-supporting-service.md)
-        * [Unit 5 - Containerize Application](./docs/06-containerize-application.md)
-        * [Unit 6 - Create Application Gateway](./docs/07-create-application-gateway.md)
-        * [Unit 7 - Deploy Application](./docs/08-deploy-application.md)
-        * [Unit 8 - Get Log and Metrics](./docs/09-get-log-and-metrics.md)
+# Azure Kubernetes Service Documentation
+
+This folder contains documentation for setting up and deploying various components on Azure Kubernetes Service (AKS) for the Acme Fitness Store project.
+
+## Table of Contents
+
+1. [01-create-kubernetes-service.md](./docs/01-create-kubernetes-service.md)
+   - Step-by-step guide to create an Azure Kubernetes Service (AKS) cluster, integrate it with Azure Container Registry (ACR), and set up Azure Key Vault and Nginx ingress with a CA certificate.
+
+2. [02-create-eureka-server.md](./docs/02-create-eureka-server.md)
+   - Instructions to create and deploy a Eureka Server on AKS for service discovery.
+
+3. [03-create-config-server.md](./docs/03-create-config-server.md)
+   - Guide to create and deploy a Spring Cloud Config Server on AKS for centralized configuration management.
+
+4. [04-create-spring-boot-admin.md](./docs/04-create-spring-boot-admin.md)
+   - Steps to create and deploy a Spring Boot Admin server on AKS for managing and monitoring Spring Boot applications.
+
+5. [05-create-application-gateway.md](./docs/05-create-application-gateway.md)
+   - Instructions to create and deploy a Spring Cloud Gateway on AKS for API Gateway functionality.
+
+6. [06-create-application-supporting-service.md](./docs/06-create-application-supporting-service.md)
+   - Guide to set up supporting services like PostgreSQL and Redis Cache for your applications on AKS.
+
+7. [07-containerize-application.md](./docs/07-containerize-application.md)
+   - Steps to build and push application images to Azure Container Registry.
+
+8. [08-02-deploy-application-connect-spring-cloud-component.md](./docs/08-02-deploy-application-connect-spring-cloud-component.md)
+   - Instructions to deploy the Acme Payment application on AKS and connect it to Spring Cloud components.
+
+9. [08-03-deploy-spring-boot-application-connect-postgresql.md](./docs/08-03-deploy-spring-boot-application-connect-postgresql.md)
+   - Guide to deploy the Acme Catalog application on AKS and connect it to a PostgreSQL database.
+
+10. [08-04-deploy-dotnet-application-connect-postgresql.md](./docs/08-04-deploy-dotnet-application-connect-postgresql.md)
+    - Steps to deploy the Acme Order application on AKS and connect it to a PostgreSQL database.
+
+11. [08-05-deploy-python-application-connect-with-redis.md](./docs/08-05-deploy-python-application-connect-with-redis.md)
+    - Instructions to deploy the Acme Cart application on AKS and connect it to a Redis cache.
+
+12. [09-get-log-and-metrics.md](./docs/09-get-log-and-metrics.md)
+    - Guide to view logs and metrics for your AKS cluster to monitor containerized applications effectively.
