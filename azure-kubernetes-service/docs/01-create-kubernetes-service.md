@@ -4,9 +4,9 @@ This document provides a step-by-step guide to create an Azure Kubernetes Servic
 ## Prerequisites
 - Azure CLI installed
 - Azure subscription
-- Sufficient permissions to create resources in the Azure subscription
-    - **Contributor** - Creates resource and all other Azure resources.
-    - **User Access Administrator** - Assign ncessary roles.
+- Sufficient permissions to create resources in the Azure subscription:
+    - **Contributor** - Creates resources and all other Azure resources.
+    - **User Access Administrator** - Assign necessary roles.
 
 ## Outputs
 - Azure Container Registry (ACR)
@@ -18,9 +18,10 @@ This document provides a step-by-step guide to create an Azure Kubernetes Servic
 
 ### 1. Set Variables
 
-Update `resources/var.sh` and setup the variables to your environment.
+Update `resources/var.sh` and set up the variables for your environment.
 ```
 source resources/var.sh
+az account set -s ${SUBSCRIPTION}
 
 echo "RESOURCE_GROUP=${RESOURCE_GROUP}"
 echo "AKS_NAME=${AKS_NAME}"
@@ -30,13 +31,13 @@ echo "WORKSPACE_NAME=${WORKSPACE_NAME}"
 ```
 
 ### 2. Create Resource Group
-1. Create resource group to host all the Azure resources.
+1. Create a resource group to host all the Azure resources.
 ```bash
 az group create -n ${RESOURCE_GROUP} -l eastus2
 ```
 
 ### 3. Create Azure Container Registry
-Create Azure Container Registry (ACR). This ACR will be used:
+Create Azure Container Registry (ACR). This ACR will be used to:
 - Build application components
 - Store application images built by buildpack
 
@@ -50,7 +51,7 @@ az acr create -g ${RESOURCE_GROUP} -n ${ACR_NAME} --sku Premium
 az feature register --namespace Microsoft.Compute --name EncryptionAtHost
 ```
 
-Run `az feature register --namespace Microsoft.Compute --name EncryptionAtHost` to wait it state to `Registered`.
+Run `az feature register --namespace Microsoft.Compute --name EncryptionAtHost` to wait for its state to be `Registered`.
 
 1. Create workspace
 ```
@@ -58,7 +59,7 @@ az monitor log-analytics workspace create --resource-group ${RESOURCE_GROUP} --w
 ```
 
 1. Create AKS. 
-   Below commands guide you create the AKS. For more information on the features enabled in the AKS cluster, refer to the following documentations:
+   Below commands guide you to create the AKS. For more information on the features enabled in the AKS cluster, refer to the following documentation:
 
     - [Attach Azure Container Registry to AKS](https://learn.microsoft.com/en-us/azure/aks/cluster-container-registry-integration)
     - [Enable Workload Identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-overview)
@@ -130,7 +131,7 @@ az monitor log-analytics workspace create --resource-group ${RESOURCE_GROUP} --w
         --node-count 1
     ```
 
-1. Retrieve access token. This command get the admin access for the AKS cluster. For more access management, see https://learn.microsoft.com/en-us/azure/aks/azure-ad-rbac?tabs=portal
+1. Retrieve access token. This command gets the admin access for the AKS cluster. For more access management, see https://learn.microsoft.com/en-us/azure/aks/azure-ad-rbac?tabs=portal
 
     ```
     az aks get-credentials --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME} --overwrite-existing --admin
@@ -161,7 +162,7 @@ az monitor log-analytics workspace create --resource-group ${RESOURCE_GROUP} --w
     az resource list --resource-type microsoft.network/virtualnetworks -g ${NODE_RESOURCE_GROUP} --query "[?starts_with(name, 'aks-vnet')].name" -o tsv
     ```
 
-    List all subnet under the vnet, record these ids are `<subnet-ids>`
+    List all subnets under the vnet, record these ids as `<subnet-ids>`
     ```
     az network vnet subnet list --resource-group ${NODE_RESOURCE_GROUP} --vnet-name <vnetName> --query "[].id" -o tsv
     ```

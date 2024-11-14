@@ -2,14 +2,15 @@
 
 ## Introduction
 
-This guide shows you how to build the polyglot applications using Pack CLI on your local development machine and push them to Azure Container Registry (ACR).
+This guide shows you how to build polyglot applications using Pack CLI on your local development machine and push them to Azure Container Registry (ACR).
+
 Buildpacks provide a higher-level abstraction for building container images. They take your application source code and transform it into a container image without the need for a Dockerfile. This process involves detecting the type of application, compiling the code, and packaging it with the necessary runtime dependencies. Buildpacks are particularly useful for polyglot environments where multiple languages and frameworks are used, as they can automatically handle the specifics of each technology stack. For more information, refer to the [official Buildpacks documentation](https://buildpacks.io/docs/).
 
 ## Prerequisites
 
 - Follow [01-create-kubernetes-service](./01-create-kubernetes-service.md) to create Azure Container Registry.
-- Install Pack CLI. For instructions, refer to [Pack CLI installation guide](https://buildpacks.io/docs/for-platform-operators/how-to/integrate-ci/pack/).
-- Install Azure CLI. For instructions, refer to [Azure CLI installation guide](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).
+- Install Pack CLI. For instructions, refer to the [Pack CLI installation guide](https://buildpacks.io/docs/for-platform-operators/how-to/integrate-ci/pack/).
+- Install Azure CLI. For instructions, refer to the [Azure CLI installation guide](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).
 - Docker installed on your local machine.
 
 ## Outputs
@@ -19,9 +20,11 @@ Buildpacks provide a higher-level abstraction for building container images. The
 ## Steps
 
 ### 1. Set up variables
+
 Set up the variables used to build the container image:
 ```bash
 source resources/var.sh
+az account set -s ${SUBSCRIPTION}
 
 echo "ACR_NAME=${ACR_NAME}"
 echo "CATALOG_SERVICE_APP_IMAGE_TAG=${CATALOG_SERVICE_APP_IMAGE_TAG}"

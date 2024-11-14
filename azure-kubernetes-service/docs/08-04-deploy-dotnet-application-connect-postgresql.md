@@ -1,6 +1,6 @@
 ## Introduction
 
-In this guide, we will walk you through the process of deploying the Acme Order application to an Azure Kubernetes service and connecting it to a PostgreSQL database. To connect the application on AKS to the PostgreSQL, it uses the workload identity feature on AKS, see details in https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster.
+In this guide, we will walk you through the process of deploying the Acme Order application to an Azure Kubernetes Service and connecting it to a PostgreSQL database. To connect the application on AKS to PostgreSQL, it uses the workload identity feature on AKS. See details in [Workload Identity Deploy Cluster](https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster).
 
 ## Prerequisites
 
@@ -24,6 +24,7 @@ After completing this guide, you will have:
    Set up the variables used for image and database:
    ```bash
    source resources/var.sh
+   az account set -s ${SUBSCRIPTION}
 
    DATABASE_NAME=acme-order
    IDENTITY_NAME=order-acme-identity

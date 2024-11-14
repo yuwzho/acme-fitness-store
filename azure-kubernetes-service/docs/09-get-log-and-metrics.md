@@ -1,9 +1,9 @@
 ## Introduction
 
-This document provides instructions on how to view logs and metrics for your Azure Kubernetes Service (AKS) cluster. By following these steps, you will be able to monitor your containerized applications effectively. See more details, view [Monitor AKS](https://learn.microsoft.com/en-us/azure/aks/monitor-aks)
+This document provides instructions on how to view logs and metrics for your Azure Kubernetes Service (AKS) cluster. By following these steps, you will be able to monitor your containerized applications effectively. For more details, see [Monitor AKS](https://learn.microsoft.com/en-us/azure/aks/monitor-aks).
 
-## Prerequisities
-- Follow [](./01-create-kubernetes-service.md) to create the Azure Kubernetes Service.
+## Prerequisites
+- Follow [Create Kubernetes Service](./01-create-kubernetes-service.md) to create the Azure Kubernetes Service.
   - If you have your own Azure Kubernetes Service, see [Enable monitoring for Kubernetes clusters](https://learn.microsoft.com/azure/azure-monitor/containers/kubernetes-monitoring-enable) to enable Managed Prometheus and Container insights on your cluster.
 - Deploy at least one application on the Azure Kubernetes Service from previous guidance.
 

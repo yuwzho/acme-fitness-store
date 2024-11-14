@@ -1,13 +1,13 @@
 ## Introduction
 
-In this guide, we will walk you through the process of deploying the Acme Catalog application to an Azure Kubernetes service and connecting it to a PostgreSQL database. To connect the application on AKS to the PostgreSQL, it uses the workload idenity feature on AKS, see details in https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster.
+In this guide, we will walk you through the process of deploying the Acme Catalog application to an Azure Kubernetes Service (AKS) and connecting it to a PostgreSQL database. The application uses the workload identity feature on AKS to connect to PostgreSQL. For more details, see [Azure AKS Workload Identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster).
 
 ## Prerequisites
 
 Before you begin, ensure you have the following:
 
 - Follow [01-create-kubernetes-service](./01-create-kubernetes-service.md) to create Azure Kubernetes Service and Azure Container Registry.
-- Follow [07-containerize-application](./07-containerize-application.md) to build the image and push to the Azure Container Registry.
+- Follow [07-containerize-application](./07-containerize-application.md) to build the image and push it to the Azure Container Registry.
 - Follow [02-create-eureka-server](./02-create-eureka-server.md) to create the Eureka Server for service discovery.
 - Follow [03-create-config-server](./03-create-config-server.md) to create the Config Server for centralized configuration.
 - Follow [06-create-application-supporting-service](./06-create-application-supporting-service.md) to set up the PostgreSQL database.
@@ -23,9 +23,11 @@ After completing this guide, you will have:
 ## Steps
 
 1. **Set up the variables**
-   Set up the variables used for image and database:
+
+   Set up the variables used for the image and database:
    ```bash
    source resources/var.sh
+   az account set -s ${SUBSCRIPTION}
 
    DATABASE_NAME=acme-catalog
    IDENTITY_NAME=catalog-acme-identity
@@ -84,8 +86,8 @@ After completing this guide, you will have:
    2. **Deployment**: `catalog`
       - Manages the deployment of the catalog application.
       - Retrieves environment variables from the `config-server-config`, `eureka-server-config`, and `catalog-config` ConfigMaps.
-      - Uses the `sc-<connection-name>-secret` Secret for postgreSQL connection configuration.
-      - Uses the `<service-connection-service-account>` Service Account as identity to connect postgreSQL.
+      - Uses the `sc-<connection-name>-secret` Secret for PostgreSQL connection configuration.
+      - Uses the `<service-connection-service-account>` Service Account as identity to connect PostgreSQL.
       - Configures probes for liveness and readiness to ensure the application is running correctly.
       - Specifies resource limits and requests for CPU, memory, and ephemeral storage.
 

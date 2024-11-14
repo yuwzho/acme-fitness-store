@@ -1,6 +1,6 @@
 ## Introduction
 
-In this guide, we will walk you through the process of deploying the Acme Cart application to an Azure Kubernetes service and connecting it to a Redis cache. To connect the application on AKS to the Redis, it uses the workload identity feature on AKS, see details in https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster.
+In this guide, we will walk you through the process of deploying the Acme Cart application to an Azure Kubernetes Service and connecting it to a Redis cache. To connect the application on AKS to Redis, it uses the workload identity feature on AKS. See details in [Workload Identity Deploy Cluster](https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster).
 
 ## Prerequisites
 
@@ -24,6 +24,7 @@ After completing this guide, you will have:
    Set up the variables used for image and Redis:
    ```bash
    source resources/var.sh
+   az account set -s ${SUBSCRIPTION}
 
    IDENTITY_NAME=acme-cart-identity
 
@@ -99,7 +100,7 @@ After completing this guide, you will have:
    2. **ConfigMap**: `cart-config`
       - Stores configuration data for the cart service.
       - Contains environment variables such as `CART_PORT` to describe the application should serve on which port.
-      - Contains environment variables such as `REDIS_HOST` and `REDIS_USERNAME` to describe the conenction information to the Redis Cache.
+      - Contains environment variables such as `REDIS_HOST` and `REDIS_USERNAME` to describe the connection information to the Redis Cache.
 
    3. **Deployment**: `cart`
       - Manages the deployment of the cart application.

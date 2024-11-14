@@ -1,7 +1,6 @@
 ## Introduction
 
-In this guide, you will learn how to create and deploy a Spring Cloud Config Server on Azure Kubernetes Service (AKS). The Config Server provides a central place to manage external properties for applications across all environments. For more information on Spring Cloud Config Server, refer to the [official documentation](https://cloud.spring.io/spring-cloud-config/reference/html/).
-
+In this guide, you will learn how to create and deploy a Spring Cloud Config Server on Azure Kubernetes Service (AKS). The Config Server provides a central place to manage external properties for applications across all environments. For more information, refer to the [official documentation](https://cloud.spring.io/spring-cloud-config/reference/html/).
 
 ## Prerequisites
 
@@ -20,20 +19,22 @@ By the end of this guide, you will have a running Spring Cloud Config Server on 
 
 1. **Setup variables**
    
-   Set up the variables used to deploy the Config Server
+   Set up the variables used to deploy the Config Server:
    ```bash
    source resources/var.sh
+   az account set -s ${SUBSCRIPTION}
+
    echo "RESOURCE_GROUP=${RESOURCE_GROUP}"
    echo "AKS_NAME=${AKS_NAME}"
    echo "ACR_NAME=${ACR_NAME}"
    echo "CONFIGSERVER_IMAGE_TAG=${CONFIGSERVER_IMAGE_TAG}"
    ```
 
-1. **Clone the Repository**
+2. **Clone the Repository**
 
    The code is under `resources/config-server`. Enter the directory, there is also a `Dockerfile`.
 
-1. **Build and Push the Docker Image**
+3. **Build and Push the Docker Image**
 
     ```azurecli
     cd azure-kubernetes-service/resources/config-server
@@ -48,9 +49,9 @@ By the end of this guide, you will have a running Spring Cloud Config Server on 
    az aks get-credentials --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME} --admin
    ```
 
-1. **Edit the Kubernetes Resource File**
+2. **Edit the Kubernetes Resource File**
 
-   Locate the `configserver.yaml` file in the `resources/config-server` directory. Edit the following code snippet.
+   Locate the `configserver.yaml` file in the `resources/config-server` directory. Edit the following code snippet:
 
    - **`<config-server-image-tag>`**: Update to the value of `${CONFIGSERVER_IMAGE_TAG}`
    - **`<acr-name>`**: Update to the value of `${ACR_NAME}`
@@ -61,8 +62,7 @@ By the end of this guide, you will have a running Spring Cloud Config Server on 
         image: "<acr-name>.azurecr.io/config-server:<config-server-image-tag>"
    ```
 
-   This YAML file is used to configure the deployment of the Config Server.
-   It includes the environment variables injected into the Config Server. For more details about the configuration, see https://docs.spring.io/spring-cloud-config/docs/current/reference/html/#_git_backend.
+   This YAML file configures the deployment of the Config Server. It includes the environment variables injected into the Config Server. For more details, see [Spring Cloud Config documentation](https://docs.spring.io/spring-cloud-config/docs/current/reference/html/#_git_backend).
 
    Environment Variables:
    - `SPRING_CLOUD_CONFIG_SERVER_GIT_URI`: The URI of the Git repository where the configuration files are stored.
@@ -71,7 +71,7 @@ By the end of this guide, you will have a running Spring Cloud Config Server on 
    - `SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD`: The password for accessing the Git repository.
    - `SPRING_CLOUD_CONFIG_SERVER_GIT_SKIP_SSL_VALIDATION`: Whether to skip SSL validation for the Git repository.
 
-1. **Apply the Kubernetes Configuration**
+3. **Apply the Kubernetes Configuration**
 
    Use `kubectl` to apply the configuration and create the Config Server:
 
@@ -79,9 +79,9 @@ By the end of this guide, you will have a running Spring Cloud Config Server on 
    kubectl apply -f configserver.yaml
    ```
 
-1. **Verify the Deployment**
+4. **Verify the Deployment**
 
-   Wait for the pod to start running. You can check the status with:
+   Wait for the pod to start running. Check the status with:
 
    ```bash
    kubectl get pods
@@ -106,11 +106,11 @@ By the end of this guide, you will have a running Spring Cloud Config Server on 
 
 2. **Configure the Application**
 
-   Make sure the application has the dependency `spring-cloud-starter-config`. And configure `SPRING_APPLICATION_NAME` in the configmap of the application and the value of it should equal to the config file name in the git repository.
+   Ensure the application has the dependency `spring-cloud-starter-config`. Configure `SPRING_APPLICATION_NAME` in the configmap of the application, and the value should match the config file name in the Git repository.
 
 3. **Verify the Application**
    
-   If the application is connected to the Config Server successfully, you can see logs in the application like the following:
+   If the application is connected to the Config Server successfully, you will see logs like:
 
    ```
    2024-11-11 06:24:53.185  INFO 1 --- [           main] c.c.c.ConfigServicePropertySourceLocator : Fetching config from server at : http://config-server-default.default.svc.cluster.local:8888

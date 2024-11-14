@@ -19,9 +19,11 @@ By the end of this guide, you will have a running Eureka Server on your AKS clus
 
 1. **Setup variables**
    
-   Set up the variables used to deploy Eureka Server
+   Set up the variables used to deploy Eureka Server:
    ```bash
    source resources/var.sh
+   az account set -s ${SUBSCRIPTION}
+
    echo "RESOURCE_GROUP=${RESOURCE_GROUP}"
    echo "AKS_NAME=${AKS_NAME}"
    echo "ACR_NAME=${ACR_NAME}"
@@ -30,16 +32,16 @@ By the end of this guide, you will have a running Eureka Server on your AKS clus
 
 1. **Package the Eureka Server**
 
-   Go to folder `azure-kubernetes-service/resources/eureka/eureka-server` in this project, build the eureka server package:
+   Go to the `azure-kubernetes-service/resources/eureka/eureka-server` folder and build the Eureka server package:
 
    ```bash
    cd azure-kubernetes-service/resources/eureka/eureka-server
    mvn clean package -DskipTests
    ```
 
-1. **Build the docker image**
+1. **Build the Docker image**
   
-   Use Azure Container Build to build the Eureka image. For more details of the ACR build, see [Automate container image builds and maintenance with Azure Container Registry tasks](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview).
+   Use Azure Container Build to build the Eureka image. For more details, see [Automate container image builds and maintenance with Azure Container Registry tasks](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview).
 
    ```azurecli
    az acr build --registry ${ACR_NAME} --image eureka-server:${EUREKA_IMAGE_TAG} target/docker
@@ -49,7 +51,7 @@ By the end of this guide, you will have a running Eureka Server on your AKS clus
 
 1. **Edit the Kubernetes Resource File**
 
-   Locate the `eureka-server.yaml` file in the `azure-kubernetes-service/resources/eureka` directory. Edit the following code snippet.
+   Locate the `eureka-server.yaml` file in the `azure-kubernetes-service/resources/eureka` directory. Edit the following code snippet:
 
    - **`<eureka-image-tag>`**: Update to the value of `${EUREKA_IMAGE_TAG}`
    - **`<acr-name>`**: Update to the value of `${ACR_NAME}`

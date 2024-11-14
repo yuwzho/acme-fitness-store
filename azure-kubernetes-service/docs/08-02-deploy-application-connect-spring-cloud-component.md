@@ -1,17 +1,16 @@
 ## Introduction
 
-In this guide, we will walk you through the process of deploying the Acme Payment application to an Azure Kubernetes service and connecting it to deployed Spring Cloud components.
+In this guide, we will walk you through the process of deploying the Acme Payment application to an Azure Kubernetes Service (AKS) and connecting it to deployed Spring Cloud components.
 
 ## Prerequisites
 
 Before you begin, ensure you have the following:
 
 - Follow [01-create-kubernetes-service](./01-create-kubernetes-service.md) to create Azure Kubernetes Service and Azure Container Registry.
-- Follow [07-containerize-application](./07-containerize-application.md) to build the image and push to the Azure Container Registry.
+- Follow [07-containerize-application](./07-containerize-application.md) to build the image and push it to the Azure Container Registry.
 - Follow [02-create-eureka-server](./02-create-eureka-server.md) to create the Eureka Server for service discovery.
 - Follow [03-create-config-server](./03-create-config-server.md) to create the Config Server for centralized configuration.
 - Follow [04-create-spring-boot-admin](./04-create-spring-boot-admin.md) to set up Spring Boot Admin for monitoring and managing your Spring Boot applications.
-
 
 ## Outputs
 
@@ -24,9 +23,11 @@ After completing this guide, you will have:
 ## Steps
 
 1. **Set up the variables**
-   Set up the variables used for image:
+
+   Set up the variables used for the image:
    ```bash
    source resources/var.sh
+   az account set -s ${SUBSCRIPTION}
 
    echo ACR_NAME=${ACR_NAME}
    echo PAYMENT_SERVICE_APP_IMAGE_TAG=${PAYMENT_SERVICE_APP_IMAGE_TAG}
@@ -46,7 +47,6 @@ After completing this guide, you will have:
 1. **Deploy the Application**
 
    To deploy the application, use the following command:
-
    ```sh
    kubectl apply -f resources/applications/acme-payment.yml
    ```
@@ -59,7 +59,7 @@ After completing this guide, you will have:
 
    2. **Deployment**: `payment`
       - Manages the deployment of the payment application.
-      - Retrieves environment variables from the `config-server-config` and `eureka-server-config` ConfigMaps. That helps the application connect to Spring Cloud components.
+      - Retrieves environment variables from the `config-server-config` and `eureka-server-config` ConfigMaps to connect to Spring Cloud components.
       - Uses the `payment-config` ConfigMap for additional configuration. This ConfigMap can store the environment variables that you want to send to the application. Note that once the ConfigMap is updated, the deployment needs to be restarted to take effect.
       - Configures probes for liveness and readiness to ensure the application is running correctly.
       - Specifies resource limits and requests for CPU, memory, and ephemeral storage.
@@ -72,20 +72,17 @@ After completing this guide, you will have:
 1. **Verify the deployment**
 
    Wait for the pod to start running. You can check the status with:
-
    ```bash
    kubectl get pods
    ```
 
    You should see output similar to:
-
    ```
    NAME                        READY   STATUS    RESTARTS   AGE
    payment-7656c865bb-4db2p    1/1     Running   0          3m
    ```
 
    **Tip**: If the pod is not running, check for errors using:
-  
    ```bash
    kubectl describe pod <pod-name>
    kubectl logs <pod-name>

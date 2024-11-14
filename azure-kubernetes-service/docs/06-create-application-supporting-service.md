@@ -1,4 +1,5 @@
 ## Introduction
+
 This document provides a step-by-step guide to create supporting services for the applications, including PostgreSQL and Redis Cache.
 
 ## Azure PostgreSQL
@@ -10,22 +11,27 @@ This document provides a step-by-step guide to create supporting services for th
 [Azure Cache for Redis](https://azure.microsoft.com/en-us/services/cache/) is a fully managed, in-memory cache that enables high-performance and scalable architectures. It provides low-latency data access to improve the performance of your applications. Azure Redis Cache supports various data structures such as strings, hashes, lists, sets, and more, making it a versatile choice for caching and real-time analytics.
 
 ## Prerequisites
+
+- Follow [01-create-kubernetes-service](./01-create-kubernetes-service.md) to create Azure Kubernetes Service and Azure Container Registry.
 - Azure CLI installed
 - Azure subscription
 - Sufficient permissions to create resources in the Azure subscription
-    - **Contributor** - Creates resource and all other Azure resources
-    - **User Access Administrator** - Assign necessary roles
+  - **Contributor** - Creates resource and all other Azure resources
+  - **User Access Administrator** - Assign necessary roles
 
 ## Outputs
+
 - Azure Redis Cache
 - Azure PostgreSQL
 
 ## Steps
 
 ### 1. Set Variables
+
 Set up the variables used to create the PostgreSQL and Redis:
 ```
 source resources/var.sh
+az account set -s ${SUBSCRIPTION}
 
 echo "RESOURCE_GROUP=${RESOURCE_GROUP}"
 echo "AKS_NAME=${AKS_NAME}"
