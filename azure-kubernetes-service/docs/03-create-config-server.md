@@ -37,8 +37,8 @@ By the end of this guide, you will have a running Spring Cloud Config Server on 
 3. **Build and Push the Docker Image**
 
     ```azurecli
-    cd azure-kubernetes-service/resources/config-server
-    az acr build --image ${CONFIGSERVER_IMAGE_TAG} --registry ${ACR_NAME} --file Dockerfile . --resource-group ${RESOURCE_GROUP}
+    cd resources/config-server/spring-cloud-config
+    az acr build --image config-server:${CONFIGSERVER_IMAGE_TAG} --registry ${ACR_NAME} --file Dockerfile . --resource-group ${RESOURCE_GROUP}
     ```
 
 ### Deploy the Spring Cloud Config Server

@@ -2,8 +2,8 @@
 LOCATION="eastus2"
 SUBSCRIPTION="<azure-subscription-id>"
 RESOURCE_GROUP="<resource-group>"
+ACR_NAME="<container-registry-name-character-only>"
 AKS_NAME="${RESOURCE_GROUP}-k8s"
-ACR_NAME="acmeacr"
 KEYVAULT_NAME="${RESOURCE_GROUP}-kv"
 WORKSPACE_NAME="${RESOURCE_GROUP}-workspace"
 

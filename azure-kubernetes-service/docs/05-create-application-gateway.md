@@ -44,7 +44,7 @@ By the end of this guide, you will have a running Spring Cloud Gateway on your A
 4. **Build and Push the Docker Image**
 
    ```azurecli
-   az acr build --image ${GATEWAY_IMAGE_TAG} --registry ${ACR_NAME} --file Dockerfile . --resource-group ${RESOURCE_GROUP}
+   az acr build --image gateway:${GATEWAY_IMAGE_TAG} --registry ${ACR_NAME} --file Dockerfile . --resource-group ${RESOURCE_GROUP}
    ```
 
 ### Deploy the Spring Cloud Gateway Image in AKS
