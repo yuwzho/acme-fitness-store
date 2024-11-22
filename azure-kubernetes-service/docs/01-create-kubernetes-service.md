@@ -113,7 +113,7 @@ az monitor log-analytics workspace create --resource-group ${RESOURCE_GROUP} --w
         --workspace-resource-id ${WORKSPACE_ID}
     ```
 
-> Note: After creating the AKS, it may take some time to update. During this time, the following commands will fail.
+    > Note: After creating the AKS, it may take some time to update. During this time, the following commands will fail.
 
     ```
     az aks nodepool add \
