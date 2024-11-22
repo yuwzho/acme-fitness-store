@@ -35,7 +35,7 @@ By the end of this guide, you will have a running Eureka Server on your AKS clus
    Go to the `azure-kubernetes-service/resources/eureka/eureka-server` folder and build the Eureka server package:
 
    ```bash
-   cd azure-kubernetes-service/resources/eureka/eureka-server
+   cd resources/eureka/eureka-server
    mvn clean package -DskipTests
    ```
 
@@ -67,7 +67,7 @@ By the end of this guide, you will have a running Eureka Server on your AKS clus
    Apply the configuration using kubectl to create the Eureka Server:
 
    ```bash
-   kubectl apply -f eureka-server.yaml
+   kubectl apply -f ../eureka-server.yaml
    ```
 
 1. **Verify the Deployment**

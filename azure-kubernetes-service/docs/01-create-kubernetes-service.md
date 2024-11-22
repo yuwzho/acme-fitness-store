@@ -16,12 +16,21 @@ This document provides a step-by-step guide to create an Azure Kubernetes Servic
 
 ## Steps
 
-### 1. Set Variables
+### 1. Clone the repo
+Create a new folder and clone the sample app repository:
+```shell
+git clone git@github.com:yuwzho/acme-fitness-store.git -b aks
+cd acme-fitness-store/azure-kubernetes-service
+```
+
+### 2. Set Variables
 
 Update `resources/var.sh` and set up the variables for your environment.
 ```
 source resources/var.sh
 az account set -s ${SUBSCRIPTION}
+az configure --defaults location=${LOCATION}
+az config set defaults.group=${RESOURCE_GROUP}
 
 echo "RESOURCE_GROUP=${RESOURCE_GROUP}"
 echo "AKS_NAME=${AKS_NAME}"
@@ -30,13 +39,13 @@ echo "KEYVAULT_NAME=${KEYVAULT_NAME}"
 echo "WORKSPACE_NAME=${WORKSPACE_NAME}"
 ```
 
-### 2. Create Resource Group
+### 3. Create Resource Group
 1. Create a resource group to host all the Azure resources.
 ```bash
 az group create -n ${RESOURCE_GROUP} -l eastus2
 ```
 
-### 3. Create Azure Container Registry
+### 4. Create Azure Container Registry
 Create Azure Container Registry (ACR). This ACR will be used to:
 - Build application components
 - Store application images built by buildpack
@@ -45,7 +54,7 @@ Create Azure Container Registry (ACR). This ACR will be used to:
 az acr create -g ${RESOURCE_GROUP} -n ${ACR_NAME} --sku Premium
 ```
 
-### 4. Create AKS
+### 5. Create AKS
 1. Enable `EncryptionAtHost`, may take 10+ minutes to finish
 ```bash
 az feature register --namespace Microsoft.Compute --name EncryptionAtHost
@@ -81,6 +90,7 @@ az monitor log-analytics workspace create --resource-group ${RESOURCE_GROUP} --w
     az aks create \
         -g  ${RESOURCE_GROUP} \
         -n ${AKS_NAME} \
+        --kubernetes-version 1.30.0 \
         --attach-acr ${ACR_NAME} \
         --enable-workload-identity  \
         --load-balancer-sku standard \
@@ -101,6 +111,11 @@ az monitor log-analytics workspace create --resource-group ${RESOURCE_GROUP} --w
         --enable-azure-monitor-metrics \
         --enable-addons monitoring \
         --workspace-resource-id ${WORKSPACE_ID}
+    ```
+
+> Note: After creating the AKS, it may take some time to update. During this time, the following commands will fail.
+
+    ```
     az aks nodepool add \
         --cluster-name ${AKS_NAME} \
         -g ${RESOURCE_GROUP} \
@@ -148,7 +163,7 @@ az monitor log-analytics workspace create --resource-group ${RESOURCE_GROUP} --w
     kubectl get ns
     ```
 
-### 5. Create Azure Keyvault and cert
+### 6. Create Azure Keyvault and cert
 
 1. Get AKS outbound IPs and record these IPs as `<AKS-outbound-ip>`
     ```
@@ -182,11 +197,12 @@ az monitor log-analytics workspace create --resource-group ${RESOURCE_GROUP} --w
 1. Create a self-signed certificate or import your CA cert to the Keyvault, ref: https://learn.microsoft.com/en-us/azure/key-vault/certificates/tutorial-import-certificate?tabs=azure-portal
   > Here suggest to create a wildcard domain cert, like `*.demo.com`.
 
-### 6. Enable Nginx in Kubernetes
+### 7. Enable Nginx in Kubernetes
 Below steps guide how to enable the Nginx as add-on in the AKS cluster. For more details can view [Managed NGINX ingress with the application routing add-on](https://learn.microsoft.com/en-us/azure/aks/app-routing).
 
 1. Enable Nginx
     ```
+    az extension add -n aks-preview
     az aks approuting enable --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME}
 
     KEYVUALT_ID=$(az keyvault show --name ${KEYVAULT_NAME} --query id --output tsv)

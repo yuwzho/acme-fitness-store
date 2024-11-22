@@ -32,7 +32,7 @@ By the end of this guide, you will have a running Spring Cloud Config Server on 
 
 2. **Clone the Repository**
 
-   The code is under `resources/config-server`. Enter the directory, there is also a `Dockerfile`.
+   The code is under `resources/config-server/spring-cloud-config`. Enter the directory, there is also a `Dockerfile`.
 
 3. **Build and Push the Docker Image**
 
@@ -76,7 +76,7 @@ By the end of this guide, you will have a running Spring Cloud Config Server on 
    Use `kubectl` to apply the configuration and create the Config Server:
 
    ```bash
-   kubectl apply -f configserver.yaml
+   kubectl apply -f ../configserver.yaml
    ```
 
 4. **Verify the Deployment**

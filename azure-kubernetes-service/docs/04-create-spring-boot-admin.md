@@ -37,7 +37,7 @@ By the end of this guide, you will have a running Spring Boot Admin server on yo
    Go to the `azure-kubernetes-service/resources/spring-boot-admin` folder and build the Spring Boot Admin server package:
 
    ```bash
-   cd azure-kubernetes-service/resources/spring-boot-admin
+   cd resources/spring-boot-admin/spring-boot-admin
    mvn clean package -DskipTests
    ```
 
@@ -70,7 +70,7 @@ By the end of this guide, you will have a running Spring Boot Admin server on yo
    Use `kubectl` to apply the configuration and create the Spring Boot Admin server:
 
    ```bash
-   kubectl apply -f spring-boot-admin.yaml
+   kubectl apply -f ../spring-boot-admin.yaml
    ```
 
 1. **Verify the Deployment**

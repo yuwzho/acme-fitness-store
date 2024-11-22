@@ -37,7 +37,7 @@ echo "FRONTEND_APP_IMAGE_TAG=${FRONTEND_APP_IMAGE_TAG}"
 ### 2. Build applications
 
 The following commands will build each application using the Pack CLI and the Paketo Buildpacks builder. Each application will be built with the necessary runtime dependencies and tagged with the specified image tag. The built images will then be pushed to the Azure Container Registry.
-
+> Note: open your Docker environment to build and push the images to ACR.
 ```bash
 CATALOG_SERVICE_APP=acme-catalog
 PAYMENT_SERVICE_APP=acme-payment
@@ -47,25 +47,25 @@ FRONTEND_APP=frontend
 CONTAINER_REGISTRY=${ACR_NAME}.azurecr.io
 
 # Build Catalog Service
-pack build ${CONTAINER_REGISTRY}/${CATALOG_SERVICE_APP}:${CATALOG_SERVICE_APP_IMAGE_TAG} --path apps/acme-catalog \
+pack build ${CONTAINER_REGISTRY}/${CATALOG_SERVICE_APP}:${CATALOG_SERVICE_APP_IMAGE_TAG} --path ../apps/acme-catalog \
     --builder paketobuildpacks/builder-jammy-base \
     -e BP_JVM_VERSION=17
 
 # Build Payment Service
-pack build ${CONTAINER_REGISTRY}/${PAYMENT_SERVICE_APP}:${PAYMENT_SERVICE_APP_IMAGE_TAG} --path apps/acme-payment \
+pack build ${CONTAINER_REGISTRY}/${PAYMENT_SERVICE_APP}:${PAYMENT_SERVICE_APP_IMAGE_TAG} --path ../apps/acme-payment \
     --builder paketobuildpacks/builder-jammy-base \
     -e BP_JVM_VERSION=17
 
 # Build Order Service
-pack build ${CONTAINER_REGISTRY}/${ORDER_SERVICE_APP}:${ORDER_SERVICE_APP_IMAGE_TAG} --path apps/acme-order \
+pack build ${CONTAINER_REGISTRY}/${ORDER_SERVICE_APP}:${ORDER_SERVICE_APP_IMAGE_TAG} --path ../apps/acme-order \
     --builder paketobuildpacks/builder-jammy-base
 
 # Build Cart Service
-pack build ${CONTAINER_REGISTRY}/${CART_SERVICE_APP}:${CART_SERVICE_APP_IMAGE_TAG} --path apps/acme-cart \
+pack build ${CONTAINER_REGISTRY}/${CART_SERVICE_APP}:${CART_SERVICE_APP_IMAGE_TAG} --path ../apps/acme-cart \
     --builder paketobuildpacks/builder-jammy-base
 
 # Build Frontend App
-pack build ${CONTAINER_REGISTRY}/${FRONTEND_APP}:${FRONTEND_APP_IMAGE_TAG} --path apps/acme-shopping \
+pack build ${CONTAINER_REGISTRY}/${FRONTEND_APP}:${FRONTEND_APP_IMAGE_TAG} --path ../apps/acme-shopping \
     --builder paketobuildpacks/builder-jammy-base
 ```
 

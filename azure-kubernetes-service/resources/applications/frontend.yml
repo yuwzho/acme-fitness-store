@@ -35,7 +35,7 @@ items:
                 fieldPath: metadata.name
           - name: APPLICATIONINSIGHTS_ROLE_NAME
             value: frontend
-          image: <acr-name>.azurecr.io/frontend:<app-image-tag>
+          image: <acr-name>.azurecr.io/frontend:<frontend-app-image-tag>
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
