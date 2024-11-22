@@ -81,6 +81,9 @@ After completing this guide, you will have:
 
    echo CLIENT_ID=${CLIENT_ID}
    echo REDIS_HOSTNAME=${REDIS_HOSTNAME}
+   echo OBJECT_ID=${OBJECT_ID}
+   echo ACR_NAME=${ACR_NAME}
+   echo CART_SERVICE_APP_IMAGE_TAG=${CART_SERVICE_APP_IMAGE_TAG}
    ```
 
 1. **Edit the resource file**
@@ -89,6 +92,7 @@ After completing this guide, you will have:
 
    - **`<client-id>`**: Update to the value of `${CLIENT_ID}`.
    - **`<redis-host>`**: Update to the value of `${REDIS_HOSTNAME}`.
+   - **`<redis-user-name>`**: Update to the value of `${OBJECT_ID}`
    - **`<acr-name>`**: Update to the name of your Azure Container Registry, should be the value of `${ACR_NAME}`.
    - **`<cart-service-app-image-tag>`**: Update to the tag of your application image, should be the value of `${CART_SERVICE_APP_IMAGE_TAG}`.
 

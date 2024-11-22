@@ -33,13 +33,8 @@ echo "ORDER_SERVICE_APP_IMAGE_TAG=${ORDER_SERVICE_APP_IMAGE_TAG}"
 echo "CART_SERVICE_APP_IMAGE_TAG=${CART_SERVICE_APP_IMAGE_TAG}"
 echo "FRONTEND_APP_IMAGE_TAG=${FRONTEND_APP_IMAGE_TAG}"
 ```
-### 2. Go to the code
 
-```bash
-cd apps
-```
-
-### 3. Build applications
+### 2. Build applications
 
 The following commands will build each application using the Pack CLI and the Paketo Buildpacks builder. Each application will be built with the necessary runtime dependencies and tagged with the specified image tag. The built images will then be pushed to the Azure Container Registry.
 
@@ -74,7 +69,7 @@ pack build ${CONTAINER_REGISTRY}/${FRONTEND_APP}:${FRONTEND_APP_IMAGE_TAG} --pat
     --builder paketobuildpacks/builder-jammy-base
 ```
 
-### 4. Push image to ACR
+### 3. Push image to ACR
 # Login the ACR
 ```azurecli
 az acr login -n ${ACR_NAME}
