@@ -17,9 +17,8 @@ This document provides a step-by-step guide to create an Azure Kubernetes Servic
 ## Steps
 
 ### 1. Clone the repo
-Create a new folder and clone the sample app repository:
-```shell
-git clone git@github.com:yuwzho/acme-fitness-store.git -b aks
+Clone the git repo and go to the working folder.
+```bash
 cd acme-fitness-store/azure-kubernetes-service
 ```
 
@@ -29,8 +28,6 @@ Update `resources/var.sh` and set up the variables for your environment.
 ```
 source resources/var.sh
 az account set -s ${SUBSCRIPTION}
-az configure --defaults location=${LOCATION}
-az config set defaults.group=${RESOURCE_GROUP}
 
 echo "RESOURCE_GROUP=${RESOURCE_GROUP}"
 echo "AKS_NAME=${AKS_NAME}"
@@ -90,7 +87,6 @@ az monitor log-analytics workspace create --resource-group ${RESOURCE_GROUP} --w
     az aks create \
         -g  ${RESOURCE_GROUP} \
         -n ${AKS_NAME} \
-        --kubernetes-version 1.30.0 \
         --attach-acr ${ACR_NAME} \
         --enable-workload-identity  \
         --load-balancer-sku standard \
@@ -202,7 +198,7 @@ Below steps guide how to enable the Nginx as add-on in the AKS cluster. For more
 
 1. Enable Nginx
     ```
-    az extension add -n aks-preview
+    az extension add -n aks-preview --upgrade
     az aks approuting enable --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME}
 
     KEYVUALT_ID=$(az keyvault show --name ${KEYVAULT_NAME} --query id --output tsv)
