@@ -52,7 +52,7 @@ After completing this guide, you will have:
    az postgres flexible-server db create --database-name ${DATABASE_NAME} -g ${RESOURCE_GROUP} -s ${POSTGRESQL_NAME}
    az extension add --name serviceconnector-passwordless --upgrade
    AKS_ID=$(az aks show --resource-group ${RESOURCE_GROUP} --name ${AKS_NAME} --query id -o tsv)
-   DATABASE_ID=$(az postgres flexible-server db show --database-name ${DATABASE_NAME} -g ${RESOURCE_GROUP} --query id -o tsv)
+   DATABASE_ID=$(az postgres flexible-server db show --server ${POSTGRESQL_NAME} --database-name ${DATABASE_NAME} -g ${RESOURCE_GROUP} --query id -o tsv)
    IDENTITY_ID=$(az identity show -n ${IDENTITY_NAME} -g ${RESOURCE_GROUP} --query id -o tsv)
    az aks connection create postgres-flexible --connection catalog_acme_postgres --source-id ${AKS_ID} --target-id ${DATABASE_ID} --client-type springboot --workload-identity ${IDENTITY_ID}
    ```

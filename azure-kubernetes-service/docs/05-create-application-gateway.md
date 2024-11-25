@@ -44,6 +44,7 @@ By the end of this guide, you will have a running Spring Cloud Gateway on your A
 4. **Build and Push the Docker Image**
 
    ```azurecli
+   cd resources/gateway/gateway
    az acr build --image gateway:${GATEWAY_IMAGE_TAG} --registry ${ACR_NAME} --file Dockerfile . --resource-group ${RESOURCE_GROUP}
    ```
 
@@ -72,7 +73,7 @@ By the end of this guide, you will have a running Spring Cloud Gateway on your A
    Use `kubectl` to apply the configuration and create the Spring Cloud Gateway:
 
    ```bash
-   kubectl apply -f gateway.yaml
+   kubectl apply -f ../gateway.yaml
    ```
 
    It creates gateway deployment, service, and ingress.

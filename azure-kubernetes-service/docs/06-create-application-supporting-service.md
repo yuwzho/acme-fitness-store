@@ -49,7 +49,7 @@ az resource show --ids <the ID from previous output> --query properties.ipAddres
 
 2. Create Postgresql Flexible server and enable the access from Kubernetes
 ```
-az postgres flexible-server create -g ${RESOURCE_GROUP} -n ${POSTGRESQL_NAME}--active-directory-auth Enabled --password-auth Disabled --public-access <AKS-outbound-ip>
+az postgres flexible-server create -g ${RESOURCE_GROUP} -n ${POSTGRESQL_NAME} --active-directory-auth Enabled --password-auth Disabled --public-access <AKS-outbound-ip>
 ```
 
 3. Add yourself into the server admin for further settings

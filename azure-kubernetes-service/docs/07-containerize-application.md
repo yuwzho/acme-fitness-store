@@ -37,7 +37,7 @@ echo "FRONTEND_APP_IMAGE_TAG=${FRONTEND_APP_IMAGE_TAG}"
 ### 2. Build applications
 
 The following commands will build each application using the Pack CLI and the Paketo Buildpacks builder. Each application will be built with the necessary runtime dependencies and tagged with the specified image tag. The built images will then be pushed to the Azure Container Registry.
-
+> Note: open your Docker environment to build and push the images to ACR.
 ```bash
 CATALOG_SERVICE_APP=acme-catalog
 PAYMENT_SERVICE_APP=acme-payment
