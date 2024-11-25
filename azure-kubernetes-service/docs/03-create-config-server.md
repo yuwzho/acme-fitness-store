@@ -79,6 +79,13 @@ By the end of this guide, you will have a running Spring Cloud Config Server on 
    kubectl apply -f ../configserver.yaml
    ```
 
+   The `configserver.yaml` file contains the necessary Kubernetes resources to deploy the Config Server. It includes:
+
+   - **ConfigMap** - `config-server-git-info`: Stores configuration data for the Config Server.
+   - **Deployment**: Manages the deployment of the Config Server, including resource requests and limits, probes for liveness and readiness, and lifecycle hooks.
+   - **Service**: Exposes the Config Server on port 8888.
+   - **ConfigMap** - `config-server-config`: Stores configuration data for the Config Server can be consumed by other deployments.
+
 4. **Verify the Deployment**
 
    Wait for the pod to start running. Check the status with:

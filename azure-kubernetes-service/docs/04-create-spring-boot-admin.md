@@ -73,6 +73,12 @@ By the end of this guide, you will have a running Spring Boot Admin server on yo
    kubectl apply -f ../spring-boot-admin.yaml
    ```
 
+   The `spring-boot-admin.yaml` file contains the necessary Kubernetes resources to deploy the Spring Boot Admin server. It includes:
+
+   - **Deployment**: Manages the deployment of the Spring Boot Admin server, including resource requests and limits, probes for liveness and readiness, and lifecycle hooks.
+   - **Service**: Exposes the Spring Boot Admin server on port 8080.
+   - **Ingress**: Configures the ingress for the Spring Boot Admin server, including TLS settings.
+
 1. **Verify the Deployment**
 
    Wait for the pod to start running. Check the status with:

@@ -76,7 +76,11 @@ By the end of this guide, you will have a running Spring Cloud Gateway on your A
    kubectl apply -f ../gateway.yaml
    ```
 
-   It creates gateway deployment, service, and ingress.
+   It creates gateway deployment, service, and ingress. The `gateway.yaml` file contains the necessary Kubernetes resources to deploy the Spring Cloud Gateway. It includes:
+
+   - **Deployment**: Manages the deployment of the Gateway, including resource requests and limits, probes for liveness, readiness, and startup, and lifecycle hooks.
+   - **Service**: Exposes the Gateway on port 80.
+   - **Ingress**: Configures the ingress rules and TLS settings for the Gateway.
 
 4. **Verify the Deployment**
 

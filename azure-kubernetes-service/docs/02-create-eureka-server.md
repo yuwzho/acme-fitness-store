@@ -70,6 +70,12 @@ By the end of this guide, you will have a running Eureka Server on your AKS clus
    kubectl apply -f ../eureka-server.yaml
    ```
 
+   The `eureka-server.yaml` file contains the necessary Kubernetes resources to deploy the Eureka Server. It includes:
+
+   - **Service**: Exposes the Eureka Server on port 8761.
+   - **ConfigMap**: Stores configuration data for the Eureka Server can be consumed by other deployments.
+   - **Deployment**: Manages the deployment of the Eureka Server, including resource requests and limits, probes for liveness and readiness, and lifecycle hooks.
+
 1. **Verify the Deployment**
 
    Use the following command to check the status of the Eureka Server pod:
