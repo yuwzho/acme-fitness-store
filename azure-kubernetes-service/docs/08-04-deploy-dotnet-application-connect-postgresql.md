@@ -37,14 +37,14 @@ After completing this guide, you will have:
 
 1. **Create managed identity**
 
-   Create the managed identity for the order service:
+   Create the managed identity for the order service. This managed identity will be used to connect to PostgreSQL.
    ```bash
    az identity create -n ${IDENTITY_NAME} -g ${RESOURCE_GROUP} --location ${LOCATION} --subscription ${SUBSCRIPTION}
    ```
 
 1. **Connect the managed identity to PostgreSQL**
 
-   Create the database and set up the connection:
+   Create the database and set up the connection for the created managed identity.
    ```bash
    az postgres flexible-server db create --database-name ${DATABASE_NAME} -g ${RESOURCE_GROUP} -s ${POSTGRESQL_NAME}
    az extension add --name serviceconnector-passwordless --upgrade

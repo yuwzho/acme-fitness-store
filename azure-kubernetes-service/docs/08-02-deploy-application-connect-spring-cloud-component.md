@@ -33,6 +33,22 @@ After completing this guide, you will have:
    echo PAYMENT_SERVICE_APP_IMAGE_TAG=${PAYMENT_SERVICE_APP_IMAGE_TAG}
    ```
 
+1. **Update Spring Cloud config client dependency**
+   
+   Locate the `../apps/acme-payment/build.gradle` file and add the Spring Cloud config client dependency. This dependency will consume the environment and let your application connect to Confg Server to retrieve the configuration.
+
+   ```diff
+   --- a/apps/acme-catalog/build.gradle
+   +++ b/apps/acme-catalog/build.gradle
+   @@ -33,6 +33,7 @@ dependencies {
+         implementation 'org.flywaydb:flyway-core'
+
+         implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+   +     implementation 'org.springframework.cloud:spring-cloud-starter-config'
+
+         implementation 'com.azure.spring:spring-cloud-azure-starter-keyvault-secrets'
+   ```
+
 1. **Edit the resource file**
 
    Locate the `resources/applications/acme-payment.yml` file and update the following placeholders:

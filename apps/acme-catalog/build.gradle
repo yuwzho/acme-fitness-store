@@ -33,7 +33,6 @@ dependencies {
 	implementation 'org.flywaydb:flyway-core'
 
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 
 	implementation 'com.azure.spring:spring-cloud-azure-starter-keyvault-secrets'
 

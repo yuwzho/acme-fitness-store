@@ -38,16 +38,32 @@ After completing this guide, you will have:
    echo IDENTITY_NAME=${IDENTITY_NAME}
    ```
 
+1. **Update Spring Cloud config client dependency**
+   
+   Locate the `../apps/acme-payment/build.gradle` file and add the Spring Cloud config client dependency. This dependency will consume the environment and let your application connect to Confg Server to retrieve the configuration.
+
+   ```diff
+   --- a/apps/acme-payment/build.gradle
+   +++ b/apps/acme-payment/build.gradle
+   @@ -29,6 +29,7 @@ dependencies {
+         implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+         implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+   +     implementation 'org.springframework.cloud:spring-cloud-starter-config'
+
+         runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+   ```
+
 1. **Create managed identity**
 
-   Create the managed identity for the catalog service:
+   Create the managed identity for the catalog service. This managed identity will be used to connect to PostgreSQL.
    ```bash
    az identity create -n ${IDENTITY_NAME} -g ${RESOURCE_GROUP} --location ${LOCATION} --subscription ${SUBSCRIPTION}
    ```
 
 1. **Connect the managed identity to PostgreSQL**
 
-   Create the database and set up the connection:
+   Create the database and set up the connection for the created managed identity.
    ```bash
    az postgres flexible-server db create --database-name ${DATABASE_NAME} -g ${RESOURCE_GROUP} -s ${POSTGRESQL_NAME}
    az extension add --name serviceconnector-passwordless --upgrade
