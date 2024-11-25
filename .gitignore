@@ -64,4 +64,4 @@ hello-world/
 **/.vscode
 **/.classpath
 
-azure-kubernetes-service/resources/eureka/eureka-server/target
+**/target
