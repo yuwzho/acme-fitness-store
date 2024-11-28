@@ -1,0 +1,156 @@
+management:
+  server:
+    port: 8090
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+      - id: frontend-get
+        uri: http://frontend
+        predicates:
+        - Path=/**
+        - Method=GET
+        order: 1000
+        filters:
+        - StripPrefix=0
+        tags:
+        - frontend
+      - id: cart_add
+        uri: http://cart-service
+        predicates:
+        - Path=/cart/item/add/{userId}
+        - Method=POST
+        filters:
+        - StripPrefix=0
+        tags:
+        - cart
+      - id: cart_modify
+        uri: http://cart-service
+        predicates:
+        - Path=/cart/item/modify/{userId}
+        - Method=POST
+        filters:
+        - StripPrefix=0
+        tags:
+        - cart
+      - id: cart_get
+        uri: http://cart-service
+        predicates:
+        - Path=/cart/items/{userId}
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - cart
+      - id: cart_clear
+        uri: http://cart-service
+        predicates:
+        - Path=/cart/clear/{userId}
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - cart
+      - id: cart_total
+        uri: http://cart-service
+        predicates:
+        - Path=/cart/total/{userId}
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - cart
+      - id: catalog_list
+        uri: http://catalog-service
+        predicates:
+        - Path=/products
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - catalog
+      - id: catalog_get
+        uri: http://catalog-service
+        predicates:
+        - Path=/products/{productId}
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - catalog
+      - id: catalog_create
+        uri: http://catalog-service
+        predicates:
+        - Path=/products
+        - Method=POST
+        filters:
+        - StripPrefix=0
+        tags:
+        - catalog
+      - id: catalog_update
+        uri: http://catalog-service
+        predicates:
+        - Path=/products/{productId}
+        - Method=POST
+        filters:
+        - StripPrefix=0
+        tags:
+        - catalog
+      - id: catalog_liveness
+        uri: http://catalog-service
+        predicates:
+        - Path=/catalogliveness
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        - SetPath=/actuator/health/liveness
+        tags:
+        - catalog
+      - id: catalog_image
+        uri: http://catalog-service
+        predicates:
+        - Path=/static/images/{id}
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - catalog
+      - id: order_create
+        uri: http://order-service
+        predicates:
+        - Path=/order/add/{userId}
+        - Method=POST
+        filters:
+        - StripPrefix=0
+        tags:
+        - order
+      - id: order_get
+        uri: http://order-service
+        predicates:
+        - Path=/order/{userId}
+        - Method=GET
+        filters:
+        - StripPrefix=0
+        tags:
+        - order
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            allowedHeaders:
+            - "*"
+            allowCredentials: true
+            maxAge: 3600

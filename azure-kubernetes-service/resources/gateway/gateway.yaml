@@ -1,0 +1,137 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gateway-deployment
+    app.kubernetes.io/part-of: spring-cloud-gateway
+    gateway.name: gateway-deployment
+    gateway.type: spring-cloud-gateway
+  name: gateway-deployment
+spec:
+  minReadySeconds: 5
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: gateway-deployment
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port: "8090"
+        prometheus.io/scrape: "true"
+      labels:
+        app: gateway-deployment
+        app.kubernetes.io/part-of: spring-cloud-gateway
+        gateway.name: gateway-deployment
+        gateway.type: spring-cloud-gateway
+    spec:
+      containers:
+      - env:
+        - name: JDK_JAVA_OPTIONS
+          value: --add-exports java.base/jdk.internal.ref=ALL-UNNAMED --add-exports
+            java.base/sun.security.x509=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED
+            --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED
+            --add-opens java.management/sun.management=ALL-UNNAMED --add-opens jdk.management/com.sun.management.internal=ALL-UNNAMED
+        - name: logging.level.sun.net.www.protocol.http.HttpURLConnection
+          value: INFO
+        image: <acr-name>.azurecr.io/gateway:<gateway-image-tag>
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: actuator/health/liveness
+            port: 8090
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 3
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: gateway
+        readinessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: actuator/health/readiness
+            port: 8090
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 3
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: "2"
+            memory: 2Gi
+          requests:
+            cpu: "2"
+            memory: 2Gi
+        securityContext: {}
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: actuator/health/readiness
+            port: 8090
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 3
+          successThreshold: 1
+          timeoutSeconds: 1
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 60
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: gateway-deployment
+  name: gateway-service
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http-gateway
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: gateway-deployment
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.azure.com/tls-cert-keyvault-uri: https://<keyvault-name>.vault.azure.net/certificates/<tls-cert-name>
+  name: spring-cloud-gateway-ingress
+spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
+  rules:
+  - host: <spring-cloud-gateway-host>
+    http:
+      paths:
+      - backend:
+          service:
+            name: gateway-service
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - <spring-cloud-gateway-host>
+    # Secret name should be the in patthen "keyvault-<metadata.name>"
+    secretName: keyvault-spring-cloud-gateway-ingress
