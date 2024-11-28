@@ -1,0 +1,11 @@
+spring:
+  config:
+    import: optional:configserver:http://config-server:8888
+  cloud:
+    config:
+      name: payment
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,health
