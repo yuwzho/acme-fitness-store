@@ -64,11 +64,11 @@
 また、エンタープライズティアで VMware Tanzu コンポーネントを設定しました。
 Azure Spring Apps や VMware Tanzu コンポーネントについてさらに詳しく知りたい場合は、下記をご覧ください：
 
-* [Azure Spring Apps](https://azure.microsoft.com/services/spring-cloud/)
-* [Azure Spring Apps docs](https://docs.microsoft.com/azure/spring-cloud/quickstart-provision-service-instance-enterprise?tabs=azure-portal)
+* [Azure Spring Apps](https://azure.microsoft.com/products/spring-apps/)
+* [Azure Spring Apps docs](https://learn.microsoft.com/azure/spring-apps/enterprise/)
 * [Deploy Spring Apps from scratch](https://github.com/microsoft/azure-spring-cloud-training)
 * [Deploy existing Spring Apps](https://github.com/Azure-Samples/azure-spring-cloud)
-* [Azure for Java Cloud Developers](https://docs.microsoft.com/en-us/azure/java/)
+* [Azure for Java Cloud Developers](https://learn.microsoft.com/azure/java/)
 * [Spring Cloud Azure](https://spring.io/projects/spring-cloud-azure)
 * [Spring Cloud](https://spring.io/projects/spring-cloud)
 * [Spring Cloud Gateway](https://docs.vmware.com/en/VMware-Spring-Cloud-Gateway-for-Kubernetes/index.html)

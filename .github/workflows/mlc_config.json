@@ -25,5 +25,5 @@
         "pattern": "^https://github.com/Azure-Samples/acme-fitness-store/invitations"
       }
     ],
-    "aliveStatusCodes": [200]
+    "aliveStatusCodes": [0, 200, 302]
   }

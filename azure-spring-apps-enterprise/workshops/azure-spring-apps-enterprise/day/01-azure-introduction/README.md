@@ -34,7 +34,7 @@ az version
 
 ### Alternative 2: Using your desktop shell
 
-* Please install [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest) to your desktop. 
+* Please install [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest) to your desktop. 
 
 * Use `az version` to check the version of Azure CLI installed, e.g.
 

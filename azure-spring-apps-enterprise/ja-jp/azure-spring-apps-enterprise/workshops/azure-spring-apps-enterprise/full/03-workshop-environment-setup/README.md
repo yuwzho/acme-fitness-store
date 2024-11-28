@@ -64,7 +64,7 @@ Azure Key Vault は一旦作成すると、リソースを削除した後も、�
 
 	この Codespaces の環境には、次のソフトウェアがインストールされています。
 
-	1. [JDK 17](https://docs.microsoft.com/java/openjdk/download?WT.mc_id=azurespringcloud-github-yoterada#openjdk-17)
+	1. [JDK 17](https://learn.microsoft.com/java/openjdk/download?WT.mc_id=azurespringcloud-github-yoterada#openjdk-17)
 
 		```shell
 		java -version
@@ -78,7 +78,7 @@ Azure Key Vault は一旦作成すると、リソースを削除した後も、�
 		which java
 		```
 	   
-	3. [Azure CLI version 2.31.0 もしくはそれ以降](https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest)：現在インストールされている Azure CLI のバージョンを確認するためには、下記のコマンドを実行します。
+	3. [Azure CLI version 2.31.0 もしくはそれ以降](https://learn.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest)：現在インストールされている Azure CLI のバージョンを確認するためには、下記のコマンドを実行します。
 
 		```shell
 		which az

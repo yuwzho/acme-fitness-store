@@ -59,11 +59,11 @@ Azure Spring Apps Enterprise を使用すると、Azure 上で Spring Boot ア�
 
 ## 事前準備
 
-Azure 上に Java アプリケーションをデプロイするため、Azure サブスクリプションが必要です。 Azure のアカウントをお持ちでない場合、[MSDN サブスクライバーの特典](https://azure.microsoft.com/pricing/member-offers/msdn-benefits-details/)を有効にするか、もしくは[無料の Azure アカウント](https://azure.microsoft.com/free/)を作成してください。
+Azure 上に Java アプリケーションをデプロイするため、Azure サブスクリプションが必要です。 Azure のアカウントをお持ちでない場合、[MSDN サブスクライバーの特典](https://azure.microsoft.com/pricing/member-offers/credit-for-visual-studio-subscribers/)を有効にするか、もしくは[無料の Azure アカウント](https://azure.microsoft.com/pricing/purchase-options/azure-account)を作成してください。
 
 さらに、次のものが必要になります。
 
-| [Azure CLI version 2.50.0 以降](https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest)
+| [Azure CLI version 2.50.0 以降](https://learn.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest)
 | [Git](https://git-scm.com/)
 | [`jq` コマンド](https://stedolan.github.io/jq/download/)
 |
@@ -108,7 +108,7 @@ az extension remove --name spring
 az extension add --name spring
 ```
 
-上記のコマンドを実装した後、`spring` のバージョンが `1.14.0` 以上になっているかを確認してください。更新されていない場合は、[Azure CLI の再インストール](https://docs.microsoft.com/ja-jp/cli/azure/install-azure-cli)を試してください。
+上記のコマンドを実装した後、`spring` のバージョンが `1.14.0` 以上になっているかを確認してください。更新されていない場合は、[Azure CLI の再インストール](https://learn.microsoft.com/ja-jp/cli/azure/install-azure-cli)を試してください。
 
 ## レポジトリを Clone
 
@@ -175,7 +175,7 @@ export LOG_ANALYTICS_WORKSPACE=log-analytics-name   # existing workspace or one 
 export REGION=region-name                           # choose a region with Enterprise tier support
 ```
 
-REGION の値は、Azure Spring Apps が利用可能なリージョン (eastus など) を設定する必要があります。Azure Spring アプリで利用可能なすべてのリージョンについては、[こちら](https://azure.microsoft.com/en-us/global-infrastructure/services/?products=spring-apps&regions=all)を参照してください。
+REGION の値は、Azure Spring Apps が利用可能なリージョン (eastus など) を設定する必要があります。Azure Spring アプリで利用可能なすべてのリージョンについては、[こちら](https://azure.microsoft.com/explore/global-infrastructure/products-by-region/)を参照してください。
 
 次に、source コマンドで環境を設定します。
 
@@ -573,7 +573,7 @@ az ad app credential reset --id ${APPLICATION_ID} --append > ../resources/json/s
 az ad sp create --id ${APPLICATION_ID}
 ```
 
-アプリケーションの登録に関する詳細な手順については、[こちら](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)を参照してください。
+アプリケーションの登録に関する詳細な手順については、[こちら](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)を参照してください。
 
 ### SSO デプロイのための環境の準備
 
@@ -608,7 +608,7 @@ az ad app update --id ${APPLICATION_ID} \
     --web-redirect-uris "https://${GATEWAY_URL}/login/oauth2/code/sso" "https://${PORTAL_URL}/oauth2-redirect.html" "https://${PORTAL_URL}/login/oauth2/code/sso"
 ```
 
-リダイレクト URI の詳細については、[こちら](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#add-a-redirect-uri)を参照してください。
+リダイレクト URI の詳細については、[こちら](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#add-a-redirect-uri)を参照してください。
 
 ### 既存の SSO ID プロバイダーの使用
 
@@ -1669,7 +1669,7 @@ az ad sp create-for-rbac --name "change-me" \
 
 ### GitHub Actions にシークレットを追加
 
-> GitHub Actions にシークレットを追加する詳細な手順については、[こちら](https://docs.microsoft.com/azure/spring-cloud/how-to-github-actions?pivots=programming-language-java#set-up-github-repository-and-authenticate-1)を参照してください。
+> GitHub Actions にシークレットを追加する詳細な手順については、[こちら](https://learn.microsoft.com/azure/spring-apps/how-to-github-actions?pivots=programming-language-java#set-up-github-repository-and-authenticate-1)を参照してください。
 
 次のシークレット (8x) を GitHub Actions に追加します
 
@@ -1921,11 +1921,11 @@ cd apps/acme-assist
 このクイック・スタートでは、Azure CLI を使用して多言語アプリケーションを Azure Spring Apps にデプロイしました。 また、エンタープライズ版を利用し VMware Tanzu コンポーネントを設定しました。
 Azure Spring Apps もしくは VMware Tanzu コンポーネントの詳細は下記から入手できます。
 
-* [Azure Spring Apps](https://azure.microsoft.com/en-us/services/spring-cloud/)
-* [Azure Spring Apps docs](https://docs.microsoft.com/en-us/azure/spring-cloud/quickstart-provision-service-instance-enterprise?tabs=azure-portal)
+* [Azure Spring Apps](https://azure.microsoft.com/products/spring-apps/)
+* [Azure Spring Apps docs](https://learn.microsoft.com/azure/spring-apps/enterprise/)
 * [Deploy Spring Apps from scratch](https://github.com/microsoft/azure-spring-cloud-training)
 * [Deploy existing Spring Apps](https://github.com/Azure-Samples/azure-spring-cloud)
-* [Azure for Java Cloud Developers](https://docs.microsoft.com/en-us/azure/java/)
+* [Azure for Java Cloud Developers](https://learn.microsoft.com/en-us/azure/java/)
 * [Spring Cloud Azure](https://spring.io/projects/spring-cloud-azure)
 * [Spring Cloud](https://spring.io/projects/spring-cloud)
 * [Spring Cloud Gateway](https://docs.vmware.com/en/VMware-Spring-Cloud-Gateway-for-Kubernetes/index.html)

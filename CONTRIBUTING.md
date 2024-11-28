@@ -3,7 +3,6 @@
 VMware uses GitHub and accepts code contributions via
 [pull requests](https://help.github.com/articles/using-pull-requests).  If you wish to contribute code and
 you have not signed our contributor license agreement (CLA), our bot will update the issue when you open a Pull Request.
-For any questions about the CLA process, please refer to our [FAQ](https://cla.vmware.com/faq).
 
 Follow these steps to make a contribution to any of our open source repositories:
 

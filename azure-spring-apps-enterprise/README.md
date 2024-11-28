@@ -62,13 +62,13 @@ This application is composed of several services:
 In order to deploy a Java app to cloud, you need
 an Azure subscription. If you do not already have an Azure
 subscription, you can activate your
-[MSDN subscriber benefits](https://azure.microsoft.com/pricing/member-offers/msdn-benefits-details/)
+[MSDN subscriber benefits](https://azure.microsoft.com/pricing/member-offers/credit-for-visual-studio-subscribers/)
 or sign up for a
-[free Azure account](https://azure.microsoft.com/free/).
+[free Azure account](https://azure.microsoft.com/pricing/purchase-options/azure-account).
 
 In addition, you will need the following:
 
-| [Azure CLI version 2.50.0 or higher](https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest)
+| [Azure CLI version 2.50.0 or higher](https://learn.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest)
 | [Git](https://git-scm.com/)
 | [`jq` utility](https://stedolan.github.io/jq/download/)
 |
@@ -125,7 +125,7 @@ az extension remove --name spring-cloud
 az extension remove --name spring
 az extension add --name spring
 ```
-If `spring`'s version still < `1.14.0` after above commands, you can try to [re-install Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).
+If `spring`'s version still < `1.14.0` after above commands, you can try to [re-install Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
 
 ## Clone the repo
 
@@ -194,7 +194,7 @@ export LOG_ANALYTICS_WORKSPACE=log-analytics-name   # existing workspace or one 
 export REGION=region-name                           # choose a region with Enterprise tier support
 ```
 
-The REGION value should be one of available regions for Azure Spring Apps (e.g. eastus). Please visit [here](https://azure.microsoft.com/en-us/global-infrastructure/services/?products=spring-apps&regions=all) for all available regions for Azure Spring Apps.
+The REGION value should be one of available regions for Azure Spring Apps (e.g. eastus). Please visit [here](https://azure.microsoft.com/explore/global-infrastructure/products-by-region) for all available regions for Azure Spring Apps.
 
 Then, set the environment:
 
@@ -596,7 +596,7 @@ az ad app credential reset --id ${APPLICATION_ID} --append > ../resources/json/s
 az ad sp create --id ${APPLICATION_ID}
 ```
 
-More detailed instructions on Application Registrations can be found [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
+More detailed instructions on Application Registrations can be found [here](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
 
 ### Prepare your environment for SSO Deployments
 
@@ -631,7 +631,7 @@ az ad app update --id ${APPLICATION_ID} \
     --web-redirect-uris "https://${GATEWAY_URL}/login/oauth2/code/sso" "https://${PORTAL_URL}/oauth2-redirect.html" "https://${PORTAL_URL}/login/oauth2/code/sso"
 ```
 
-Detailed information about redirect URIs can be found [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#add-a-redirect-uri).
+Detailed information about redirect URIs can be found [here](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#add-a-redirect-uri).
 
 ### Using an Existing SSO Identity Provider
 
@@ -1688,7 +1688,7 @@ az ad sp create-for-rbac --name "change-me" \
 
 ### Add Secrets to GitHub Actions
 
-> Detailed instructions for adding secrets to GitHub Actions can be found [here](https://docs.microsoft.com/azure/spring-cloud/how-to-github-actions?pivots=programming-language-java#set-up-github-repository-and-authenticate-1).
+> Detailed instructions for adding secrets to GitHub Actions can be found [here](https://learn.microsoft.com/azure/spring-apps/how-to-github-actions?pivots=programming-language-java#set-up-github-repository-and-authenticate-1).
 
 Add the following secrets (8x) to GitHub Actions:
 
@@ -1925,11 +1925,11 @@ In this quickstart, you've deployed polyglot applications to Azure Spring Apps u
 You also configured VMware Tanzu components in the enterprise tier. To learn more about
 Azure Spring Apps or VMware Tanzu components, go to:
 
-* [Azure Spring Apps](https://azure.microsoft.com/en-us/services/spring-cloud/)
-* [Azure Spring Apps docs](https://docs.microsoft.com/en-us/azure/spring-cloud/quickstart-provision-service-instance-enterprise?tabs=azure-portal)
+* [Azure Spring Apps](https://azure.microsoft.com/services/spring-apps/)
+* [Azure Spring Apps docs](https://learn.microsoft.com/azure/spring-apps/enterprise/)
 * [Deploy Spring Apps from scratch](https://github.com/microsoft/azure-spring-cloud-training)
 * [Deploy existing Spring Apps](https://github.com/Azure-Samples/azure-spring-cloud)
-* [Azure for Java Cloud Developers](https://docs.microsoft.com/en-us/azure/java/)
+* [Azure for Java Cloud Developers](https://learn.microsoft.com/azure/java/)
 * [Spring Cloud Azure](https://spring.io/projects/spring-cloud-azure)
 * [Spring Cloud](https://spring.io/projects/spring-cloud)
 * [Spring Cloud Gateway](https://docs.vmware.com/en/VMware-Spring-Cloud-Gateway-for-Kubernetes/index.html)
