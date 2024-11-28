@@ -66,4 +66,4 @@ az redis create -n ${REDIS_NAME} -g ${RESOURCE_GROUP} --sku Basic --vm-size c0 -
 
 ## Next Steps
 
-- Follow [07-containerize-application](./07-containerize-application.md) to learn how to containerize your applications and push them to Azure Container Registry.
+- Follow [08-containerize-application](./08-containerize-application.md) to learn how to containerize your applications and push them to Azure Container Registry.

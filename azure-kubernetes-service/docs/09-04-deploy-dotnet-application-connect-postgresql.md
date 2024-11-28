@@ -125,4 +125,4 @@ After completing this guide, you will have:
 
 ## Next Steps
 
-- Follow [08-05-deploy-python-application-connect-with-redis](./08-05-deploy-python-application-connect-with-redis.md) to deploy the Acme Cart application and connect it to Redis.
+- Follow [09-05-deploy-python-application-connect-with-redis](./09-05-deploy-python-application-connect-with-redis.md) to deploy the Acme Cart application and connect it to Redis.

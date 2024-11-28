@@ -19,3 +19,7 @@ Go to Azure Portal and click the AKS. On the left blade, click Insights and view
 
 #### Grant access to view metrics
 If you get a 403 error when viewing the metrics, you need to grant yourself access to view them. To enable access to view application metrics through the dashboard, see [Use Kubernetes role-based access control with Microsoft Entra ID in Azure Kubernetes Service](https://learn.microsoft.com/en-us/azure/aks/azure-ad-rbac?tabs=azure-cli).
+
+## Next Steps
+
+- Follow [09-05-deploy-python-application-connect-with-redis](./09-05-deploy-python-application-connect-with-redis.md) to deploy the Acme Cart application and connect it to Redis.

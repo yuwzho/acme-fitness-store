@@ -82,4 +82,4 @@ After completing this guide, you will have:
 
 ## Next Steps
 
-- Follow [08-02-deploy-application-connect-spring-cloud-component](./08-02-deploy-application-connect-spring-cloud-component.md) to deploy the Acme Payment application and connect it to Spring Cloud components.
+- Follow [09-02-deploy-application-connect-spring-cloud-component](./09-02-deploy-application-connect-spring-cloud-component.md) to deploy the Acme Payment application and connect it to Spring Cloud components.

@@ -149,4 +149,4 @@ After completing this guide, you will have:
 
 ## Next Steps
 
-- Follow [09-get-log-and-metrics](./09-get-log-and-metrics.md) to view logs and metrics for your Azure Kubernetes Service (AKS) cluster.
+- Follow [10-get-log-and-metrics](./10-get-log-and-metrics.md) to view logs and metrics for your Azure Kubernetes Service (AKS) cluster.

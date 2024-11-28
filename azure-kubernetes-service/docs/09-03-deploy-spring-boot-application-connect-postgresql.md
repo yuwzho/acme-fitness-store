@@ -38,22 +38,6 @@ After completing this guide, you will have:
    echo IDENTITY_NAME=${IDENTITY_NAME}
    ```
 
-1. **Update Spring Cloud config client dependency**
-   
-   Locate the `../apps/acme-payment/build.gradle` file and add the Spring Cloud config client dependency. This dependency will consume the environment and let your application connect to Confg Server to retrieve the configuration.
-
-   ```diff
-   --- a/apps/acme-payment/build.gradle
-   +++ b/apps/acme-payment/build.gradle
-   @@ -29,6 +29,7 @@ dependencies {
-         implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
-         implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-   +     implementation 'org.springframework.cloud:spring-cloud-starter-config'
-
-         runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
-   ```
-
 1. **Create managed identity**
 
    Create the managed identity for the catalog service. This managed identity will be used to connect to PostgreSQL.
@@ -144,4 +128,4 @@ After completing this guide, you will have:
 
 ## Next Steps
 
-- Follow [08-04-deploy-dotnet-application-connect-postgresql](./08-04-deploy-dotnet-application-connect-postgresql.md) to deploy the Acme Order application and connect it to PostgreSQL.
+- Follow [09-04-deploy-dotnet-application-connect-postgresql](./09-04-deploy-dotnet-application-connect-postgresql.md) to deploy the Acme Order application and connect it to PostgreSQL.
