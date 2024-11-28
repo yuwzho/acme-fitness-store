@@ -25,7 +25,7 @@ This folder contains documentation for setting up and deploying various componen
 7. [08-containerize-application.md](./docs/08-containerize-application.md)
    - Steps to build and push application images to Azure Container Registry.
 
-8. [08-02-deploy-application-connect-spring-cloud-component.md](./docs/08-02-deploy-application-connect-spring-cloud-component.md)
+8. [09-02-deploy-application-connect-spring-cloud-component.md](./docs/09-02-deploy-application-connect-spring-cloud-component.md)
    - Instructions to deploy the Acme Payment application on AKS and connect it to Spring Cloud components.
 
 9. [09-03-deploy-spring-boot-application-connect-postgresql.md](./docs/09-03-deploy-spring-boot-application-connect-postgresql.md)
