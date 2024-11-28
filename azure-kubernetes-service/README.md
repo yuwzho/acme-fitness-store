@@ -22,20 +22,20 @@ This folder contains documentation for setting up and deploying various componen
 6. [06-create-application-supporting-service.md](./docs/06-create-application-supporting-service.md)
    - Guide to set up supporting services like PostgreSQL and Redis Cache for your applications on AKS.
 
-7. [07-containerize-application.md](./docs/07-containerize-application.md)
+7. [08-containerize-application.md](./docs/08-containerize-application.md)
    - Steps to build and push application images to Azure Container Registry.
 
 8. [08-02-deploy-application-connect-spring-cloud-component.md](./docs/08-02-deploy-application-connect-spring-cloud-component.md)
    - Instructions to deploy the Acme Payment application on AKS and connect it to Spring Cloud components.
 
-9. [08-03-deploy-spring-boot-application-connect-postgresql.md](./docs/08-03-deploy-spring-boot-application-connect-postgresql.md)
+9. [09-03-deploy-spring-boot-application-connect-postgresql.md](./docs/09-03-deploy-spring-boot-application-connect-postgresql.md)
    - Guide to deploy the Acme Catalog application on AKS and connect it to a PostgreSQL database.
 
-10. [08-04-deploy-dotnet-application-connect-postgresql.md](./docs/08-04-deploy-dotnet-application-connect-postgresql.md)
+10. [09-04-deploy-dotnet-application-connect-postgresql.md](./docs/09-04-deploy-dotnet-application-connect-postgresql.md)
     - Steps to deploy the Acme Order application on AKS and connect it to a PostgreSQL database.
 
-11. [08-05-deploy-python-application-connect-with-redis.md](./docs/08-05-deploy-python-application-connect-with-redis.md)
+11. [09-05-deploy-python-application-connect-with-redis.md](./docs/09-05-deploy-python-application-connect-with-redis.md)
     - Instructions to deploy the Acme Cart application on AKS and connect it to a Redis cache.
 
-12. [09-get-log-and-metrics.md](./docs/09-get-log-and-metrics.md)
+12. [10-get-log-and-metrics.md](./docs/10-get-log-and-metrics.md)
     - Guide to view logs and metrics for your AKS cluster to monitor containerized applications effectively.

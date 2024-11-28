@@ -7,7 +7,7 @@ In this guide, we will walk you through the process of deploying the Acme Paymen
 Before you begin, ensure you have the following:
 
 - Follow [01-create-kubernetes-service](./01-create-kubernetes-service.md) to create Azure Kubernetes Service and Azure Container Registry.
-- Follow [07-containerize-application](./07-containerize-application.md) to build the image and push it to the Azure Container Registry.
+- Follow [07-containerize-application](./08-containerize-application.md) to build the image and push it to the Azure Container Registry.
 - Follow [02-create-eureka-server](./02-create-eureka-server.md) to create the Eureka Server for service discovery.
 - Follow [03-create-config-server](./03-create-config-server.md) to create the Config Server for centralized configuration.
 - Follow [04-create-spring-boot-admin](./04-create-spring-boot-admin.md) to set up Spring Boot Admin for monitoring and managing your Spring Boot applications.

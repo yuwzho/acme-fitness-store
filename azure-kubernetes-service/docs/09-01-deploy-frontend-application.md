@@ -7,8 +7,8 @@ In this guide, we will walk you through the process of deploying the Acme Fronte
 Before you begin, ensure you have the following:
 
 - Follow [01-create-kubernetes-service](./01-create-kubernetes-service.md) to create Azure Kubernetes Service and Azure Container Registry.
-- Follow [07-containerize-application](./07-containerize-application.md) to build the image and push it to the Azure Container Registry.
-- Follow [04-create-spring-cloud-gateway](./04-create-spring-cloud-gateway.md) to create the Spring Cloud Gateway for routing.
+- Follow [07-containerize-application](./08-containerize-application.md) to build the image and push it to the Azure Container Registry.
+- Follow [04-create-spring-cloud-gateway](./05-create-application-gateway.md) to create the Spring Cloud Gateway for routing.
 
 ## Outputs
 
