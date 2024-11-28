@@ -33,7 +33,7 @@ az ad app update --id ${APPLICATION_ID} \
      "https://${PORTAL_URL}/oauth2-redirect.html" "https://${PORTAL_URL}/login/oauth2/code/sso"
 ```
 
-Detailed information about redirect URIs can be found [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#add-a-redirect-uri).
+Detailed information about redirect URIs can be found [here](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#add-a-redirect-uri).
 
 Assign a Service Principal to the Application Registration
 
@@ -41,7 +41,7 @@ Assign a Service Principal to the Application Registration
 az ad sp create --id ${APPLICATION_ID}
 ```
 
-More detailed instructions on Application Registrations can be found [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
+More detailed instructions on Application Registrations can be found [here](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app)
 
 ### 1.1. Prepare your environment for SSO Deployments
 

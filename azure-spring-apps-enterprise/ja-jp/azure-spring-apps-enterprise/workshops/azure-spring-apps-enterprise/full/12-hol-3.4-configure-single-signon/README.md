@@ -35,7 +35,7 @@ az ad app update --id ${APPLICATION_ID} \
      "https://${PORTAL_URL}/oauth2-redirect.html" "https://${PORTAL_URL}/login/oauth2/code/sso"
 ```
 
-リダイレクト先の URI に関する詳細な情報は[こちら](https://docs.microsoft.com/ja-jp/azure/active-directory/develop/quickstart-register-app#add-a-redirect-uri)をご参照ください。
+リダイレクト先の URI に関する詳細な情報は[こちら](https://learn.microsoft.com/ja-jp/azure/active-directory/develop/quickstart-register-app#add-a-redirect-uri)をご参照ください。
 
 アプリケーションに対してサービスプリンシパルを割り当てます。
 
@@ -43,7 +43,7 @@ az ad app update --id ${APPLICATION_ID} \
 az ad sp create --id ${APPLICATION_ID}
 ```
 
-アプリケーションの登録に関するより詳細な情報は、[こちら](https://docs.microsoft.com/ja-jp/azure/active-directory/develop/quickstart-register-app)をご参照ください。
+アプリケーションの登録に関するより詳細な情報は、[こちら](https://learn.microsoft.com/ja-jp/azure/active-directory/develop/quickstart-register-app)をご参照ください。
 
 ### 1.1. SSO を有効化するための環境設定の準備
 
