@@ -94,7 +94,7 @@ Azure 上に Java アプリケーションをデプロイするため、Azure �
 az extension add --name spring
 ```
 
-ご注意: - 最新のエンタープライズ Tier の機能を有効にし VMware Tanzu コンポーネントを構成するためには、`spring` という名の CLI 拡張バージョン '1.14.0' 以降が必須です。次のコマンドを使用して、以前のバージョンを削除し、最新の Enterprise Tier 拡張機能をインストールしてください。
+ご注意: - 最新のエンタープライズ Plan の機能を有効にし VMware Tanzu コンポーネントを構成するためには、`spring` という名の CLI 拡張バージョン '1.14.0' 以降が必須です。次のコマンドを使用して、以前のバージョンを削除し、最新の Enterprise Plan 拡張機能をインストールしてください。
 
 ```shell
 az extension update --name spring
@@ -172,7 +172,7 @@ export SUBSCRIPTION=subscription-id                 # replace it with your subsc
 export RESOURCE_GROUP=resource-group-name           # existing resource group or one that will be created in next steps
 export SPRING_APPS_SERVICE=azure-spring-apps-name   # name of the service that will be created in the next steps
 export LOG_ANALYTICS_WORKSPACE=log-analytics-name   # existing workspace or one that will be created in next steps
-export REGION=region-name                           # choose a region with Enterprise tier support
+export REGION=region-name                           # choose a region with Enterprise Plan support
 ```
 
 REGION の値は、Azure Spring Apps が利用可能なリージョン (eastus など) を設定する必要があります。Azure Spring アプリで利用可能なすべてのリージョンについては、[こちら](https://azure.microsoft.com/explore/global-infrastructure/products-by-region/)を参照してください。

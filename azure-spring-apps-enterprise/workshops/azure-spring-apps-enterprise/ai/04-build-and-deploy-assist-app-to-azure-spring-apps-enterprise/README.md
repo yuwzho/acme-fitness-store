@@ -132,7 +132,7 @@
 ## Next Steps
 
 In this quickstart, you've deployed polyglot applications to Azure Spring Apps using Azure CLI.
-You also configured VMware Tanzu components in the enterprise tier. To learn more about
+You also configured VMware Tanzu components in the enterprise plan. To learn more about
 Azure Spring Apps or VMware Tanzu components, go to:
 
 * [Azure Spring Apps](https://azure.microsoft.com/products/spring-apps/)

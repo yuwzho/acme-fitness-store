@@ -86,9 +86,9 @@ az account list -o table
 az account set --subscription ${SUBSCRIPTION}
 ```
 
-Accept the legal terms and privacy statements for the Enterprise tier.
+Accept the legal terms and privacy statements for the Enterprise plan.
 
-> Note: This step is necessary only if your subscription has never been used to create an Enterprise tier instance of Azure Spring Apps.
+> Note: This step is necessary only if your subscription has never been used to create an Enterprise plan instance of Azure Spring Apps.
 
 ```shell
 az provider register --namespace Microsoft.SaaS

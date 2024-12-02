@@ -48,9 +48,9 @@ Login to the Azure CLI and choose your active subscription. In the terminal of V
 ./scripts/1.2-cli-login.sh
 ```
 
-Accept the legal terms and privacy statements for the Enterprise tier.
+Accept the legal terms and privacy statements for the Enterprise plan.
 
-> Note: This step is necessary only if your subscription has never been used to create an Enterprise tier instance of Azure Spring Apps.
+> Note: This step is necessary only if your subscription has never been used to create an Enterprise plan instance of Azure Spring Apps.
 
 ```shell
 ./scripts/1.3-accept-license.sh

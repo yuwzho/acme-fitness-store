@@ -107,8 +107,8 @@ Install the Azure Spring Apps extension for the Azure CLI using the following co
 az extension add --name spring
 ```
 Note - `spring` CLI extension `1.14.0` or later is a pre-requisite to enable the
-latest Enterprise tier functionality to configure VMware Tanzu Components. Use the following
-command to remove previous versions and install the latest Enterprise tier extension:
+latest Enterprise plan functionality to configure VMware Tanzu Components. Use the following
+command to remove previous versions and install the latest Enterprise plan extension:
 
 If the extension is already installed, update it with the following command
 
@@ -191,7 +191,7 @@ export SUBSCRIPTION=subscription-id                 # replace it with your subsc
 export RESOURCE_GROUP=resource-group-name           # existing resource group or one that will be created in next steps
 export SPRING_APPS_SERVICE=azure-spring-apps-name   # name of the service that will be created in the next steps
 export LOG_ANALYTICS_WORKSPACE=log-analytics-name   # existing workspace or one that will be created in next steps
-export REGION=region-name                           # choose a region with Enterprise tier support
+export REGION=region-name                           # choose a region with Enterprise plan support
 ```
 
 The REGION value should be one of available regions for Azure Spring Apps (e.g. eastus). Please visit [here](https://azure.microsoft.com/explore/global-infrastructure/products-by-region) for all available regions for Azure Spring Apps.
@@ -234,9 +234,9 @@ az group create --name ${RESOURCE_GROUP} \
     --location ${REGION}
 ```
 
-Accept the legal terms and privacy statements for the Enterprise tier.
+Accept the legal terms and privacy statements for the Enterprise plan.
 
-> Note: This step is necessary only if your subscription has never been used to create an Enterprise tier instance of Azure Spring Apps.
+> Note: This step is necessary only if your subscription has never been used to create an Enterprise plan instance of Azure Spring Apps.
 
 ```shell
 az provider register --namespace Microsoft.SaaS
@@ -1922,7 +1922,7 @@ cd apps/acme-assist
 ## Next Steps
 
 In this quickstart, you've deployed polyglot applications to Azure Spring Apps using Azure CLI.
-You also configured VMware Tanzu components in the enterprise tier. To learn more about
+You also configured VMware Tanzu components in the enterprise plan. To learn more about
 Azure Spring Apps or VMware Tanzu components, go to:
 
 * [Azure Spring Apps](https://azure.microsoft.com/services/spring-apps/)

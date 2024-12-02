@@ -58,7 +58,7 @@ export SUBSCRIPTION=asae-student01                  # replace it with your subsc
 export RESOURCE_GROUP=asae-student01                # existing resource group or one that will be created in the next steps
 export SPRING_APPS_SERVICE=asae-student01           # existing spring apps service name or one that will be created in the next steps
 export LOG_ANALYTICS_WORKSPACE=asae-student01       # existing workspace or one that will be created in next steps
-export REGION=westeurope                            # choose a region with Enterprise tier support
+export REGION=westeurope                            # choose a region with Enterprise plan support
 ```
 
 * Save the file, by right clicking in editor and saving. Quit the file, by right clicking in editor and quiting, e.g.
